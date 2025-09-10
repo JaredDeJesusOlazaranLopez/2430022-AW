@@ -3,21 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/logo.png">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <title>Inicio</title>
 </head>
-<body class="bg-black ">
-    <div class="fixed top-20 left-30 h-30 flex gap-10 text-white">
+<style>
+    /*Aqui estoy decorando el cuerpo poniendo la imagen y haciendo que se oscurezca, ademas en el menu le puse um hover el cual al pasar el mouse cambia el color del texto
+    y decore el texto del menu, ademas decore el titulo poniendole color y poniendolo remarcado*/
+    body {
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+        url('img/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+#navbar a {
+    color: white;
+    font-size: 17px;
+    transition: color 0.3s;
+    
+}
+#navbar a:hover {
+    color: rgb(255, 166, 0);
+    text-decoration: none;
+    transition: color 0.5s;
+}
+#titulito p {
+    font-size: 25px;
+    font-weight: bold;
+    color: rgb(255, 166, 0);
+    text-align: center;
+    margin: 0;
+}
+</style>
+<body>
+<!--Aqui estoy creando el menu usando una clase para poder decorar el fondo y el texto, y dividiendo los elementos para poder decorarlos en el styles-->
+<div class="fixed bg-opacity-80% backdrop-blur-sm top-0 left-0 right-0 h-30 flex justify-between text-white items-center px-30 shadow-lg border-b border-gray-600">
+    <div class="flex gap-10" id="navbar">
         <a href="">Inicio</a>
         <a href="">Menu</a>
         <a href="">Horarios</a>
         <a href="">Contacto</a>
     </div>
-
-    <div class="text-white  mt-40 p-30 space-y-4">
-        <h1 class="text-6xl font-bold">Cafe-UPV</h1>
-        <p>Bienvenido a la pagina oficial de la cafeteria de la UPV!<br> Aquí podras encontrar nuestro menu, horarios y maneras <br> de contacar con nosotros.</p>
-        <button class="bg-yellow-400 h-15 w-45 rounded-3xl ">Ver Menu</button>
+    <div id="titulito">
+    <p>Cafe-UPV</p>
+</div>
+<!--Aqui defino la imagen que se mostrara en el menu la cual es el logo de la poli-->
+    <img src="img/upvlogo.png" alt="Logo" class="h-25 w-30">
+</div>
+<!--Aqui estoy creando el cuerpo de la pagina, definiendo los textos y la imagen que se mostrara en el cuerpo, ademas de un boton que al darle click te lleva al final de la pagina donde esta el menu -->
+    <div class="text-white mt-20 p-50 flex items-center justify-between space-x-10">
+    <div class="flex-1 space-y-4">
+        <h1 class="text-9xl font-bold">Cafe-UPV</h1>
+        <p>Bienvenido a la pagina oficial de la cafeteria de la UPV!<br> 
+        Aquí podras encontrar nuestro menu, horarios y maneras <br> 
+        de contacar con nosotros.</p>
+        <button onclick="window.scrollTo(0, document.body.scrollHeight)" class="bg-yellow-400 h-15 w-45 rounded-3xl">Ver Menu</button>
     </div>
+    <!--Aqui puse una imagen de la mascota de nuestra universidad-->
+    <div class="flex-shrink-0">
+        <img src="img/tigreupv.png" alt="Tigre" class="h-150 w-150">
+    </div>
+</div>
+
+<!--Aqui estoy creando el menu con las categorias y las imagenes de cada categoria, ademas de ponerle un titulo al menu-->
+<div class="h-200 w-full mt-60">
+
+    <div class="text-white mt-20 p-30">
+        <center><h1 class="text-4xl font-bold">Menu</h1></center>
+        <div class="flex justify-center gap-10 mt-10 text-center overflow-hidden">
+            <div>
+                <a href="#">
+                    <img src="img/chilaquiles.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Almuerzos</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/carlota.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Postres</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/maicitos.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Snacks</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/aguaLimon.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Bebidas</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
