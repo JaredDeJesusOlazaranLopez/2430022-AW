@@ -8,9 +8,10 @@
     <title>Inicio</title>
 </head>
 <style>
-    /*Aqui estoy decorando el cuerpo poniendo la imagen y haciendo que se oscurezca, ademas en el menu le puse um hover el cual al pasar el mouse cambia el color del texto
-    y decore el texto del menu, ademas decore el titulo poniendole color y poniendolo remarcado*/
+    /*Aqui se decora el cuerpo poniendo la imagen y haciendo que se oscurezca, ademas en el menu se utiliza un hover el cual al pasar el mouse cambia el color del texto
+    y se decora el texto del menu, ademas al titulo le ponemos color y lo remarcamos*/
     body {
+    /*overflow-y: hidden;*/
     background: 
         linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
         url('img/fondo.jpg');
@@ -37,69 +38,443 @@
     text-align: center;
     margin: 0;
 }
+#ola p {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin: 0;
+}
+#ola img {
+    transition: transform 0.3s;
+}
+#ola img:hover {
+    transform: scale(1.1);
+}
+#ola p:hover {
+    color: rgb(255, 166, 0);
+    text-decoration: none;
+    transition: color 0.5s;
+}
+#ola div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#ola p{
+    text-align: center;
+    margin-top: 5px;
+}
+#si {
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin: 0;
+}
+body:not(:has(:target)) #navbar a[href="#inicio"] {
+  color: rgb(255, 166, 0);
+  font-weight: bold;
+}
+
+body:has(#inicio:target)   #navbar a[href="#inicio"],
+body:has(#menu:target)     #navbar a[href="#menu"],
+body:has(#horarios:target) #navbar a[href="#horarios"],
+body:has(#contacto:target) #navbar a[href="#contacto"] {
+  color: rgb(255, 166, 0);
+  font-weight: bold;
+}
+
+#menu img {
+    transition: transform 0.5s;
+}
+#menu img:hover {
+    opacity: 0.9;
+}
+
 </style>
 <body>
-<!--Aqui estoy creando el menu usando una clase para poder decorar el fondo y el texto, y dividiendo los elementos para poder decorarlos en el styles-->
+<!--Aqui se crea el menu usando una clase para poder decorar el fondo y el texto, y dividiendo los elementos para poder decorarlos en el styles-->
 <div class="fixed bg-opacity-80% backdrop-blur-sm top-0 left-0 right-0 h-30 flex justify-between text-white items-center px-30 shadow-lg border-b border-gray-600">
     <div class="flex gap-10" id="navbar">
-        <a href="">Inicio</a>
-        <a href="">Menu</a>
-        <a href="">Horarios</a>
-        <a href="">Contacto</a>
+        <a href="#inicio">Inicio</a>
+        <a href="#menu">Menu</a>
+        <a href="#horarios">Horarios</a>
+        <a href="#contacto">Contacto</a>
     </div>
     <div id="titulito">
     <p>Cafe-UPV</p>
 </div>
-<!--Aqui defino la imagen que se mostrara en el menu la cual es el logo de la poli-->
+<!--Aqui se define la imagen que se mostrara en el menu la cual es el logo de la poli-->
     <img src="img/upvlogo.png" alt="Logo" class="h-25 w-30">
 </div>
-<!--Aqui estoy creando el cuerpo de la pagina, definiendo los textos y la imagen que se mostrara en el cuerpo, ademas de un boton que al darle click te lleva al final de la pagina donde esta el menu -->
+<div class="h-screen w-full mt-30 scroll-mt-40" id="inicio">
+<!--Aqui se crea el cuerpo de la pagina, definiendo los textos y la imagen que se mostrara en el cuerpo, ademas de un boton que al darle click te lleva al final de la pagina donde esta el menu -->
     <div class="text-white mt-20 p-50 flex items-center justify-between space-x-10">
     <div class="flex-1 space-y-4">
         <h1 class="text-9xl font-bold">Cafe-UPV</h1>
         <p>Bienvenido a la pagina oficial de la cafeteria de la UPV!<br> 
         Aquí podras encontrar nuestro menu, horarios y maneras <br> 
         de contacar con nosotros.</p>
-        <button onclick="window.scrollTo(0, document.body.scrollHeight)" class="bg-yellow-400 h-15 w-45 rounded-3xl">Ver Menu</button>
+        <button onclick="window.location.href='#menu'" class="bg-yellow-400 h-15 w-45 rounded-3xl">Ver Menu</button>
     </div>
-    <!--Aqui puse una imagen de la mascota de nuestra universidad-->
+    <!--Aqui ponemos una imagen de la mascota de nuestra universidad-->
     <div class="flex-shrink-0">
         <img src="img/tigreupv.png" alt="Tigre" class="h-150 w-150">
     </div>
 </div>
+</div>
 
-<!--Aqui estoy creando el menu con las categorias y las imagenes de cada categoria, ademas de ponerle un titulo al menu-->
-<div class="h-200 w-full mt-60">
+<!--Aqui se crea el menu con las categorias y las imagenes de cada categoria, ademas de ponerle un titulo al menu-->
+<div class="h-200 w-full mt-60 scroll-mt-40" id="menu">
 
     <div class="text-white mt-20 p-30">
         <center><h1 class="text-4xl font-bold">Menu</h1></center>
-        <div class="flex justify-center gap-10 mt-10 text-center overflow-hidden">
+        <div class="flex justify-center gap-5 mt-5 text-center overflow-hidden">
             <div>
-                <a href="#">
+                <a href="#almuerzos">
                     <img src="img/chilaquiles.jpg" class="w-60 h-60 rounded-lg">
                     <p>Almuerzos</p>
                 </a>
             </div>
             <div>
-                <a>
+                <a href="#postre">
                     <img src="img/carlota.jpg" class="w-60 h-60 rounded-lg">
                     <p>Postres</p>
                 </a>
             </div>
             <div>
-                <a>
+                <a href="#snack">
                     <img src="img/maicitos.jpg" class="w-60 h-60 rounded-lg">
                     <p>Snacks</p>
                 </a>
             </div>
             <div>
-                <a>
+                <a href="#bebidas">
                     <img src="img/aguaLimon.jpg" class="w-60 h-60 rounded-lg">
                     <p>Bebidas</p>
                 </a>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Seccion de almuerzos-->
+
+<div id="almuerzos">
+    <!--Contenedor con titulo-->
+    <div class="text-white mt-20 p-30 text-center">
+        <center><h1 class="text-4xl font-bold">Almuerzos</h1></center>
+        <div class="grid grid-cols-4 gap-10 mt-10 text-center" id="ola">
+            <div>
+                <a href="#">
+                    <img src="img/sandwich.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Sandwich</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/chilaquiles.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Chilaquiles</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/quesadillas.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Quesadillas</p>
+                    <p>$20.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/sopa.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Sopa</p>
+                    <p>$25.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/sopes.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Sopes</p>
+                    <p>$20.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/torta.png" class="w-60 h-60 rounded-lg">
+                    <p>Torta</p>
+                    <p>$25.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/gorditas.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Gorditas</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/flautas.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Flautas</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<<!--Seccion de postres-->
+<div id="postre">
+    <div class="text-white mt-20 p-30 text-center">
+        <center><h1 class="text-4xl font-bold">Postres</h1></center>
+        <div class="grid grid-cols-4 gap-10 mt-10 text-center" id="ola">
+            <div>
+                <a href="#">
+                    <img src="img/carlota.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Carlota</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/pastel.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Pastel</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/gelatina.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Gelatina</p>
+                    <p>$20.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/helado.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Helado</p>
+                    <p>$25.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/brownie.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Brownie</p>
+                    <p>$20.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/flan.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Flan</p>
+                    <p>$25.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/cupcakes.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Cupcakes</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/waffles.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Waffles</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<<!--Seccion de snacks-->
+    <div id="snack">
+    <div class="text-white mt-20 p-30 text-center">
+        <center><h1 class="text-4xl font-bold">Snacks</h1></center>
+       <div class="grid grid-cols-4 gap-10 mt-10 text-center" id="ola">
+            <div>
+                <a href="#">
+                    <img src="img/maicitos.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Maicitos</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/palomitas.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Palomitas</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/nueces.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Nueces</p>
+                    <p>$20.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/galletas.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Galletas</p>
+                    <p>$25.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/frutaDeshidratada.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Fruta Deshidratada</p>
+                    <p>$20.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/cacahuates.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Cacahuates</p>
+                    <p>$25.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/gomitas.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Gomitas</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/nachosConQueso.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Nachos con queso</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+        </div>
+    </div>
+<<!--Seccion de bebidas-->
+    <div id="bebidas">
+    <div class="text-white mt-20 p-30 text-center">
+        <center><h1 class="text-4xl font-bold">Bebidas</h1></center>
+       <div class="grid grid-cols-4 gap-10 mt-10 text-center" id="ola">
+            <div>
+                <a href="#">
+                    <img src="img/agua.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Agua</p>
+                    <p>$5.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/aguaMineral.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Agua mineral</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/refresco.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Refresco</p>
+                    <p>$20.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/cafe.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Cafe</p>
+                    <p>$25.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/chocolateCaliente.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Chocolate caliente</p>
+                    <p>$20.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/jugo.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Jugo</p>
+                    <p>$25.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/bebidaEnergetica.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Bebida energetica</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+            <div>
+                <a>
+                    <img src="img/bebidaDeFrutas.jpg" class="w-60 h-60 rounded-lg">
+                    <p>Bebida de frutas</p>
+                    <p>$30.00</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Aqui se crea la seccion de horarios y contacto, definiendo los textos y un boton que al darle click te lleva al inicio de la pagina-->
+<div class="w-full mt-60 scroll-mt-60" id="horarios">
+    <div class="max-w-5xl mx-auto px-6">
+    <h2 class="text-4xl font-extrabold text-white text-center mb-6">Horario</h2>
+
+    <div class="bg-white text-black rounded-[32px] md:rounded-[40px] shadow-2xl px-6 md:px-10 py-10">
+    <div class="flex items-start gap-4 md:gap-6">
+        <img src="img/reloj.png" alt="" class="w-10 h-10 md:w-12 md:h-12">
+        <div class="text-base md:text-lg leading-relaxed">
+        <p><span class="text-orange-500 font-semibold">Horario de la cafetería:</span> de 7:00 am a 6 pm de lunes a viernes</p>
+        </div>
+    </div>
+    <div class="my-6 h-px bg-neutral-200"></div>
+    <div class="flex items-start gap-4 md:gap-6">
+        <img src="img/comida.png" alt="" class="w-10 h-10 md:w-12 md:h-12">
+        <div class="text-base md:text-lg leading-relaxed">
+        <p><span class="text-orange-500 font-semibold">Almuerzos:</span> de 1 pm. a 4 pm. de lunes a viernes</p>
+        <p><span class="text-orange-500 font-semibold">Costo:</span> $50.00</p>
+        <p><span class="text-orange-500 font-semibold">Ubicación:</span> Cafetería-UPV</p>
+        </div>
+    </div>
+    <div class="my-6 h-px bg-neutral-200"></div>
+    <div class="flex items-start gap-4 md:gap-6">
+        <img src="img/postre.png" alt="" class="w-10 h-10 md:w-12 md:h-12">
+        <div class="text-base md:text-lg leading-relaxed">
+        <p><span class="text-orange-500 font-semibold">Postres:</span> de 9 am. a 12 pm. de lunes a viernes</p>
+        <p><span class="text-orange-500 font-semibold">Costo:</span> $20.00</p>
+        <p><span class="text-orange-500 font-semibold">Ubicación:</span> Cafetería-UPV</p>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+<<!--Seccion de contacto-->
+<div class="h-200 w-full mt-60 scroll-mt-40" id="contacto">
+    <div class="text-white mt-20 p-30 text-center">
+    <center><h1 class="text-4xl font-bold">Contacto</h1></center>
+    <div class="mt-10 space-y-4" id="si">
+        <p>Teléfono: 834 217 6644 o 8349876543</p>
+        <p>Email: cafeupv@gmail.com</p>
+    </div>
+
+    <div class="flex justify-center gap-8 mt-6">
+
+    <a href="#" target="_blank">
+        <img src="img/wpp.png" alt="WhatsApp" class="w-12 h-12 hover:scale-110 transition">
+    </a>
+    <a href="#" target="_blank">
+        <img src="img/ig.png" alt="Instagram" class="w-12 h-12 hover:scale-110 transition">
+    </a>
+    <a href="#" target="_blank">
+        <img src="img/fb.png" alt="Facebook" class="w-12 h-12 hover:scale-110 transition">
+    </a>
+    </div>
+</div>
+</div>
+
+
 </div>
 </body>
 </html>
