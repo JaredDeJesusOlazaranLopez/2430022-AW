@@ -1,0 +1,280 @@
+body{
+  background-attachment: fixed;
+  background-image: url(img/fondo.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: white;
+  font-family: Arial, sans-serif;
+  margin: 10px;
+  padding: 10px;
+  font-size: 20px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  line-height: 1.6;
+}
+
+body h2{
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  text-shadow: 2px 2px 4px #000000;
+  background-color: #5c7dff;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+body h1{
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  margin-bottom: 20px;
+  margin: 100px 0 100px 0;
+  text-shadow: 2px 2px 4px #000000;
+  background-color: #5c7dff;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  border-radius: 20px;
+  box-shadow: 0px 10px 10px rgb(73, 70, 92);
+  transition: 0.5s;
+}
+
+body h1:hover{
+  box-shadow: 0px 10px 10px black;
+  transition: 0.5s;
+  transform: scale(1.05);
+}
+
+.card {
+  width: 700px;
+  height: 250px;
+  margin: 0 auto;
+  background-color: #24233b;
+  border-radius: 8px;
+  z-index: 1;
+  box-shadow: 0px 10px 10px rgb(73, 70, 92);
+  transition: 0.5s;
+}
+
+.card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0px 10px 10px black;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.circle {
+  padding: 0 4px;
+}
+
+.circle2 {
+  display: inline-block;
+  align-items: center;
+  width: 10px;
+  height: 10px;
+  padding: 1px;
+  border-radius: 5px;
+}
+
+.red {
+  background-color: #ff605c;
+}
+
+.yellow {
+  background-color: #ffbd44;
+}
+
+.green {
+  background-color: #00ca4e;
+}
+
+.header {
+  margin: 5px;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+#title2 {
+  color: white;
+  padding-left: 50px;
+  font-size: 15px;
+}
+
+.code-container {
+  text-align:center;
+}
+#code {
+  width: 670px;
+  height: 150px;
+  resize: none;
+  background-color: rgb(73, 70, 92);
+  border-radius: 5px;
+  border: none;
+  color: white;
+  padding: 10px;
+}
+#code:focus {
+  outline: none !important;
+}
+
+
+.menu{
+    display: flex;
+    justify-content: space-around;
+    background-color: rgb(0, 46, 61);
+    padding: 10px;
+    border-radius: 5px;
+    /*margin-bottom: 20px;*/
+}
+
+.menu a{
+  text-align: center;
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+    transition: 0.5s;
+}
+.menu a:hover{
+    color: darkblue;
+    font-size: 20px;
+    transition: 0.5s;
+    rotate: 10deg;
+}
+
+.Introduccion{
+  background-color: rgba(86, 86, 86, 0.491);
+    padding: 100px;
+    box-shadow: #24233b 5px 5px 15px;
+    text-align: justify;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    transition: 1s;
+}
+
+.Introduccion:hover{
+    box-shadow: #24233b 10px 10px 30px;
+    transition: 1s;
+    background-color: rgba(86, 86, 86, 0.7);
+}
+
+.Introduccion img{
+    width: 300px;
+    height: auto;
+    border-radius: 20px;
+    transition: 0.5s;
+}
+
+.Introduccion img:hover{
+    transform: scale(1.1);
+    transition: 1s;
+}
+
+.sintaxis{
+    background-color: rgba(86, 86, 86, 0.491);
+    padding: 100px;
+    box-shadow: #24233b 5px 5px 15px;
+    text-align: justify;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    transition: 1s;
+}
+
+.sintaxis:hover{
+    box-shadow: #24233b 10px 10px 30px;
+    transition: 1s;
+    background-color: rgba(86, 86, 86, 0.7);
+}
+
+.sintaxis #comentarios{
+    background-color: rgb(220, 220, 220);
+    border-radius: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.sintaxis #comentarios li{
+    text-align: justify;
+    color: gray;
+}
+
+.controlFlujo{
+    background-color: rgba(86, 86, 86, 0.491);
+    padding: 100px;
+    box-shadow: #24233b 5px 5px 15px;
+    text-align: justify;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    transition: 1s;
+}
+
+.controlFlujo:hover{
+    box-shadow: #24233b 10px 10px 30px;
+    transition: 1s;
+    background-color: rgba(86, 86, 86, 0.7);
+}
+
+.funciones{
+    background-color: rgba(86, 86, 86, 0.491);
+    padding: 100px;
+    box-shadow: #24233b 5px 5px 15px;
+    text-align: justify;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    transition: 1s;
+}
+
+.funciones:hover{
+    box-shadow: #24233b 10px 10px 30px;
+    transition: 1s;
+    background-color: rgba(86, 86, 86, 0.7);
+}
+
+.objetos{
+    background-color: rgba(86, 86, 86, 0.491);
+    padding: 100px;
+    box-shadow: #24233b 5px 5px 15px;
+    text-align: justify;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    transition: 1s;
+}
+
+.objetos:hover{
+    box-shadow: #24233b 10px 10px 30px;
+    transition: 1s;
+    background-color: rgba(86, 86, 86, 0.7);
+}
+
+.otros{
+    background-color: rgba(86, 86, 86, 0.491);
+    padding: 100px;
+    box-shadow: #24233b 5px 5px 15px;
+    text-align: justify;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    transition: 1s;
+}
+.otros:hover{
+    box-shadow: #24233b 10px 10px 30px;
+    transition: 1s;
+    background-color: rgba(86, 86, 86, 0.7);
+}
+
+footer{
+    text-align: center;
+    padding: 5px;
+    background-color: rgb(0, 46, 61);
+    color: white;
+    border-radius: 10px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    box-shadow: #24233b 5px 5px 15px;
+}
