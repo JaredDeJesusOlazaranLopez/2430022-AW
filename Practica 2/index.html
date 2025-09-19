@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentos Js</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/x-icon" href="img/logo.png">
+</head>
+<body>
+    <div id="title">
+       <h1>JavaScript</h1>
+    </div>
+
+    <div class="Introduccion">
+        <p>Javascript es un lenguaje de programacion o de secuencias de comendos que nos permite poder implementar funciones complejas en nuestras paginas web, cosas que con solo html y css no podriamos realizar como por ejemplo: mostrar contenido que se actualice de forma dinamica, mapas interactivos, graficos animados en 2D/3D, etc.</p>
+        <p>JavaScript fue creado en 1995 por Brendan Eich mientras trabajaba en Netscape Communications, el lenguaje fue desarrollado originalmente bajo el nombre de Mocha y despues LiveScript para despues llamarse definitivamente como JavaScript el nombre que todos conocemos hoy en dia.</p>
+        <p>La primera version de JavaScript se integro en el navegador Netscape Navigator 2.0, el cual fue lanzado en diciembre de 1995</p>
+        <h2>JavaScript vs Java</h2>
+        <p>JavaScript y Java aunque compartan el nombre de "Java" fue por solo mercadotecnia ya que Netscape se aprovecho de la popularidad de Java en ese momento para poder atraer a mas desarrolladores, por eso empezo siendo Mocha y despues LiveScript para al final quitar el Live por Java, pero en si son diferentes uno de otro ya que Java es un lenguaje de programacion de proposito general orientada a objetos, que requiere compilacion y se ejecuta en una maquina virtual Java (JVM), permitiendo crear aplicaciones de escritorio, servidores y aplicaciones moviles en Android. En cambio JavaScript es un lenguaje de programacion interpretado que se ejecuta en el navegador del cliente, permitiendo crear aplicaciones web interactivas y dinamicas.</p>
+        <h2>JavaScript con Html y css</h2>
+        <p>JavaScript se usa con HTML y css para poder darle mas dinamismo a nuestra pagina, sabemos que html es la estructura y que css son los estilos pero javascript se encarga de la logica y de la interactividad, juntos son los complementos para poder crear una pagina web.</p>
+        <img src="img/cake.png" alt="pastel" width="200" height="200">
+    </div> 
+    <div class="sintaxis">
+        <h1>Fundamentos del lenguaje</h1>
+        <p>En JavaScript la sintaxis es muy parecida a otros lenguajes de programación como java o c++, pero tiene diferencias cruciales como por ejemplo que en javascript para definir una variable no se especifica el tipo de dato como en otros lenguajes que hay que especificar si es de tipo entero, cadena o flotante, etc. En javascript solo basta con inicializarla para poder usar el tipo de dato que querramos.</p>
+        <h2>Comentarios</h2>
+        <p>Los comentarios en JavaScript son similares a otros lenguajes de programacion, se pueden hacer de dos formas:</p>
+        <div id="comentarios">
+            <ul>
+                <li>// Esto es un comentario de una sola linea</li>
+                <li>/* Esto es un comentario de multiples lineas */</li>
+            </ul>
+        </div>
+        <h2>Diferencias entre var, let y const</h2>
+        <p>En javascript tu puedes declarar variables de 3 formas diferentes, con: <b>var, let y const</b></p>
+        <div id="variables">
+            <ul>
+                <li><b>var:</b> Es la forma antigua de declarar variables y estas pueden ser globales o de funcion y se pueden redeclarar</li>
+                <li><b>let:</b> Esta forma de declarar variables se diferencia porque es por bloques osea se usa en ciclos y no se puede redeclarar en el mismo bloque</li>
+                <li><b>const:</b> Las variables declaradas con const no pueden ser actualizadas ni redeclaradas. Deben ser inicializadas en el momento de la declaracion y su valor no puede cambiar.</li>
+            </ul>
+        </div>
+        <h2>Tipos de dato primitivos</h2>
+        <p>Un tipo de dato primitivo se refiere a un valor basico que no es un objeto y no tiene metodos ni propiedades asociadas, en javascript los tipos de dato primitivo son:</p>
+        <ul>
+            <li><b>Number:</b> para representar numeros enteros y de punto flotante</li>
+            <li><b>String:</b> para representar cadenas de texto</li>
+            <li><b>Boolean:</b> para representar valores true o false</li>
+            <li><b>Null:</b> para representar un vacio intencional</li>
+            <li><b>Undefined:</b> para representar una variable que ha sido declarada pero no inicializada</li>
+            <li><b>Symbol:</b> para representar un valor unico e inmutable</li>
+            <li><b>BigInt:</b> para representar numeros enteros grandes que exceden el limite de Number</li>
+        </ul>
+        <h2>Arrays y objetos</h2>
+        <p>En JavaScript, los arrays y los objetos son dos de las estructuras de datos más importantes.</p>
+        <h3>Arrays</h3>
+        <p>Un array es una lista ordenada de valores. Los valores pueden ser de cualquier tipo, incluyendo otros arrays y objetos. Los arrays se definen utilizando corchetes [] y los elementos se separan por comas.</p>
+        <h3>Objetos</h3>
+        <p>Un objeto es una colección de pares clave-valor. Las claves son cadenas y los valores pueden ser de cualquier tipo. Los objetos se definen utilizando llaves {} y los pares clave-valor se separan por comas, los objetos cuentan con propiedades y metodos osea acciones que este realiza</p>
+        <h2>Operadores logicos, aritmeticos y relacionales</h2>
+        <p>Los operadores se dividen en 3 tipos, los aritmeticos, logicos y relacionales, estos se usan para diversas operaciones, comparaciones y asignaciones.</p>
+        <ul>
+            <li><b>Operadores aritmeticos:</b>Este tipo de operadores son los que normalmente usamos en matematicas y que vemos seguido, sirven para poder realizar operaciones basicas con numeros. Los operadores aritmeticos son: + (suma), - (resta), * (multiplicacion), / (division), % (modulo)</li>
+            <li><b>Operadores logicos:</b>Este tipo de operadores se utilizan para realizar operaciones logicas y booleanas. Los operadores logicos son: && (AND), || (OR), ! (NOT)</li>
+            <li><b>Operadores relacionales:</b>Este tipo de operadores se utilizan para comparar valores. Los operadores relacionales son: == (igualdad), === (igualdad estricta), != (desigualdad), !== (desigualdad estricta), < (menor que), > (mayor que), <= (menor o igual que), >= (mayor o igual que)</li>
+
+        </ul>
+    </div>
+
+    <div class="controlFlujo">
+        <h1>Control de Flujo</h1>
+        <h2>Sentencias condicioneales</h2>
+        <p>Las sentencias condicionales son estructuras que permiten tomar decisiones en el flujo de un programa. En JavaScript, las sentencias condicionales más comunes son:</p>
+        <ul>
+            <li><b>if:</b> Permite ejecutar un bloque de código <b>si</b> se cumple una condición.</li>
+            <li><b>else:</b> Permite ejecutar un bloque de código si la condición del if <b>no</b> se cumple.</li>
+            <li><b>else if:</b> Permite comprobar <b>múltiples</b> condiciones.</li>
+            <li><b>switch:</b> Permite ejecutar diferentes bloques de código <b>según</b> el valor de una expresión.</li>
+        </ul>
+        <h2>Bucles</h2>
+        <p>Los bucles son estructuras que permiten repetir un bloque de código varias veces. En js los bucles que se usan son:</p>
+        <ul>
+            <li><b>for:</b> Permite repetir un bloque de código <b>para</b> determinado número de veces.</li>
+            <li><b>while:</b> Permite repetir un bloque de código <b>mientras</b> se cumpla una condición.</li>
+            <li><b>do while:</b> Permite repetir un bloque de código <b>hasta</b> que se cumpla una condición.</li>
+        </ul>
+        <h2>Break y continue</h2>
+        <p>Las sentencias <b>break</b> y <b>continue</b> se utilizan para controlar el flujo de los bucles.</p>
+        <ul>
+            <li><b>break:</b> Permite salir de un bucle de forma anticipada.</li>
+            <li><b>continue:</b> Permite saltar a la siguiente iteración de un bucle.</li>
+        </ul>
+    </div>
+
+    <div class="funciones">
+        <h1>Funciones</h1>
+        <p>Una funcion es un bloque de codigo que se puede reutilizar, las funciones pueden recibir parametros y pueden devolver un valor, las funciones en js se pueden definir de varias formas:</p>
+        <ul>
+            <li><b>Declaracion de funcion:</b> Se define con la palabra reservada function seguida del nombre de la funcion y los parametros entre parentesis.</li>
+            <li><b>Expresion de funcion:</b> Se define asignando una funcion anonima a una variable.</li>
+            <li><b>Funciones flecha:</b> Se define utilizando la sintaxis de flecha (=>) y son una forma mas concisa de escribir funciones.</li>
+        </ul>
+        <h2>Parametros y argumentos</h2>
+        <p>Los parametros son las variables que se definen en la declaracion de la funcion y los argumentos son los valores que se pasan a la funcion cuando se llama.</p>
+        <h2>Valor de retorno</h2>
+        <p>El valor de retorno es el valor que devuelve una funcion cuando se llama, se utiliza la palabra reservada return para especificar el valor que se quiere devolver.</p>
+    </div>
+
+    <div class="objetos">
+        <h1>Objetos y colecciones</h1>
+        <p>Un objeto es una estructura de datos fundamentales que actua como una coleccion de pares clave-valor, donde cada clave o mas bien dicho cada nombre de propiedad se esta asociado a un valor. Estos valores pueden ser de cualquier tipo de dato.</p>
+        <p>Los objetos nos permiten poder organizar y agrupar informacion relacionada, funcionando como cajas que contienen propiedades y metodos, su sintaxis es la siguiente</p>
+        <div id="codigo">
+            <pre>
+            let persona = {
+                nombre: "Jared",
+                edad: 19,
+                profesion: "Desarrollador",
+                saludar: function() {
+                    console.log("Hola, mi nombre es " + this.nombre);
+                }
+            };
+            </pre>
+        </div>
+        <h2>Propiedades y metodos diferencias</h2>
+        <p>Las propiedades son las caracteristicas o atributos de un objeto, mientras que los metodos son las acciones o funciones que un objeto puede realizar. Por ejemplo en el objeto persona, las propiedades son nombre, edad y profesion, mientras que el metodo es saludar.</p>
+        <h2>Metodos basicos de los arrays</h2>
+        <ul>
+            <li><b>push:</b> Se usa para agregar un elemento al final del array.</li>
+            <li><b>pop:</b> Este elimina el ultimo elemento del array.</li>
+            <li><b>map:</b> Nos sirve para crear un nuevo array con los resultados de aplicar una funcion a cada elemento del array original.</li>
+            <li><b>shift:</b> Elimina el primer elemento del array.</li>
+            <li><b>unshift:</b> Agrega un elemento al principio del array.</li>
+            <li><b>forEach:</b> Ejecuta una funcion en cada elemento del array.</li>
+            <li><b>filter:</b> Crea un nuevo array con los elementos que cumplen una condicion.</li>
+        </ul>
+    </div>
+
+    <div class="otros">
+        <h1>Otros temas basicos</h1>
+        <h2>Que es DOM</h2>
+        <p>El DOM (Document Object Model) es una interfaz de programación que permite a los scripts acceder y manipular el contenido, la estructura y el estilo de un documento HTML o XML. El DOM representa el documento como un árbol de nodos, donde cada nodo corresponde a un elemento o un atributo del documento.</p>
+        <h2>Eventos en JavaScript</h2>
+        <p>Un evento es una señal de que algo ha sucedido en una pagina web como las interacciones del usuario como cuando da clicks, pulsasiones de tecla o eventos del navegador como cuando carga la pagina</p>
+        <ul>
+            <li><b>Eventos del raton: </b> <i>click</i> (un clic) ,<i>mouseover</i> (el puntero cuando pasa por un elemento), <i>mouseover </i>(cuando el cursor se mueve)</li>
+            <li><b>Eventos del teclado: </b> <i>keydown </i>(se presiona una tecla), <i>keyup</i> (se suelta una tecla)</li>
+            <li><b>Eventos de la pagina: </b><i>load</i> (se termina de cargar la pagina), <i>resize</i> (cambia el tamaño de la ventana)</li>
+        </ul>
+        <h2>Alert, prompt y console.log</h2>
+        <p>Estas 3 funciones sirven para imprimir un mensaje pero cada una sirve para cosas diversas desde la forma en que lo imprime y como lo muestra: </p>
+        <ul>
+            <li><b>alert: </b> Este sirve para mostrar un mensaje emergente en la pagina</li>
+            <li><b>prompt: </b> Pide un dato al usuario como el alert pero se usa para solicitar texto</li>
+            <li><b>console.log: </b> Este sirve para mostrar un mensaje en la consola del navegador</li>
+        </ul>
+        <h2>Consola del navegador</h2>
+        <p>Para poder abrir la consola del navegador se debe precionar F12 o Ctrl+Shift+I (en WIndows) o Cmd+Option+I (en Mac) y selecciona la pestaña "Consola"</p>
+        <p>Las ventajas principales de usarla es para poder ver que errores estra teniendo nuestra pagina y inspeccionar los estados del codigo</p>
+    </div>
+</body>
+</html>
