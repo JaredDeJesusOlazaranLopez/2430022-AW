@@ -98,6 +98,40 @@
                     ser inicializadas en el momento de la declaracion y su valor no puede cambiar.</li>
             </ul>
         </div>
+        <div class="card">
+                <div class="header">
+                    <div class="top">
+                        <div class="circle">
+                            <span class="red circle2"></span>
+                        </div>
+                        <div class="circle">
+                            <span class="yellow circle2"></span>
+                        </div>
+                        <div class="circle">
+                            <span class="green circle2"></span>
+                        </div>
+                        <div class="title">
+                            <p id="title2">script.js</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-container">
+                    <textarea class="area" id="code" name="code" readonly="">
+   var nombre = "Ana";      // se puede redeclarar
+    let edad = 20;           // se puede cambiar pero no redeclarar
+    const pais = "México";   // no se puede cambiar
+
+    console.log(nombre); // Ana
+    console.log(edad);   // 20
+    console.log(pais);   // México
+
+    edad = 21;           // permitido
+    console.log(edad);
+
+    // pais = "Chile";   // mal: no se puede cambiar const
+</textarea>
+                </div>
+            </div>
         <h2>Tipos de dato primitivos</h2>
         <p>Un tipo de dato primitivo se refiere a un valor basico que no es un objeto y no tiene metodos ni propiedades
             asociadas, en javascript los tipos de dato primitivo son:</p>
@@ -160,6 +194,48 @@
             <li><b>break:</b> Permite salir de un bucle de forma anticipada.</li>
             <li><b>continue:</b> Permite saltar a la siguiente iteración de un bucle.</li>
         </ul>
+        <div class="card">
+                <div class="header">
+                    <div class="top">
+                        <div class="circle">
+                            <span class="red circle2"></span>
+                        </div>
+                        <div class="circle">
+                            <span class="yellow circle2"></span>
+                        </div>
+                        <div class="circle">
+                            <span class="green circle2"></span>
+                        </div>
+                        <div class="title">
+                            <p id="title2">script.js</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-container">
+                    <textarea class="area" id="code" name="code" readonly="">
+   let resultado = document.getElementById("resultado");
+    let numero = 5;
+
+    if (numero % 2 === 0) {
+      resultado.innerHTML += `<p>El número ${numero} es PAR</p>`;
+    } else {
+      resultado.innerHTML += `<p>El número ${numero} es IMPAR</p>`;
+    }
+
+    resultado.innerHTML += "<p>Bucle for:</p>";
+    for (let i = 1; i <= 5; i++) {
+      resultado.innerHTML += i + " ";
+    }
+
+    resultado.innerHTML += "<p><br>Bucle while:</p>";
+    let contador = 1;
+    while (contador <= 3) {
+      resultado.innerHTML += "Iteración " + contador + "<br>";
+      contador++;
+    }
+</textarea>
+                </div>
+            </div>
     </div>
 
     <h1 id="funciones">Funciones</h1>
@@ -179,6 +255,36 @@
         <h2>Valor de retorno</h2>
         <p>El valor de retorno es el valor que devuelve una funcion cuando se llama, se utiliza la palabra reservada
             return para especificar el valor que se quiere devolver.</p>
+             <div class="card">
+                <div class="header">
+                    <div class="top">
+                        <div class="circle">
+                            <span class="red circle2"></span>
+                        </div>
+                        <div class="circle">
+                            <span class="yellow circle2"></span>
+                        </div>
+                        <div class="circle">
+                            <span class="green circle2"></span>
+                        </div>
+                        <div class="title">
+                            <p id="title2">script.js</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-container">
+                    <textarea class="area" id="code" name="code" readonly="">
+
+    function saludar(nombre) {
+      return "Hola, " + nombre + "!";
+    }
+
+    let mensaje = saludar("Jared");
+
+    document.getElementById("resultado").innerText = mensaje;
+</textarea>
+                </div>
+            </div>
     </div>
 
     <h1 id="objetos">Objetos y colecciones</h1>
@@ -262,12 +368,43 @@
             <li><b>prompt: </b> Pide un dato al usuario como el alert pero se usa para solicitar texto</li>
             <li><b>console.log: </b> Este sirve para mostrar un mensaje en la consola del navegador</li>
         </ul>
+    
         <h2>Consola del navegador</h2>
         <p>Para poder abrir la consola del navegador se debe precionar F12 o Ctrl+Shift+I (en WIndows) o Cmd+Option+I
             (en Mac) y selecciona la pestaña "Consola"</p>
         <p>Las ventajas principales de usarla es para poder ver que errores estra teniendo nuestra pagina y inspeccionar
             los estados del codigo</p>
+            <div class="card">
+                <div class="header">
+                    <div class="top">
+                        <div class="circle">
+                            <span class="red circle2"></span>
+                        </div>
+                        <div class="circle">
+                            <span class="yellow circle2"></span>
+                        </div>
+                        <div class="circle">
+                            <span class="green circle2"></span>
+                        </div>
+                        <div class="title">
+                            <p id="title2">script.js</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-container">
+                    <textarea class="area" id="code" name="code" readonly="">
+    alert("Bienvenido a mi pagina!");
+
+    let nombre = prompt("Como te llamas?");
+
+    console.log("El usuario escribio: " + nombre);
+
+    alert("Hola " + nombre + ", revisa la consola (F12) para ver el resultado.");
+</textarea>
+                </div>
+            </div>
     </div>
+     <img src="img/logo.png" alt="Imagen fija" class="img-js">
     <footer>
         <p>Hecho por Jared de Jesus Olazaran Lopez</p>
     </footer>
