@@ -404,10 +404,31 @@
                 </div>
             </div>
     </div>
-     <img src="img/logo.png" alt="Imagen fija" class="img-js">
+    <img src="img/logo.png" alt="Imagen fija" class="img-js">
     <footer>
         <p>Hecho por Jared de Jesus Olazaran Lopez</p>
     </footer>
+
+    <script>
+        // Agregar esta funcionalidad con JavaScript
+document.querySelectorAll('.menu a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        // Remover clase anterior si existe
+        this.classList.remove('clicked');
+        
+        // Forzar reflow para reiniciar animación
+        void this.offsetWidth;
+        
+        // Agregar clase para activar animación
+        this.classList.add('clicked');
+        
+        // Remover clase después de la animación
+        setTimeout(() => {
+            this.classList.remove('clicked');
+        }, 800);
+    });
+});
+    </script>
 </body>
 
 </html>
