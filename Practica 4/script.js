@@ -1,20 +1,24 @@
+/*inicalizar una variable en la que guarde el inicio de sesion y otra el de registro, aparte crear un array el cual guardara las cuentas*/
 const formu = document.getElementById("login");
-const form=document.getElementById("registro");
-let cuentas=[];
-//console.log("ola");
-localStorage.clear();
+const form = document.getElementById("registro");
+let cuentas = [];
 
-console.log(cuentas);
+/*Estos son testeos, porfavor ignorar*/ 
+//console.log("ola");
+//localStorage.clear();
+
+//console.log(cuentas);
+
+//console.log(localStorage);
 
 const user = localStorage.getItem("Usuario");
-if(user){
+if (user) {
     window.location.href = "Bienvenida.html";
-
 }
 
-
-form.addEventListener("submit", e=>{
-    localStorage.clear();
+/*El evento al darle submit a registrar verificara las contraseñas para ver si son iguales y que no se repita el correo*/ 
+form.addEventListener("submit", e => {
+    //localStorage.clear();
     e.preventDefault();
 
     const nombre = document.getElementById("nombreuno").value.trim();
@@ -22,7 +26,7 @@ form.addEventListener("submit", e=>{
     const contraseña = document.getElementById("contraseñauno").value.trim();
     const cContraseña = document.getElementById("cContraseñauno").value.trim();
 
-    if(!nombre || !correo || !contraseña || !cContraseña){
+    if (!nombre || !correo || !contraseña || !cContraseña) {
         alert("Porfavor rellena todos los campos");
         return;
     }
@@ -31,15 +35,17 @@ form.addEventListener("submit", e=>{
     //console.log(contraseña);
     //console.log(cContraseña);
 
-    if(contraseña != cContraseña){
+    if (contraseña != cContraseña) {
         alert("Las contraseñas deben coincidir");
         return;
     }
 
-    if(correosUsado = cuentas.some(a => a.correo === correo)){
+    if (correosUsado = cuentas.some(a => a.correo === correo)) {
         alert("El correo ya esta en uso");
         return;
     }
+
+    /*Creo el objeto cuenta el cual sera los datos que ponga en mi array llamado cuentas*/ 
 
     const cuenta = {
         correo,
@@ -52,11 +58,16 @@ form.addEventListener("submit", e=>{
 
     //console.log(cuentas);
 
+    /*Y cuando termina se redirige a la parte de iniciar sesion*/
+
     window.location.href = '#login-section';
 
 });
 
-formu.addEventListener("submit", e=>{
+/*Esta es la parte de iniciar sesion, en esta al darle submit guardara los datos de los input y verificara si se encuentran los datos 
+que le estoy dando como el correo y la contraseña*/ 
+
+formu.addEventListener("submit", e => {
     localStorage.clear();
     e.preventDefault();
 
@@ -64,17 +75,17 @@ formu.addEventListener("submit", e=>{
     const lContraseña = document.getElementById("contraseña").value.trim();
 
 
-    if(!lCorreo || !lContraseña){
+    if (!lCorreo || !lContraseña) {
         alert("Porfavor rellena los campos")
         return;
     }
 
     const CorreoUsado = cuentas.some(a => a.correo === lCorreo);
     const ContraUsada = cuentas.some(a => a.contraseña === lContraseña);
-    if(!CorreoUsado || !ContraUsada){
+    if (!CorreoUsado || !ContraUsada) {
         alert("No se encontro la cuenta");
         return;
-        
+
     }
 
     const datos = {
@@ -83,6 +94,9 @@ formu.addEventListener("submit", e=>{
     }
 
     //alert("Bienvenido " + lCorreo);
+
+    /*En esta parte los guarda en el local storage en formato JSON con el objeto de datos para asi poder irnos a la pestaña de
+    bienvenida*/
 
     localStorage.setItem("Usuario", JSON.stringify(datos));
 
