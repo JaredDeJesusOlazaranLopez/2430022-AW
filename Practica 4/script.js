@@ -27,11 +27,17 @@ form.addEventListener("submit", e=>{
         return;
     }
 
+
     //console.log(contraseña);
     //console.log(cContraseña);
 
     if(contraseña != cContraseña){
         alert("Las contraseñas deben coincidir");
+        return;
+    }
+
+    if(correosUsado = cuentas.some(a => a.correo === correo)){
+        alert("El correo ya esta en uso");
         return;
     }
 
@@ -44,8 +50,9 @@ form.addEventListener("submit", e=>{
 
     form.reset();
 
-    console.log(cuentas);
+    //console.log(cuentas);
 
+    window.location.href = '#login-section';
 
 });
 
@@ -66,6 +73,7 @@ formu.addEventListener("submit", e=>{
     const ContraUsada = cuentas.some(a => a.contraseña === lContraseña);
     if(!CorreoUsado || !ContraUsada){
         alert("No se encontro la cuenta");
+        return;
         
     }
 
