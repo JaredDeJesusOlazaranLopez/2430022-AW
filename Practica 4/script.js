@@ -11,7 +11,12 @@ let cuentas = [];
 
 //console.log(localStorage);
 
-const user = localStorage.getItem("Usuario");
+const cuentasGuardadas = localStorage.getItem("Cuentas");
+if (cuentasGuardadas) {
+    cuentas = JSON.parse(cuentasGuardadas);
+}
+
+const user = localStorage.getItem("UsuarioActivo");
 if (user) {
     window.location.href = "Bienvenida.html";
 }
@@ -48,15 +53,23 @@ form.addEventListener("submit", e => {
     /*Creo el objeto cuenta el cual sera los datos que ponga en mi array llamado cuentas*/ 
 
     const cuenta = {
+        nombre,
         correo,
         contraseña
     }
 
     cuentas.push(cuenta);
+    localStorage.setItem("Cuentas", JSON.stringify(cuentas));
 
     form.reset();
 
-    //console.log(cuentas);
+
+
+    const usuario = localStorage.getItem("Cuentas");
+
+    console.log(usuario);
+
+    //console.log(cuentas[0].correo);
 
     /*Y cuando termina se redirige a la parte de iniciar sesion*/
 
@@ -68,7 +81,7 @@ form.addEventListener("submit", e => {
 que le estoy dando como el correo y la contraseña*/ 
 
 formu.addEventListener("submit", e => {
-    localStorage.clear();
+    //localStorage.clear();
     e.preventDefault();
 
     const lCorreo = document.getElementById("correo").value.trim();
@@ -80,28 +93,27 @@ formu.addEventListener("submit", e => {
         return;
     }
 
-    const CorreoUsado = cuentas.some(a => a.correo === lCorreo);
-    const ContraUsada = cuentas.some(a => a.contraseña === lContraseña);
-    if (!CorreoUsado || !ContraUsada) {
+    const cuentaEncontrada = cuentas.find(a => a.correo === lCorreo && a.contraseña === lContraseña);
+    
+    if (!cuentaEncontrada) {
         alert("No se encontro la cuenta");
         return;
-
     }
 
-    const datos = {
+    localStorage.setItem("UsuarioActivo", JSON.stringify(cuentaEncontrada));
+
+    /*const datos = {
         username: lCorreo,
         password: lContraseña
-    }
+    }*/
 
     //alert("Bienvenido " + lCorreo);
 
     /*En esta parte los guarda en el local storage en formato JSON con el objeto de datos para asi poder irnos a la pestaña de
     bienvenida*/
 
-    localStorage.setItem("Usuario", JSON.stringify(datos));
+    //localStorage.setItem("Usuario", JSON.stringify(datos));
 
     window.location.href = 'Bienvenida.html';
 
 });
-
-
