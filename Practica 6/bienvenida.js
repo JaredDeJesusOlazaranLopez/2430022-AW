@@ -33,6 +33,7 @@ if (user) {
     window.location.href = "index.html";
 }
 
+//Accion para el boton de agregar tareas donde crea variables para guardar los input y el modal
 if (agregarTareaBtn) {
     const tareaModalEl = document.getElementById("tareaModal");
     const tareaModal = new bootstrap.Modal(tareaModalEl);
@@ -44,14 +45,16 @@ if (agregarTareaBtn) {
     const inputFechaInicio = document.getElementById("tarea-fechainicio");
     const inputFechaFin = document.getElementById("tarea-fechafin");
 
+    //accion donde el boton te muestra el modal con el form
     agregarTareaBtn.addEventListener("click", () => {
         formTarea.reset();
         inputEstado.value = "Pendiente";
         tareaModal.show();
     });
 
-    formTarea.addEventListener("submit", (evt) => {
-        evt.preventDefault();
+    //agrega los valores dados en el form
+    formTarea.addEventListener("submit", e => {
+        e.preventDefault();
         const nombre = inputNombre.value.trim();
         const descripcion = inputDescripcion.value.trim();
         const asignado = inputAsignado.value.trim();
@@ -76,6 +79,7 @@ if (agregarTareaBtn) {
             fechafin,
         };
 
+        //guarda el objeto de nuevatarea en el vector tareas para luego guardarlo en el localstorage
         tareas.push(nuevaTarea);
         guardarTareas();
         actualizarTablaTareas();
