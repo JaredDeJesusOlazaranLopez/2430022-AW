@@ -1,4 +1,3 @@
-/* Bienvenida.js — manejo de tareas y proyectos con modales y localStorage */
 const user = localStorage.getItem("UsuarioActivo");
 const cerrar = document.getElementById("cerrar");
 const agregarTareaBtn = document.getElementById("agregar-tarea");
@@ -6,11 +5,14 @@ const agregarProyectoBtn = document.getElementById("agregar-proyecto");
 let tareas = [];
 let proyectos = [];
 
-// Inicialización: cargar usuario, tareas y proyectos
+
+//si hay un usuario activo te deja acceder y si no te manda al index
 if (user) {
     const mensajeBienvenida = document.getElementById("bienvenida");
     const usuarioActual = JSON.parse(user);
     mensajeBienvenida.innerHTML = `Bienvenido, ${usuarioActual.correo}!`;
+
+    //Pone las tareas registradas del usuario y tambien los proyectos
 
     const todasLasTareas = localStorage.getItem("TodasLasTareas");
     if (todasLasTareas) {
@@ -31,7 +33,6 @@ if (user) {
     window.location.href = "index.html";
 }
 
-// --- Modal / formulario de Tareas ---
 if (agregarTareaBtn) {
     const tareaModalEl = document.getElementById("tareaModal");
     const tareaModal = new bootstrap.Modal(tareaModalEl);
@@ -64,6 +65,8 @@ if (agregarTareaBtn) {
         }
 
         const nuevaTarea = {
+            /*Los datos de la tarea, en este caso de id lo estoy generando con la fecha y hora de creacion
+            del proyecto para no tener que poner una variable encargada de asignar un id*/
             id: Date.now(),
             nombre,
             descripcion,
@@ -80,10 +83,12 @@ if (agregarTareaBtn) {
     });
 }
 
-// --- Modal / formulario de Proyectos ---
+//llama al modal y que se muestre, cuando precione el boton de agregar proyecto
 if (agregarProyectoBtn) {
+    // llamando al modal
     const proyectoModalEl = document.getElementById("proyectoModal");
     const proyectoModal = new bootstrap.Modal(proyectoModalEl);
+    //llamando al formulario y a los inputs para poder acceder a ellos
     const formProyecto = document.getElementById("form-proyecto");
     const inputNombreP = document.getElementById("proyecto-nombre");
     const inputDescripcionP = document.getElementById("proyecto-descripcion");
@@ -92,14 +97,19 @@ if (agregarProyectoBtn) {
     const inputFechaInicioP = document.getElementById("proyecto-fechainicio");
     const inputFechaFinP = document.getElementById("proyecto-fechafin");
 
+
+    // boton para que se agregue un proyecto el cual llama al modal y lo muestra
     agregarProyectoBtn.addEventListener("click", () => {
         formProyecto.reset();
         inputEstadoP.value = "Pendiente";
         proyectoModal.show();
     });
 
-    formProyecto.addEventListener("submit", (evt) => {
-        evt.preventDefault();
+    /*Agarra los datos de los input con las variables puestas anteriormente y hace las validaciones
+    necesarias*/ 
+
+    formProyecto.addEventListener("submit", e => {
+        e.preventDefault();
         const nombre = inputNombreP.value.trim();
         const descripcion = inputDescripcionP.value.trim();
         const asignado = inputAsignadoP.value.trim();
@@ -113,6 +123,8 @@ if (agregarProyectoBtn) {
         }
 
         const nuevoProyecto = {
+            /*Los datos del proyecto, en este caso de id lo estoy generando con la fecha y hora de creacion
+            del proyecto para no tener que poner una variable encargada de asignar un id*/
             id: Date.now(),
             nombre,
             descripcion,
@@ -122,6 +134,8 @@ if (agregarProyectoBtn) {
             fechafin,
         };
 
+        //agrega el objeto de nuevo proyecto a mi vector de proyectos
+
         proyectos.push(nuevoProyecto);
         guardarProyectos();
         actualizarTablaProyectos();
@@ -129,7 +143,7 @@ if (agregarProyectoBtn) {
     });
 }
 
-// --- Guardado en localStorage ---
+// Parte para guardar las tareas en el localstorage para el usuario actual
 function guardarTareas() {
     const usuarioActual = JSON.parse(user);
     const todas = localStorage.getItem("TodasLasTareas");
@@ -138,6 +152,7 @@ function guardarTareas() {
     localStorage.setItem("TodasLasTareas", JSON.stringify(obj));
 }
 
+// Parte para guardar los proyectos en el localstorage para el usuario actual
 function guardarProyectos() {
     const usuarioActual = JSON.parse(user);
     const todos = localStorage.getItem("TodosLosProyectos");
@@ -146,7 +161,8 @@ function guardarProyectos() {
     localStorage.setItem("TodosLosProyectos", JSON.stringify(obj));
 }
 
-// --- Renderizado de tablas ---
+
+// En esta parte se actualiza toda la tabla de tareas para mostrarlo cuando se ingresen los datos
 function actualizarTablaTareas() {
     const tbody = document.getElementById("cuerpo-tabla");
     if (!tbody) return;
@@ -168,6 +184,7 @@ function actualizarTablaTareas() {
         tbody.appendChild(fila);
     });
 
+    //En cada una de las filas habra un boton de elminar el cual contendra el id del proyecto para poder borrar ese en especifico
     tbody.querySelectorAll(".eliminar").forEach((boton) => {
         boton.addEventListener("click", () => {
             const id = parseInt(boton.getAttribute("data-id"), 10);
@@ -178,6 +195,8 @@ function actualizarTablaTareas() {
     });
 }
 
+
+// En esta parte se actualiza toda la tabla de proyectos para mostrarlo cuando se ingresen los datos
 function actualizarTablaProyectos() {
     const tbody = document.getElementById("cuerpo-proyectos");
     if (!tbody) return;
@@ -199,6 +218,7 @@ function actualizarTablaProyectos() {
         tbody.appendChild(fila);
     });
 
+    //En cada una de las filas habra un boton de elminar el cual contendra el id del proyecto para poder borrar ese en especifico
     tbody.querySelectorAll(".eliminar-proy").forEach((boton) => {
         boton.addEventListener("click", () => {
             const id = parseInt(boton.getAttribute("data-id"), 10);
@@ -209,7 +229,8 @@ function actualizarTablaProyectos() {
     });
 }
 
-// --- Logout ---
+//solo elimina el usuario activo y te regresa al index
+
 if (cerrar) {
     cerrar.addEventListener("click", () => {
         localStorage.removeItem("UsuarioActivo");
