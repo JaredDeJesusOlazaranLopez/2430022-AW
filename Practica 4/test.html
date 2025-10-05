@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tareas y Proyectos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            background: #f5f5f5;
+            border: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #e0e0e0;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .task-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .task-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: move;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .task-card.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .task-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .task-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .task-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge.pendiente {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+
+        .badge.en_proceso {
+            background: #74b9ff;
+            color: #0984e3;
+        }
+
+        .badge.hecha {
+            background: #55efc4;
+            color: #00b894;
+        }
+
+        .badge.alta {
+            background: #ff7675;
+            color: white;
+        }
+
+        .badge.media {
+            background: #fdcb6e;
+            color: #333;
+        }
+
+        .badge.baja {
+            background: #a29bfe;
+            color: white;
+        }
+
+        .task-date {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .project-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .project-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .project-name {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .project-description {
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .project-dates {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .delete-btn {
+            background: #d63031;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .task-list, .project-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Sistema de Gestión de Tareas y Proyectos</h1>
+            <p>Práctica No. 6 - Dr. Mario Humberto Rodríguez Chávez</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('proyectos')">Proyectos</button>
+            <button class="tab" onclick="showSection('tareas')">Tareas</button>
+        </div>
+
+        <div class="content">
+            <!-- Sección de Proyectos -->
+            <div id="proyectos" class="section active">
+                <h2>Crear Nuevo Proyecto</h2>
+                <form id="formProyecto" onsubmit="agregarProyecto(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre del Proyecto *</label>
+                            <input type="text" id="proyectoNombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>s
+                            <select id="proyectoEstado">
+                                <option value="planificacion">Planificación</option>
+                                <optionvalue="en_curso">En Curso</option>
+                                <option value="completado">Completado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="proyectoDescripcion"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha de Inicio</label>
+                            <input type="date" id="proyectoFechaInicio">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Fin</label>
+                            <input type="date" id="proyectoFechaFin">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Crear Proyecto</button>
+                </form>
+
+                <div id="listaProyectos" class="project-list"></div>
+            </div>
+
+            <!-- Sección de Tareas -->
+            <div id="tareas" class="section">
+                <h2>Crear Nueva Tarea</h2>
+                <form id="formTarea" onsubmit="agregarTarea(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Proyecto *</label>
+                            <select id="tareaProyectoId" required>
+                                <option value="">Selecciona un proyecto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Título de la Tarea *</label>
+                            <input type="text" id="tareaTitulo" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="tareaDescripcion"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="tareaEstado">
+                                <option value="pendiente">Pendiente</option>
+                                <option value="en_proceso">En Proceso</option>
+                                <option value="hecha">Hecha</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Prioridad</label>
+                            <select id="tareaPrioridad">
+                                <option value="baja">Baja</option>
+                                <option value="media">Media</option>
+                                <option value="alta">Alta</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha de Vencimiento</label>
+                            <input type="date" id="tareaFechaVencimiento">
+                        </div>
+                        <div class="form-group">
+                            <label>Asignado a</label>
+                            <input type="text" id="tareaAsignadoA" placeholder="Nombre del responsable">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Crear Tarea</button>
+                </form>
+
+                <h2 style="margin-top: 40px;">Tareas (Arrastra para reordenar)</h2>
+                <div id="listaTareas" class="task-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales para almacenar datos
+        let proyectos = [];
+        let tareas = [];
+        let dragSrcEl = null;
+
+        // Función para cambiar entre secciones
+        function showSection(seccion) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(seccion).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Función para agregar proyecto
+        function agregarProyecto(e) {
+            e.preventDefault();
+            
+            const proyecto = {
+                id: Date.now(),
+                nombre: document.getElementById('proyectoNombre').value,
+                descripcion: document.getElementById('proyectoDescripcion').value,
+                estado: document.getElementById('proyectoEstado').value,
+                fecha_inicio: document.getElementById('proyectoFechaInicio').value,
+                fecha_fin: document.getElementById('proyectoFechaFin').value
+            };
+
+            proyectos.push(proyecto);
+            document.getElementById('formProyecto').reset();
+            actualizarProyectos();
+            actualizarSelectProyectos();
+        }
+
+        // Función para actualizar la lista de proyectos
+        function actualizarProyectos() {
+            const lista = document.getElementById('listaProyectos');
+            
+            if (proyectos.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><p>No hay proyectos creados. ¡Crea tu primer proyecto!</p></div>';
+                return;
+            }
+
+            lista.innerHTML = proyectos.map(p => `
+                <div class="project-card">
+                    <div class="project-name">${p.nombre}</div>
+                    <div class="project-description">${p.descripcion || 'Sin descripción'}</div>
+                    <div class="project-dates">
+                        📅 Inicio: ${p.fecha_inicio || 'No definida'} | Fin: ${p.fecha_fin || 'No definida'}
+                    </div>
+                    <div><span class="badge ${p.estado}">${p.estado.replace('_', ' ')}</span></div>
+                    <button class="delete-btn" onclick="eliminarProyecto(${p.id})">Eliminar</button>
+                </div>
+            `).join('');
+        }
+
+        // Función para eliminar proyecto
+        function eliminarProyecto(id) {
+            if (confirm('¿Estás seguro de eliminar este proyecto? Se eliminarán también sus tareas.')) {
+                proyectos = proyectos.filter(p => p.id !== id);
+                tareas = tareas.filter(t => t.proyecto_id !== id);
+                actualizarProyectos();
+                actualizarTareas();
+                actualizarSelectProyectos();
+            }
+        }
+
+        // Función para actualizar el select de proyectos
+        function actualizarSelectProyectos() {
+            const select = document.getElementById('tareaProyectoId');
+            select.innerHTML = '<option value="">Selecciona un proyecto</option>' +
+                proyectos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+        }
+
+        // Función para agregar tarea
+        function agregarTarea(e) {
+            e.preventDefault();
+            
+            const tarea = {
+                id: Date.now(),
+                proyecto_id: parseInt(document.getElementById('tareaProyectoId').value),
+                titulo: document.getElementById('tareaTitulo').value,
+                descripcion: document.getElementById('tareaDescripcion').value,
+                estado: document.getElementById('tareaEstado').value,
+                prioridad: document.getElementById('tareaPrioridad').value,
+                fecha_vencimiento: document.getElementById('tareaFechaVencimiento').value,
+                asignado_a: document.getElementById('tareaAsignadoA').value
+            };
+
+            tareas.push(tarea);
+            document.getElementById('formTarea').reset();
+            actualizarTareas();
+        }
+
+        // Función para actualizar la lista de tareas con drag & drop
+        function actualizarTareas() {
+            const lista = document.getElementById('listaTareas');
+            
+            if (tareas.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><p>No hay tareas creadas. ¡Crea tu primera tarea!</p></div>';
+                return;
+            }
+
+            lista.innerHTML = tareas.map(t => {
+                const proyecto = proyectos.find(p => p.id === t.proyecto_id);
+                return `
+                    <div class="task-card" draggable="true" data-id="${t.id}">
+                        <div class="task-title">${t.titulo}</div>
+                        <div class="task-description">${t.descripcion || 'Sin descripción'}</div>
+                        <div class="task-meta">
+                            <span class="badge ${t.estado}">${t.estado.replace('_', ' ')}</span>
+                            <span class="badge ${t.prioridad}">Prioridad: ${t.prioridad}</span>
+                        </div>
+                        <div><strong>Proyecto:</strong> ${proyecto ? proyecto.nombre : 'Desconocido'}</div>
+                        <div><strong>Asignado a:</strong> ${t.asignado_a || 'Sin asignar'}</div>
+                        <div class="task-date">📅 Vencimiento: ${t.fecha_vencimiento || 'No definida'}</div>
+                        <button class="delete-btn" onclick="eliminarTarea(${t.id})">Eliminar</button>
+                    </div>
+                `;
+            }).join('');
+
+            // Agregar eventos de drag & drop a cada tarjeta
+            document.querySelectorAll('.task-card').forEach(card => {
+                card.addEventListener('dragstart', dragStart);
+                card.addEventListener('dragover', dragOver);
+                card.addEventListener('drop', drop);
+                card.addEventListener('dragend', dragEnd);
+            });
+        }
+
+        // Función para eliminar tarea
+        function eliminarTarea(id) {
+            if (confirm('¿Estás seguro de eliminar esta tarea?')) {
+                tareas = tareas.filter(t => t.id !== id);
+                actualizarTareas();
+            }
+        }
+
+        // Funciones de Drag & Drop (basadas en el código del profesor)
+        function dragStart(e) {
+            dragSrcEl = this;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+            this.classList.add('dragging');
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function drop(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            if (dragSrcEl !== this) {
+                // Intercambiar contenido HTML
+                const tempHTML = dragSrcEl.innerHTML;
+                dragSrcEl.innerHTML = this.innerHTML;
+                this.innerHTML = tempHTML;
+
+                // Intercambiar IDs en el array de tareas
+                const srcId = parseInt(dragSrcEl.getAttribute('data-id'));
+                const destId = parseInt(this.getAttribute('data-id'));
+                
+                const srcIndex = tareas.findIndex(t => t.id === srcId);
+                const destIndex = tareas.findIndex(t => t.id === destId);
+                
+                if (srcIndex !== -1 && destIndex !== -1) {
+                    [tareas[srcIndex], tareas[destIndex]] = [tareas[destIndex], tareas[srcIndex]];
+                }
+            }
+            return false;
+        }
+
+        function dragEnd(e) {
+            this.classList.remove('dragging');
+            // Actualizar la lista para reflejar el nuevo orden
+            actualizarTareas();
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            actualizarProyectos();
+            actualizarTareas();
+        });
+    </script>
+</body>
+</html>
