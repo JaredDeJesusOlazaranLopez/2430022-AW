@@ -1,0 +1,15 @@
+form p{
+    color: red;
+}
+
+form{
+    text-align: center;
+    justify-content: center;
+    position: relative;
+    margin-top: 20%;
+    
+}
+
+#title{
+    text-align: center;
+}
