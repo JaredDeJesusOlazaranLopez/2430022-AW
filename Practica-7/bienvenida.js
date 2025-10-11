@@ -4,6 +4,7 @@ const agregarTareaBtn = document.getElementById("agregar-tarea");
 const agregarProyectoBtn = document.getElementById("agregar-proyecto");
 let tareas = [];
 let proyectos = [];
+let notas = [];
 
 
 //si hay un usuario activo te deja acceder y si no te manda al index
@@ -28,6 +29,13 @@ if (user) {
 
     actualizarTablaTareas();
     actualizarTablaProyectos();
+    // cargar notas
+    const todasLasNotas = localStorage.getItem("TodasLasNotas");
+    if (todasLasNotas) {
+        const notasGuardadas = JSON.parse(todasLasNotas);
+        notas = notasGuardadas[usuarioActual.correo] || [];
+    }
+    actualizarNotas();
 } else {
     alert("No has iniciado sesion");
     window.location.href = "index.html";
@@ -86,6 +94,9 @@ if (agregarTareaBtn) {
         tareaModal.hide();
     });
 }
+
+// Drag & Drop: variables temporales
+let dragSrcIndex = null;
 
 //llama al modal y que se muestre, cuando precione el boton de agregar proyecto
 if (agregarProyectoBtn) {
@@ -147,6 +158,119 @@ if (agregarProyectoBtn) {
     });
 }
 
+    // Notas: modal y botones
+    const btnMostrarNotas = document.getElementById("mostrar-notas");
+    const btnNuevaNota = document.getElementById("nueva-nota");
+    const notaModalEl = document.getElementById("notaModal");
+    const notaModal = notaModalEl ? new bootstrap.Modal(notaModalEl) : null;
+    const inputNotaColor = document.getElementById("nota-color");
+    const inputNotaTitulo = document.getElementById("nota-titulo");
+    const inputNotaDesc = document.getElementById("nota-descripcion");
+    const btnGuardarNota = document.getElementById("guardar-nota");
+
+    if (btnMostrarNotas) {
+        btnMostrarNotas.addEventListener("click", () => {
+            const cont = document.getElementById("apartado-notas");
+            if (cont.style.display === "block") cont.style.display = "none";
+            else cont.style.display = "block";
+        });
+    }
+
+    if (btnNuevaNota && notaModal) {
+        btnNuevaNota.addEventListener("click", () => {
+            inputNotaTitulo.value = "";
+            inputNotaDesc.value = "";
+            inputNotaColor.value = "#fff28b";
+            notaModal.show();
+        });
+    }
+
+    function guardarNotas() {
+        const usuarioActual = JSON.parse(user);
+        const todas = localStorage.getItem("TodasLasNotas");
+        let obj = todas ? JSON.parse(todas) : {};
+        obj[usuarioActual.correo] = notas;
+        localStorage.setItem("TodasLasNotas", JSON.stringify(obj));
+    }
+
+    function actualizarNotas() {
+        const cont = document.getElementById("apartado-notas");
+        if (!cont) return;
+        cont.innerHTML = "";
+        notas.forEach((n, i) => {
+            const card = document.createElement("div");
+            card.className = "nota p-2 m-2";
+            card.style.background = n.color || '#fff28b';
+            card.dataset.idx = i;
+            card.setAttribute('draggable', 'true');
+
+            const h = document.createElement('strong'); h.textContent = n.title || 'Sin título';
+            const p = document.createElement('div'); p.textContent = n.desc || '';
+            const btnDel = document.createElement('button'); btnDel.className = 'btn btn-sm btn-danger ms-2'; btnDel.textContent = 'X';
+            btnDel.style.float = 'right';
+
+            const header = document.createElement('div'); header.appendChild(h); header.appendChild(btnDel);
+            card.appendChild(header); card.appendChild(p);
+
+            // editar nota al hacer click en el cuerpo (no en el boton)
+            card.addEventListener('click', (ev) => {
+                if (ev.target === btnDel) return; // no abrir editor
+                inputNotaTitulo.value = n.title || '';
+                inputNotaDesc.value = n.desc || '';
+                inputNotaColor.value = n.color || '#fff28b';
+                notaModal.show();
+                btnGuardarNota.onclick = () => {
+                    n.title = inputNotaTitulo.value;
+                    n.desc = inputNotaDesc.value;
+                    n.color = inputNotaColor.value;
+                    guardarNotas(); actualizarNotas(); notaModal.hide();
+                };
+            });
+
+            // eliminar
+            btnDel.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notas.splice(i,1); 
+                guardarNotas(); 
+                actualizarNotas();
+            });
+
+            
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', i);
+                card.classList.add('dragging');
+            });
+            card.addEventListener('dragend', () => card.classList.remove('dragging'));
+            card.addEventListener('dragover', (e) => { e.preventDefault(); card.classList.add('drag-over'); });
+            card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+            card.addEventListener('drop', (e) => {
+                e.preventDefault(); card.classList.remove('drag-over');
+                const src = parseInt(e.dataTransfer.getData('text/plain'),10);
+                const dst = parseInt(card.dataset.idx,10);
+                if (!isNaN(src) && !isNaN(dst) && src !== dst) {
+                    const item = notas.splice(src,1)[0];
+                    notas.splice(dst,0,item);
+                    guardarNotas(); actualizarNotas();
+                }
+            });
+
+            cont.appendChild(card);
+        });
+    }
+
+    if (btnGuardarNota) {
+        btnGuardarNota.addEventListener('click', () => {
+            const titulo = inputNotaTitulo.value.trim();
+            const desc = inputNotaDesc.value.trim();
+            const color = inputNotaColor.value;
+            if (!titulo && !desc) { alert('Escribe algo'); return; }
+            notas.push({ title: titulo, desc, color });
+            guardarNotas();
+            actualizarNotas();
+            notaModal.hide();
+        });
+    }
+
 // Parte para guardar las tareas en el localstorage para el usuario actual
 function guardarTareas() {
     const usuarioActual = JSON.parse(user);
@@ -173,6 +297,8 @@ function actualizarTablaTareas() {
     tbody.innerHTML = "";
     tareas.forEach((tarea) => {
         const fila = document.createElement("tr");
+        fila.setAttribute('draggable', 'true');
+        fila.dataset.id = tarea.id;
         fila.innerHTML = `
             <td class="py-3 px-4 text-center">${tarea.id}</td>
             <td class="py-3 px-4 fw-semibold">${tarea.nombre}</td>
@@ -185,6 +311,33 @@ function actualizarTablaTareas() {
                 <button class="btn btn-danger btn-sm rounded-pill px-3 eliminar" data-id="${tarea.id}">Eliminar</button>
             </td>
         `;
+        // eventos dnd
+        fila.addEventListener('dragstart', (e) => {
+            dragSrcIndex = tareas.findIndex(x => x.id == tarea.id);
+            fila.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+        fila.addEventListener('dragend', () => {
+            fila.classList.remove('dragging');
+            dragSrcIndex = null;
+        });
+
+        fila.addEventListener('dragover', (e) => { e.preventDefault(); fila.classList.add('drag-over'); });
+        fila.addEventListener('dragleave', () => fila.classList.remove('drag-over'));
+        fila.addEventListener('drop', (e) => {
+            e.preventDefault(); fila.classList.remove('drag-over');
+            const targetId = parseInt(fila.dataset.id, 10);
+            const targetIndex = tareas.findIndex(x => x.id == targetId);
+            if (dragSrcIndex !== null && targetIndex !== -1 && dragSrcIndex !== targetIndex) {
+                // swap
+                const tmp = tareas[dragSrcIndex];
+                tareas.splice(dragSrcIndex, 1);
+                tareas.splice(targetIndex, 0, tmp);
+                guardarTareas();
+                actualizarTablaTareas();
+            }
+        });
+
         tbody.appendChild(fila);
     });
 

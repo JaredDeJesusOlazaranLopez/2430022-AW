@@ -35,7 +35,7 @@ form.addEventListener("submit", e=>{
         error();
         return;
     }
-    if(contra<6){
+    if(contra.length<6){
         mensajeContra.innerHTML = "El campo de contraseña debe tener minimo 6 caracteres"; 
         error();
         return;
