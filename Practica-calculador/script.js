@@ -1,11 +1,17 @@
+//variables globales para el formulario y el espacio para poner las materias
 const cMaterias = document.getElementById("materias");
 const materiasDiv = document.getElementById("materiasImp");
 
+//evento de submit cuando precionas cuantas materias hay, en el boton enviar
 cMaterias.addEventListener("submit", e => {
     e.preventDefault();
+    //agarra el valor de cuantas materias hay
     const cantidad = document.getElementById("cMaterias").value;
+    //limpia el div de materias para que no se dupliquen
     materiasDiv.innerHTML = '';
+    //crea un contenedor para las materias
     const contenedorMaterias = document.createElement("div");
+    //agrega clases de bootstrap para que se vea bonito :D
     contenedorMaterias.className = "card shadow-sm";
     contenedorMaterias.innerHTML = `
         <div class="card-header bg-success text-white">
@@ -13,10 +19,13 @@ cMaterias.addEventListener("submit", e => {
         </div>
         <div class="card-body" id="listaMaterias"></div>
     `;
+    //agrega el contenedor al div de materias
     materiasDiv.appendChild(contenedorMaterias);
 
+    //agrega las materias segun la cantidad que se puso
     const listaMaterias = document.getElementById("listaMaterias");
 
+    //en el for se crean las materias dinamicamente dependiendo de la cantidad puesta anteriormente
     for (let i = 0; i < cantidad; i++) {
         const nuevaMateria = document.createElement("div");
         nuevaMateria.className = "mb-4 p-3 border rounded bg-light";
@@ -57,10 +66,12 @@ cMaterias.addEventListener("submit", e => {
             
             <div id="resultado${i}" class="mt-3"></div>
         `;
+        //agrega la nueva materia al contenedor de materias
         listaMaterias.appendChild(nuevaMateria);
     }
 });
 
+//funcion para calcular el promedio y mostrar el resultado
 function calcular(i) {
     const nombreMateria = document.getElementById(`nombreMateria${i}`).value;
     const cal1 = parseFloat(document.getElementById(`calificacion1${i}`).value);
@@ -69,6 +80,7 @@ function calcular(i) {
     const cal4 = parseFloat(document.getElementById(`calificacion4${i}`).value);
     const resultadoDiv = document.getElementById(`resultado${i}`);
 
+    //validaciones
     if (nombreMateria.trim() === "") {
         resultadoDiv.innerHTML = `
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -98,6 +110,8 @@ function calcular(i) {
         `;
         return;
     }
+
+    //saca el promedio y la calificacion minima
     let promedio = (cal1 + cal2 + cal3 + cal4) / 4;
     const calificacionMinima = Math.min(cal1, cal2, cal3, cal4);
 
@@ -122,5 +136,6 @@ function calcular(i) {
         `;
     }
 
+    //muestra el promedio en el campo correspondiente
     document.getElementById(`promedio${i}`).value = promedio.toFixed(2);
 }
