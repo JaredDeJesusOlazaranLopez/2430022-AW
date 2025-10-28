@@ -255,6 +255,8 @@ if (agregarProyectoBtn) {
             });
 
             cont.appendChild(card);
+            // small pop animation
+            setTimeout(() => { if (card) card.classList.add('animate-pop'); }, 10);
         });
     }
 
