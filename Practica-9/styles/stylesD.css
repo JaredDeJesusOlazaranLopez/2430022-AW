@@ -1,0 +1,11 @@
+#sidebar {
+    background: linear-gradient(180deg, #8a0674 0%, #690404 100%);
+}
+
+.nav-link {
+    transition: all 0.3s;
+}
+
+.nav-link:hover {
+    transform: translateX(10px);
+}

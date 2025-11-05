@@ -11,48 +11,47 @@
 </head>
 
 <body>
-    <div id="formIS">
-        <div id="loguito">
-            <img id="pokeball" src="images/pokeball.png">
+    <div id="contenido">
+        <div id="formIS">
+            <form id="inicioSesion">
+                <img id="pokebola" src="images/pokeball.png">
+                <div class="form-title text-center mb-3">
+                    <h3>Inicio de sesion</h3>
+                </div>
+                <div class="form-group mb-4">
+                    <label for="exampleInputEmail1">Correo</label>
+                    <input type="email" class="form-control" id="correoI" aria-describedby="emailHelp">
+                </div>
+                <div class="form-group mb-4">
+                    <label for="exampleInputPassword1">Contraseña</label>
+                    <input type="password" class="form-control" id="contraI">
+                </div>
+                <p>No tienes cuenta? <a href="#registro">Registrate aqui</a></p>
+                <button type="submit" class="btn btn-primary align-center">Inicias sesion</button>
+            </form>
         </div>
-        <form id="inicioSesion">
-            <div class="form-title text-center mb-3">
-                <h3>Inicio de sesion</h3>
-            </div>
-            <div class="form-group mb-4">
-                <label for="exampleInputEmail1">Correo</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            </div>
-            <div class="form-group mb-4">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
-            </div>
-            <div class="form-group form-check mb-4">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        <div id="formIS">
+            <form id="registro">
+                <img id="pokebola" src="images/pokeball.png">
+                <div class="form-group mb-3">
+                    <label for="exampleInputEmail1">Nombre</label>
+                    <input type="text" class="form-control" id="nombreR" aria-describedby="emailHelp">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="exampleInputEmail1">Correo</label>
+                    <input type="email" class="form-control" id="correoR" aria-describedby="emailHelp">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="exampleInputPassword1">Contraseña</label>
+                    <input type="password" class="form-control" id="contraR">
+                </div>
+                <p>Ya tienes cuenta? <a href="#">Inicia sesion aqui</a></p>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
     </div>
-    <div id="formIS">
-        <form id="Registro">
-            <div class="form-group">
-                <label for="exampleInputEmail1">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
-                    else.</small>
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
-            </div>
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>
