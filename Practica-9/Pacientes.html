@@ -86,7 +86,7 @@
             <main class="col-md-9 ms-sm-auto mt-5 col-lg-10 px-md-4">
                 <h1>Listado de Pacientes</h1>
 
-                <button type="button" id="agregarPacientes" class="btn btn-primary mt-3">
+                <button type="button" id="agregarPacientes" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalPacientes">
                     <i class="fa-solid fa-plus"></i> Agregar Pacientes
                 </button>
                 <div class="container mt-4">
@@ -132,66 +132,69 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formPacientes">
+                    <form action="proceso_paciente.php" method="POST">
                         <div class="mb-3">
                             <label class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombreP" required>
+                            <input type="text" class="form-control" name="nombre" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Apellido Paterno</label>
-                            <input type="text" class="form-control" id="apellidoPaterno" required>
+                            <input type="text" class="form-control" name="apellido_paterno" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Apellido Materno</label>
-                            <input type="text" class="form-control" id="apellidoMaterno" required>
+                            <input type="text" class="form-control" name="apellido_materno" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">CURP</label>
-                            <input type="text" class="form-control" id="curpP" required>
+                            <input type="text" class="form-control" name="curp" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Fecha Nacimiento</label>
-                            <input type="date" class="form-control" id="fnP" required>
+                            <input type="date" class="form-control" name="fecha_nacimiento" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Sexo</label>
-                            <select class="form-select" id="sexoP">
+                            <select class="form-select" name="sexo">
                                 <option value="M">Masculino</option>
                                 <option value="F">Femenino</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Telefono</label>
-                            <input type="tel" class="form-control" id="telP" required>
+                            <input type="tel" class="form-control" name="telefono" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Correo</label>
-                            <input type="email" class="form-control" id="correoP" required>
+                            <input type="email" class="form-control" name="correo" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Direccion</label>
-                            <input type="text" class="form-control" id="direccionP" required>
+                            <input type="text" class="form-control" name="direccion" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contacto de Emergencia</label>
+                            <input type="text" class="form-control" name="contacto_emergencia" placeholder="Opcional">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Telefono de Emergencia</label>
-                            <input type="tel" class="form-control" id="telEP" required>
+                            <input type="tel" class="form-control" name="telefono_emergencia" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Alergias</label>
-                            <input type="text" class="form-control" id="alergiasP" placeholder="Ninguna">
+                            <input type="text" class="form-control" name="alergias" placeholder="Ninguna">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Antecedentes Medicos</label>
-                            <input type="text" class="form-control" id="amP" placeholder="Ninguno">
+                            <input type="text" class="form-control" name="antecedentes" placeholder="Ninguno">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Estatus</label>
-                            <select class="form-select" id="estatusP">
+                            <select class="form-select" name="estatus">
                                 <option value="Activo">Activo</option>
                                 <option value="Inactivo">Inactivo</option>
                             </select>
                         </div>
-                        <input type="hidden" id="idPaciente">
                         <button type="submit" class="btn btn-primary w-100">Guardar</button>
                     </form>
                 </div>
@@ -200,8 +203,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="js/scriptPacientes.js"></script>
 </body>
 
 </html>
