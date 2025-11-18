@@ -149,7 +149,7 @@ function editarPaciente(id) {
 }
 
 function eliminarPaciente(id) {
-    if (confirm('Estas seguro de que deseas eliminar este paciente?')) {
+    if (confirm('¿Estás seguro de que deseas eliminar este paciente?')) {
         fetch('eliminar_pacientes.php', {
             method: 'POST',
             headers: {
@@ -173,12 +173,6 @@ function eliminarPaciente(id) {
     }
 }
 
-function recargarTabla() {
-    setTimeout(() => {
-        cargarPacientes();
-    }, 1500);
-}
-
 function guardarActualizacion() {
     const id = document.getElementById('idPaciente').value;
     
@@ -200,7 +194,6 @@ function guardarActualizacion() {
     };
 
     if (id) {
-        // EDITAR - Cambió aquí la ruta
         datos.id = parseInt(id);
         fetch('actualizar_pacientes.php', {
             method: 'POST',
@@ -209,24 +202,31 @@ function guardarActualizacion() {
             },
             body: JSON.stringify(datos)
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Paciente actualizado correctamente');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalPacientes'));
-                modal.hide();
-                cargarPacientes();
-            } else {
-                console.error('Error del servidor:', data.error);
-                alert('Error: ' + data.error);
+        .then(response => response.text())  
+        .then(texto => {
+            console.log('Respuesta del servidor:', texto); 
+            try {
+                const data = JSON.parse(texto);
+                if (data.success) {
+                    alert('Paciente actualizado correctamente');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalPacientes'));
+                    modal.hide();
+                    cargarPacientes();
+                } else {
+                    console.error('Error del servidor:', data.error);
+                    alert('Error: ' + data.error);
+                }
+            } catch (e) {
+                console.error('Error al parsear JSON:', e);
+                console.error('Texto recibido:', texto);
+                alert('Error del servidor. Revisa la consola para más detalles.');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error de red:', error);
             alert('Error al guardar cambios: ' + error.message);
         });
     } else {
-        // AGREGAR
         fetch('proceso_paciente.php', {
             method: 'POST',
             headers: {
@@ -234,20 +234,28 @@ function guardarActualizacion() {
             },
             body: JSON.stringify(datos)
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Paciente agregado correctamente');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalPacientes'));
-                modal.hide();
-                cargarPacientes();
-            } else {
-                console.error('Error del servidor:', data.error);
-                alert('Error: ' + data.error);
+        .then(response => response.text()) 
+        .then(texto => {
+            console.log('Respuesta del servidor:', texto);
+            try {
+                const data = JSON.parse(texto);
+                if (data.success) {
+                    alert('Paciente agregado correctamente');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalPacientes'));
+                    modal.hide();
+                    cargarPacientes();
+                } else {
+                    console.error('Error del servidor:', data.error);
+                    alert('Error: ' + data.error);
+                }
+            } catch (e) {
+                console.error('Error al parsear JSON:', e);
+                console.error('Texto recibido:', texto);
+                alert('Error del servidor. Revisa la consola para más detalles.');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error de red:', error);
             alert('Error al agregar paciente: ' + error.message);
         });
     }
