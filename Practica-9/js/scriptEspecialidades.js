@@ -156,7 +156,6 @@ function limpiarFormulario() {
     document.getElementById('idEspecialidad').value = '';
     document.getElementById('nombreEspecialidad').value = '';
     document.getElementById('descripcionEspecialidad').value = '';
-    document.getElementById('estadoEspecialidad').value = 'Activa';
     document.getElementById('modalEspecialidadLabel').textContent = 'Nueva Especialidad';
 }
 
