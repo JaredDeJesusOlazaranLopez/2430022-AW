@@ -16,7 +16,6 @@ try {
             echo json_encode(['success' => false, 'error' => 'ID no proporcionado']);
             exit;
         }
-
         $id = $_GET['id'];
         $sql = "SELECT id_paciente, nombre, apellido_paterno, apellido_materno, curp, 
                 fecha_nacimiento, sexo, telefono, correo, direccion, contacto_emergencia, 
@@ -25,8 +24,7 @@ try {
                 WHERE id_paciente = :id";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute([':id' => $id]);
         
         $paciente = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -47,42 +45,31 @@ try {
             exit;
         }
 
-        $id = $data['id'];
-
-        $sql = "UPDATE controlPacientes 
-                SET nombre = :nombre, 
-                    apellido_paterno = :apellido_paterno, 
-                    apellido_materno = :apellido_materno, 
-                    curp = :curp, 
-                    fecha_nacimiento = :fecha_nacimiento, 
-                    sexo = :sexo, 
-                    telefono = :telefono, 
-                    correo = :correo, 
-                    direccion = :direccion, 
-                    contacto_emergencia = :contacto_emergencia, 
-                    telefono_emergencia = :telefono_emergencia, 
-                    alergias = :alergias, 
-                    antecedentes_medicos = :antecedentes_medicos, 
-                    estatus = :estatus 
+        $sql = "UPDATE controlPacientes SET nombre = :nombre, apellido_paterno = :apellido_paterno, apellido_materno = :apellido_materno, 
+                    curp = :curp, fecha_nacimiento = :fecha_nacimiento, sexo = :sexo, telefono = :telefono, 
+                    correo = :correo, direccion = :direccion, contacto_emergencia = :contacto_emergencia, 
+                    telefono_emergencia = :telefono_emergencia, alergias = :alergias, 
+                    antecedentes_medicos = :antecedentes_medicos, estatus = :estatus 
                 WHERE id_paciente = :id";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->bindParam(':nombre', $data['nombre'] ?? '');
-        $stmt->bindParam(':apellido_paterno', $data['apellido_paterno'] ?? '');
-        $stmt->bindParam(':apellido_materno', $data['apellido_materno'] ?? '');
-        $stmt->bindParam(':curp', $data['curp'] ?? '');
-        $stmt->bindParam(':fecha_nacimiento', $data['fecha_nacimiento'] ?? '');
-        $stmt->bindParam(':sexo', $data['sexo'] ?? '');
-        $stmt->bindParam(':telefono', $data['telefono'] ?? '');
-        $stmt->bindParam(':correo', $data['correo'] ?? '');
-        $stmt->bindParam(':direccion', $data['direccion'] ?? '');
-        $stmt->bindParam(':contacto_emergencia', $data['contacto_emergencia'] ?? '');
-        $stmt->bindParam(':telefono_emergencia', $data['telefono_emergencia'] ?? '');
-        $stmt->bindParam(':alergias', $data['alergias'] ?? '');
-        $stmt->bindParam(':antecedentes_medicos', $data['antecedentes_medicos'] ?? '');
-        $stmt->bindParam(':estatus', $data['estatus'] ?? '');
-        $stmt->execute();
+        $stmt->execute([
+            ':id' => $data['id'],
+            ':nombre' => $data['nombre'] ?? '',
+            ':apellido_paterno' => $data['apellido_paterno'] ?? '',
+            ':apellido_materno' => $data['apellido_materno'] ?? '',
+            ':curp' => $data['curp'] ?? '',
+            ':fecha_nacimiento' => $data['fecha_nacimiento'] ?? '',
+            ':sexo' => $data['sexo'] ?? '',
+            ':telefono' => $data['telefono'] ?? '',
+            ':correo' => $data['correo'] ?? '',
+            ':direccion' => $data['direccion'] ?? '',
+            ':contacto_emergencia' => $data['contacto_emergencia'] ?? '',
+            ':telefono_emergencia' => $data['telefono_emergencia'] ?? '',
+            ':alergias' => $data['alergias'] ?? '',
+            ':antecedentes_medicos' => $data['antecedentes_medicos'] ?? '',
+            ':estatus' => $data['estatus'] ?? ''
+        ]);
 
         if ($stmt->rowCount() > 0) {
             echo json_encode(['success' => true, 'message' => 'Paciente actualizado correctamente']);
