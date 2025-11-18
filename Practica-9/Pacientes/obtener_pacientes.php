@@ -2,7 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 $host = "localhost";
-$port = "3306";
+$port = "3307";
 $dbname = "clinica_db";
 $user = "root";
 $pass = ""; 
@@ -12,7 +12,6 @@ try {
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Consulta SELECT con los nombres REALES de columnas
     $sql = "SELECT id_paciente, nombre, apellido_paterno, apellido_materno, curp, fecha_nacimiento, 
             sexo, telefono, correo, direccion, contacto_emergencia, telefono_emergencia, 
             alergias, antecedentes_medicos, fecha_registro, estatus 
@@ -22,7 +21,6 @@ try {
     $stmt = $pdo->query($sql);
     $pacientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Normalizar nombres para el frontend (renombrar id_paciente a id)
     $pacientes_normalizados = [];
     foreach ($pacientes as $paciente) {
         $paciente['id'] = $paciente['id_paciente'];

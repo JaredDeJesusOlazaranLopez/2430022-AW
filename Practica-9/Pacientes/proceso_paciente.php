@@ -2,7 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 $host = "localhost";
-$port = "3306";
+$port = "3307";
 $dbname = "clinica_db";
 $user = "root";
 $pass = "";
