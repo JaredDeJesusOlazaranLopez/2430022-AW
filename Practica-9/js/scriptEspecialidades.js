@@ -16,7 +16,7 @@ function cargarEspecialidades() {
         })
         .catch(error => {
             console.error('Error:', error);
-            Swal.fire('Error', 'Error de conexion', 'error');
+            Swal.fire('Error', 'Error de conexión', 'error');
         });
 }
 
@@ -36,7 +36,7 @@ function mostrarEspecialidades(lista) {
             '<span class="badge bg-success">Activa</span>' :
             '<span class="badge bg-secondary">Inactiva</span>';
 
-        const descripcion = esp.descripcion ? esp.descripcion.substring(0, 80) + '...' : 'Sin descripcion';
+        const descripcion = esp.descripcion ? esp.descripcion.substring(0, 80) + '...' : 'Sin descripción';
 
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
@@ -71,31 +71,18 @@ function verDetalles(id) {
 }
 
 function editarEspecialidad(id) {
-    fetch('actualizar_pacientes.php', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(datos)
-})
-.then(response => response.text())  
-.then(texto => {
-    console.log('Respuesta del servidor:', texto);  
-    try {
-        const data = JSON.parse(texto);
-        if (data.success) {
-            alert('Paciente actualizado correctamente');
-            const modal = bootstrap.Modal.getInstance(document.getElementById('modalPacientes'));
-            modal.hide();
-            cargarPacientes();
-        } else {
-            alert('Error: ' + data.error);
-        }
-    } catch (e) {
-        console.error('Error al parsear JSON:', e);
-        alert('Error del servidor. Revisa la consola.');
+    const esp = especialidades.find(e => e.id === id);
+    
+    if (esp) {
+        document.getElementById('modalEspecialidadLabel').textContent = 'Editar Especialidad';
+        document.getElementById('idEspecialidad').value = esp.id;
+        document.getElementById('nombreEspecialidad').value = esp.nombre;
+        document.getElementById('descripcionEspecialidad').value = esp.descripcion || '';
+        
+        modalEspecialidad.show();
+    } else {
+        Swal.fire('Error', 'Especialidad no encontrada', 'error');
     }
-})
 }
 
 function eliminarEspecialidad(id) {
@@ -121,6 +108,10 @@ function eliminarEspecialidad(id) {
                     } else {
                         Swal.fire('Error', result.error || 'Error al eliminar', 'error');
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'Error al eliminar especialidad', 'error');
                 });
         }
     });
@@ -130,14 +121,19 @@ function guardarEspecialidad() {
     const id = document.getElementById('idEspecialidad').value;
     const nombre = document.getElementById('nombreEspecialidad').value.trim();
     const descripcion = document.getElementById('descripcionEspecialidad').value.trim();
+    
+    let estado = 'Activa';
+    if (document.getElementById('estadoEspecialidad')) {
+        estado = document.getElementById('estadoEspecialidad').value;
+    }
 
     if (!nombre) {
         Swal.fire('Error', 'El nombre es requerido', 'error');
         return;
     }
 
-    const data = { nombre, descripcion };
-    if (id) data.id = id;
+    const data = { nombre, descripcion, estado };
+    if (id) data.id = parseInt(id);
 
     const url = id ? 'actualizar_especialidades.php' : 'proceso_especialidades.php';
 
@@ -156,6 +152,10 @@ function guardarEspecialidad() {
             } else {
                 Swal.fire('Error', result.error, 'error');
             }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Error al guardar especialidad', 'error');
         });
 }
 
@@ -163,6 +163,11 @@ function limpiarFormulario() {
     document.getElementById('idEspecialidad').value = '';
     document.getElementById('nombreEspecialidad').value = '';
     document.getElementById('descripcionEspecialidad').value = '';
+    
+    if (document.getElementById('estadoEspecialidad')) {
+        document.getElementById('estadoEspecialidad').value = 'Activa';
+    }
+    
     document.getElementById('modalEspecialidadLabel').textContent = 'Nueva Especialidad';
 }
 

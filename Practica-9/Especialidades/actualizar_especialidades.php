@@ -17,6 +17,7 @@ try {
     $id = $data['id'] ?? null;
     $nombre = $data['nombre'] ?? '';
     $descripcion = $data['descripcion'] ?? '';
+    $estado = $data['estado'] ?? 'Activa';
 
     if (!$id || !$nombre) {
         echo json_encode(['success' => false, 'error' => 'ID y nombre son requeridos']);
@@ -25,20 +26,22 @@ try {
 
     $sql = "UPDATE especialidades SET 
             nombreEspecialidad = :nombre,
-            descripcion = :descripcion
+            descripcion = :descripcion,
+            estado = :estado
             WHERE idEspecialidad = :id";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->bindParam(':nombre', $nombre);
-    $stmt->bindParam(':descripcion', $descripcion);
-
-    $stmt->execute();
+    $stmt->execute([
+        ':id' => $id,
+        ':nombre' => $nombre,
+        ':descripcion' => $descripcion,
+        ':estado' => $estado
+    ]);
 
     if ($stmt->rowCount() > 0) {
         echo json_encode(['success' => true, 'message' => 'Especialidad actualizada correctamente']);
     } else {
-        echo json_encode(['success' => false, 'error' => 'No se encontró la especialidad']);
+        echo json_encode(['success' => false, 'error' => 'No se encontró la especialidad o no hubo cambios']);
     }
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()]);
