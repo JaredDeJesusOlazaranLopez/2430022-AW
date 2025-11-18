@@ -16,7 +16,7 @@ function cargarEspecialidades() {
         })
         .catch(error => {
             console.error('Error:', error);
-            Swal.fire('Error', 'Error de conexión', 'error');
+            Swal.fire('Error', 'Error de conexion', 'error');
         });
 }
 
@@ -36,7 +36,7 @@ function mostrarEspecialidades(lista) {
             '<span class="badge bg-success">Activa</span>' :
             '<span class="badge bg-secondary">Inactiva</span>';
 
-        const descripcion = esp.descripcion ? esp.descripcion.substring(0, 80) + '...' : 'Sin descripción';
+        const descripcion = esp.descripcion ? esp.descripcion.substring(0, 80) + '...' : 'Sin descripcion';
 
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
@@ -71,7 +71,7 @@ function verDetalles(id) {
 }
 
 function editarEspecialidad(id) {
-    fetch('editar_especialidad.php', {
+    fetch('actualizar_especialidades.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: id })

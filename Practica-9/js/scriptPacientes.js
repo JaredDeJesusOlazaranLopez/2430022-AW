@@ -114,7 +114,7 @@ function buscarPaciente() {
 }
 
 function editarPaciente(id) {
-    fetch('obtener_paciente.php', {
+    fetch('actualizar_pacientes.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

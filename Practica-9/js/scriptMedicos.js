@@ -141,7 +141,7 @@ function mostrarMedicos(lista) {
 }
 
 function editarMedico(id) {
-    fetch('./editar_medico.php', {
+    fetch('actualizar_medicos.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
