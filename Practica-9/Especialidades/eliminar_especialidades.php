@@ -2,7 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 $host = "localhost";
-$port = "3307";
+$port = "3306";
 $dbname = "clinica_db";
 $user = "root";
 $pass = "";
@@ -20,7 +20,6 @@ try {
         exit;
     }
 
-    // Validar si hay médicos asociados a la especialidad
     $sqlCheck = "SELECT COUNT(*) FROM controlMedico WHERE idEspecialidad = :id";
     $stmtCheck = $pdo->prepare($sqlCheck);
     $stmtCheck->bindParam(':id', $id, PDO::PARAM_INT);
