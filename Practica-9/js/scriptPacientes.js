@@ -200,8 +200,9 @@ function guardarActualizacion() {
     };
 
     if (id) {
+        // EDITAR - Cambió aquí la ruta
         datos.id = parseInt(id);
-        fetch('Pacientes/actualizar_pacientes.php', {
+        fetch('actualizar_pacientes.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -216,14 +217,16 @@ function guardarActualizacion() {
                 modal.hide();
                 cargarPacientes();
             } else {
+                console.error('Error del servidor:', data.error);
                 alert('Error: ' + data.error);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al guardar cambios');
+            alert('Error al guardar cambios: ' + error.message);
         });
     } else {
+        // AGREGAR
         fetch('proceso_paciente.php', {
             method: 'POST',
             headers: {
@@ -239,12 +242,13 @@ function guardarActualizacion() {
                 modal.hide();
                 cargarPacientes();
             } else {
+                console.error('Error del servidor:', data.error);
                 alert('Error: ' + data.error);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al agregar paciente');
+            alert('Error al agregar paciente: ' + error.message);
         });
     }
 }
