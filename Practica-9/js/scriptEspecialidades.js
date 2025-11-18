@@ -71,24 +71,31 @@ function verDetalles(id) {
 }
 
 function editarEspecialidad(id) {
-    fetch('actualizar_especialidades.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id })
-    })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                const esp = result.data;
-                document.getElementById('nombreEspecialidad').value = esp.nombre;
-                document.getElementById('descripcionEspecialidad').value = esp.descripcion;
-                document.getElementById('estadoEspecialidad').value = esp.estado;
-                document.getElementById('idEspecialidad').value = esp.id;
-                document.getElementById('modalEspecialidadLabel').textContent = 'Editar Especialidad';
-                modalEspecialidad.show();
-            }
-        })
-        .catch(error => console.error('Error:', error));
+    fetch('actualizar_pacientes.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(datos)
+})
+.then(response => response.text())  
+.then(texto => {
+    console.log('Respuesta del servidor:', texto);  
+    try {
+        const data = JSON.parse(texto);
+        if (data.success) {
+            alert('Paciente actualizado correctamente');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalPacientes'));
+            modal.hide();
+            cargarPacientes();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (e) {
+        console.error('Error al parsear JSON:', e);
+        alert('Error del servidor. Revisa la consola.');
+    }
+})
 }
 
 function eliminarEspecialidad(id) {
