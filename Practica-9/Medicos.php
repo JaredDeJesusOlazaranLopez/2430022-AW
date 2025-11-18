@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pacientes</title>
+    <title>Medicos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles/stylesD.css">
@@ -27,7 +27,7 @@
                             </a>
                         </li>
                         <li class="nav-item my-1">
-                            <a class="nav-link active text-white bg-white bg-opacity-25 rounded-3 py-3 px-3" href="#">
+                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Pacientes.html">
                                 <i class="fa-solid fa-person fs-5 mb-2"></i>
                                 <span class="fw-semibold">Pacientes</span>
                             </a>
@@ -39,7 +39,7 @@
                             </a>
                         </li>
                         <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Medicos.html">
+                            <a class="nav-link active text-white bg-white bg-opacity-25 rounded-3 py-3 px-3" href="#">
                                 <i class="fa-solid fa-stethoscope fs-5 mb-2"></i>
                                 <span class="fw-semibold">Medicos</span>
                             </a>
@@ -83,38 +83,33 @@
                     </ul>
                 </div>
             </nav>
-            <main class="col-md-9 ms-sm-auto mt-5 col-lg-10 px-md-4">
-                <h1>Listado de Pacientes</h1>
+            <main class="col-md-9 mt-5, direccion, contacto_emergencia, telefono_emergencia, 
+         alergias, antecedentes_medicos, estatus, fecha_registro ms-sm-auto col-lg-10 px-md-4">
+                <h1>Listado de medicos</h1>
 
-                <button type="button" id="agregarPacientes" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalPacientes">
-                    <i class="fa-solid fa-plus"></i> Agregar Pacientes
+                <button type="button" id="agregarMedicos" class="btn btn-primary mt-3">
+                    <i class="fa-solid fa-plus"></i> Agregar medicos
                 </button>
                 <div class="container mt-4">
                     <div class="row mt-3">
-                        <input type="text" id="buscar" class="form-control" placeholder="Buscar por nombre o CURP">
-                        <div class="table-responsive mt-2">
+                        <input type="text" id="buscar" class="form-control" placeholder="Buscar por nombre o cedula">
+                        <div class="table-responsive mt-3">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Nombre</th>
-                                        <th>Apellido Paterno</th>
-                                        <th>Apellido Materno</th>
-                                        <th>CURP</th>
-                                        <th>Fecha Nacimiento</th>
-                                        <th>Sexo</th>
+                                        <th>ID medico</th>
+                                        <th>Nombre Completo</th>
+                                        <th>Cedula Profesional</th>
+                                        <th>Especialidad</th>
                                         <th>Telefono</th>
                                         <th>Correo</th>
-                                        <th>Direccion</th>
-                                        <th>Tel. Emergencia</th>
-                                        <th>Alergias</th>
-                                        <th>Antecedentes</th>
-                                        <th>Fecha Registro</th>
+                                        <th>Horario</th>
+                                        <th>Fecha ingreso</th>
                                         <th>Estatus</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabla-pacientes" class="table-group-divider">
+                                <tbody id="tabla-medicos" class="table-group-divider">
                                 </tbody>
                             </table>
                         </div>
@@ -124,77 +119,59 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalPacientes" tabindex="-1">
+    <div class="modal fade" id="modalDoctores" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tituloModal">Agregar Paciente</h5>
+                    <h5 class="modal-title" id="tituloModal">Agregar medico</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="proceso_paciente.php" method="POST">
+                    <form id="formMedicos">
                         <div class="mb-3">
                             <label class="form-label">Nombre</label>
-                            <input type="text" class="form-control" name="nombre" required>
+                            <input type="text" class="form-control" id="nombreM" name="nombre" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Apellido Paterno</label>
-                            <input type="text" class="form-control" name="apellido_paterno" required>
+                            <label class="form-label">Cedula Profesional</label>
+                            <input type="text" class="form-control" id="cedulaM" name="cedula" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Apellido Materno</label>
-                            <input type="text" class="form-control" name="apellido_materno" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">CURP</label>
-                            <input type="text" class="form-control" name="curp" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Fecha Nacimiento</label>
-                            <input type="date" class="form-control" name="fecha_nacimiento" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Sexo</label>
-                            <select class="form-select" name="sexo">
-                                <option value="M">Masculino</option>
-                                <option value="F">Femenino</option>
+                            <label class="form-label">Especialidad</label>
+                            <select class="form-select" id="especialidadM" name="especialidad" required>
+                                <option value="">Seleccione una especialidad</option>
+                                <?php
+                                   
+                                ?>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Telefono</label>
-                            <input type="tel" class="form-control" name="telefono" required>
+                            <input type="text" class="form-control" id="telefonoM" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Correo</label>
-                            <input type="email" class="form-control" name="correo" required>
+                            <input type="email" class="form-control" id="correoM" name="correo" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Direccion</label>
-                            <input type="text" class="form-control" name="direccion" required>
+                            <label class="form-label">Horario de atencion</label>
+                            <label>De:</label>
+                            <input type="time" class="form-control" id="horarioDM" name="horarioDM" required>
+                            <label>A:</label>
+                            <input type="time" class="form-control" id="horarioAM" name="horarioAM" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Contacto de Emergencia</label>
-                            <input type="text" class="form-control" name="contacto_emergencia" placeholder="Opcional">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Telefono de Emergencia</label>
-                            <input type="tel" class="form-control" name="telefono_emergencia" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Alergias</label>
-                            <input type="text" class="form-control" name="alergias" placeholder="Ninguna">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Antecedentes Medicos</label>
-                            <input type="text" class="form-control" name="antecedentes" placeholder="Ninguno">
+                            <label class="form-label">Fecha Ingreso</label>
+                            <input type="date" class="form-control" id="fechaM" name="fechaM" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Estatus</label>
-                            <select class="form-select" name="estatus">
+                            <select class="form-select" id="estatusM">
                                 <option value="Activo">Activo</option>
                                 <option value="Inactivo">Inactivo</option>
                             </select>
                         </div>
+                        <input type="hidden" id="idMedico">
                         <button type="submit" class="btn btn-primary w-100">Guardar</button>
                     </form>
                 </div>
@@ -203,6 +180,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

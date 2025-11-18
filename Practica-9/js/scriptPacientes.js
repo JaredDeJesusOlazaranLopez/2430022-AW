@@ -1,240 +1,273 @@
-let pacientes = [];
-let tablaPacientes = document.getElementById('tabla-pacientes');
-let botoncillo = document.getElementById('agregarPacientes');
-let agregarPacientes = document.getElementById('formPacientes');
-let modal;
-let pacienteEditando = null;
+document.addEventListener('DOMContentLoaded', function () {
+    cargarPacientes();
+    
+    const buscador = document.getElementById('buscar');
+    if (buscador) {
+        buscador.addEventListener('keyup', buscarPaciente);
+    }
+    
+    const btnAgregar = document.getElementById('agregarPacientes');
+    if (btnAgregar) {
+        btnAgregar.addEventListener('click', function() {
+            limpiarFormulario();
+            document.getElementById('tituloModal').textContent = 'Agregar Paciente';
+            document.getElementById('idPaciente').value = '';
+        });
+    }
+});
 
 function cargarPacientes() {
-    const pacientesGuardados = localStorage.getItem('pacientes');
-    if (pacientesGuardados) {
-        pacientes = JSON.parse(pacientesGuardados);
-        mostrarTabla();
-    }
+    fetch('obtener_pacientes.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                mostrarPacientes(data.data);
+            } else {
+                console.error('Error:', data.error);
+                mostrarError('Error al cargar pacientes: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error de red:', error);
+            mostrarError('Error de conexión al servidor');
+        });
 }
 
-botoncillo.addEventListener('click', e => {
-    e.preventDefault();
-    pacienteEditando = null;
-    document.getElementById('tituloModal').textContent = 'Agregar Paciente';
-    document.getElementById('idPaciente').value = '';
-    agregarPacientes.reset();
-    modal.show();
-});
+function mostrarPacientes(pacientes) {
+    const tabla = document.getElementById('tabla-pacientes');
+    tabla.innerHTML = '';
 
-agregarPacientes.addEventListener('submit', e => {
-    e.preventDefault();
-    const id = document.getElementById('idPaciente').value;
-    const nombreP = document.getElementById('nombreP').value.trim();
-    const apellidoPaterno = document.getElementById('apellidoPaterno').value.trim();
-    const apellidoMaterno = document.getElementById('apellidoMaterno').value.trim();
-    const curpP = document.getElementById('curpP').value.trim().toUpperCase();
-    const fechaNP = document.getElementById('fnP').value;
-    const sexoP = document.getElementById('sexoP').value;
-    const telP = document.getElementById('telP').value.trim();
-    const correoP = document.getElementById('correoP').value.trim();
-    const direccion = document.getElementById('direccionP').value.trim();
-    const telEP = document.getElementById('telEP').value.trim();
-    const alergiasP = document.getElementById('alergiasP').value.trim() || 'Ninguna';
-    const antecedentesP = document.getElementById('amP').value.trim() || 'Ninguno';
-    const estatusP = document.getElementById('estatusP').value;
-
-    if (!nombreP || !apellidoPaterno || !apellidoMaterno || !curpP || !fechaNP || !sexoP || !telP || !correoP || !direccion || !telEP || !estatusP) {
-        Swal.fire({
-            title: "Error",
-            text: "Porfavor introduzca todos los campos",
-            icon: "error",
-            confirmButtonText: "Reintentar"
-        });
+    if (!pacientes || pacientes.length === 0) {
+        tabla.innerHTML = '<tr><td colspan="16" class="text-center text-muted py-4"><em>No hay pacientes registrados</em></td></tr>';
         return;
     }
 
-    const fechaNPdos = new Date(fechaNP);
-    const fechaActual = new Date();
-
-    fechaNPdos.setHours(0, 0, 0, 0);
-    fechaActual.setHours(0, 0, 0, 0);
-
-    if (fechaNPdos > fechaActual) {
-        Swal.fire({
-            title: "Error",
-            text: "Pon fechas validas porfavor",
-            icon: "error",
-            confirmButtonText: "Reintentar"
-        });
-        return;
-    }
-
-    let curpDuplicado = false;
-    for (let i = 0; i < pacientes.length; i++) {
-        if (pacientes[i].curp === curpP && pacientes[i].id != id) {
-            curpDuplicado = true;
-            break;
-        }
-    }
-
-    if (curpDuplicado) {
-        Swal.fire('Error', 'Parece que esta CURP ya esta registrada', 'error');
-        return;
-    }
-
-    const paciente = {
-        id: id || Date.now().toString(),
-        nombre: nombreP,
-        apellidoPaterno: apellidoPaterno,
-        apellidoMaterno: apellidoMaterno,
-        curp: curpP,
-        fechaNacimiento: fechaNP,
-        sexo: sexoP,
-        telefono: telP,
-        correo: correoP,
-        direccion: direccion,
-        telefonoEmergencia: telEP,
-        alergias: alergiasP,
-        antecedentes: antecedentesP,
-        fechaRegistro: id ? pacientes.find(p => p.id === id).fechaRegistro : new Date().toISOString(),
-        estatus: estatusP
-    };
-
-    if (id) {
-        for (let i = 0; i < pacientes.length; i++) {
-            if (pacientes[i].id === id) {
-                pacientes[i] = paciente;
-                break;
-            }
-        }
-    } else {
-        pacientes.push(paciente);
-    }
-
-    localStorage.setItem('pacientes', JSON.stringify(pacientes));
-    Swal.fire({
-        title: "Paciente guardado",
-        text: "Se guardo el paciente con exito",
-        icon: "success",
-        confirmButtonText: "Continuar"
-    });
-    modal.hide();
-    agregarPacientes.reset();
-    mostrarTabla();
-});
-
-function mostrarTabla(lista) {
-    tablaPacientes.innerHTML = '';
-    const pacientesAMostrar = lista || pacientes;
-
-    for (let i = 0; i < pacientesAMostrar.length; i++) {
-        const paciente = pacientesAMostrar[i];
-        const fila = tablaPacientes.insertRow();
-        const fechaRegistro = new Date(paciente.fechaRegistro);
+    pacientes.forEach(paciente => {
+        const badgeClass = paciente.estatus === 'Activo' ? 'bg-success' : 'bg-danger';
+        const alergias = paciente.alergias ? paciente.alergias : '<em>N/A</em>';
+        const antecedentes = paciente.antecedentes_medicos ? paciente.antecedentes_medicos : '<em>N/A</em>';
         
-        fila.innerHTML = `
-            <td>${paciente.id}</td>
-            <td>${paciente.nombre}</td>
-            <td>${paciente.apellidoPaterno}</td>
-            <td>${paciente.apellidoMaterno}</td>
-            <td>${paciente.curp}</td>
-            <td>${paciente.fechaNacimiento}</td>
-            <td>${paciente.sexo}</td>
-            <td>${paciente.telefono}</td>
-            <td>${paciente.correo}</td>
-            <td>${paciente.direccion}</td>
-            <td>${paciente.telefonoEmergencia}</td>
-            <td>${paciente.alergias}</td>
-            <td>${paciente.antecedentes}</td>
-            <td>${fechaRegistro.toLocaleDateString()}</td>
-            <td>${paciente.estatus}</td>
-            <td>
-                <button class="btn btn-warning btn-sm" onclick="editarPaciente('${paciente.id}')">Editar</button>
-                <button class="btn btn-danger btn-sm" onclick="eliminarPaciente('${paciente.id}')">Eliminar</button>
-            </td>
+        const fila = `
+            <tr>
+                <td>${paciente.id}</td>
+                <td>${paciente.nombre || ''}</td>
+                <td>${paciente.apellido_paterno || ''}</td>
+                <td>${paciente.apellido_materno || ''}</td>
+                <td>${paciente.curp || ''}</td>
+                <td>${paciente.fecha_nacimiento || ''}</td>
+                <td>${paciente.sexo || ''}</td>
+                <td>${paciente.telefono || ''}</td>
+                <td>${paciente.correo || ''}</td>
+                <td>${paciente.direccion || ''}</td>
+                <td>${paciente.telefono_emergencia || ''}</td>
+                <td>${alergias}</td>
+                <td>${antecedentes}</td>
+                <td>${formatearFecha(paciente.fecha_registro)}</td>
+                <td><span class="badge ${badgeClass}">${paciente.estatus || 'N/A'}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-warning me-1" onclick="editarPaciente(${paciente.id})" title="Editar">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="eliminarPaciente(${paciente.id})" title="Eliminar">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
         `;
-    }
-}
-
-function editarPaciente(id) {
-    let paciente = null;
-    for (let i = 0; i < pacientes.length; i++) {
-        if (pacientes[i].id === id) {
-            paciente = pacientes[i];
-            break;
-        }
-    }
-    
-    if (!paciente) return;
-
-    pacienteEditando = paciente;
-    document.getElementById('tituloModal').textContent = 'Editar Paciente';
-    document.getElementById('idPaciente').value = paciente.id;
-    document.getElementById('nombreP').value = paciente.nombre;
-    document.getElementById('apellidoPaterno').value = paciente.apellidoPaterno;
-    document.getElementById('apellidoMaterno').value = paciente.apellidoMaterno;
-    document.getElementById('curpP').value = paciente.curp;
-    document.getElementById('fnP').value = paciente.fechaNacimiento;
-    document.getElementById('sexoP').value = paciente.sexo;
-    document.getElementById('telP').value = paciente.telefono;
-    document.getElementById('correoP').value = paciente.correo;
-    document.getElementById('direccionP').value = paciente.direccion;
-    document.getElementById('telEP').value = paciente.telefonoEmergencia;
-    document.getElementById('alergiasP').value = paciente.alergias;
-    document.getElementById('amP').value = paciente.antecedentes;
-    document.getElementById('estatusP').value = paciente.estatus;
-    
-    modal.show();
-}
-
-function eliminarPaciente(id) {
-    Swal.fire({
-        title: 'Estás seguro?',
-        text: 'No podras recuperar este paciente',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Si, eliminar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            let nuevaLista = [];
-            for (let i = 0; i < pacientes.length; i++) {
-                if (pacientes[i].id !== id) {
-                    nuevaLista.push(pacientes[i]);
-                }
-            }
-            pacientes = nuevaLista;
-            
-            localStorage.setItem('pacientes', JSON.stringify(pacientes));
-            mostrarTabla();
-            Swal.fire({
-                title: 'Eliminado',
-                text: 'El paciente ha sido eliminado correctamente',
-                icon: 'success',
-                confirmButtonText: 'Ok'
-            });
-        }
+        tabla.innerHTML += fila;
     });
+}
+
+function formatearFecha(fecha) {
+    if (!fecha) return '';
+    const date = new Date(fecha);
+    return date.toLocaleDateString('es-MX');
+}
+
+function mostrarError(mensaje) {
+    const tabla = document.getElementById('tabla-pacientes');
+    tabla.innerHTML = `<tr><td colspan="16" class="text-center text-danger py-4"><strong>${mensaje}</strong></td></tr>`;
 }
 
 function buscarPaciente() {
     const texto = document.getElementById('buscar').value.toLowerCase();
-    let resultado = [];
     
-    for (let i = 0; i < pacientes.length; i++) {
-        const nombreCompleto = (pacientes[i].nombre + ' ' + pacientes[i].apellidoPaterno + ' ' + pacientes[i].apellidoMaterno).toLowerCase();
-        const curp = pacientes[i].curp.toLowerCase();
+    const filas = document.querySelectorAll('#tabla-pacientes tr');
+    
+    filas.forEach(fila => {
+        const celdas = fila.querySelectorAll('td');
+        let coincide = false;
         
-        if (nombreCompleto.includes(texto) || curp.includes(texto)) {
-            resultado.push(pacientes[i]);
+        for (let i = 1; i < 5 && !coincide; i++) {
+            if (celdas[i] && celdas[i].textContent.toLowerCase().includes(texto)) {
+                coincide = true;
+            }
         }
-    }
-    
-    mostrarTabla(resultado);
+        
+        fila.style.display = coincide ? '' : 'none';
+    });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    modal = new bootstrap.Modal(document.getElementById('modalPacientes'));
-    cargarPacientes();
-    
-    document.getElementById('buscar').addEventListener('input', buscarPaciente);
-});
+function editarPaciente(id) {
+    fetch('obtener_paciente.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const p = data.data;
+            document.getElementById('tituloModal').textContent = 'Editar Paciente';
+            document.getElementById('nombre').value = p.nombre || '';
+            document.getElementById('apellido_paterno').value = p.apellido_paterno || '';
+            document.getElementById('apellido_materno').value = p.apellido_materno || '';
+            document.getElementById('curp').value = p.curp || '';
+            document.getElementById('fecha_nacimiento').value = p.fecha_nacimiento || '';
+            document.getElementById('sexo').value = p.sexo || '';
+            document.getElementById('telefono').value = p.telefono || '';
+            document.getElementById('correo').value = p.correo || '';
+            document.getElementById('direccion').value = p.direccion || '';
+            document.getElementById('contacto_emergencia').value = p.contacto_emergencia || '';
+            document.getElementById('telefono_emergencia').value = p.telefono_emergencia || '';
+            document.getElementById('alergias').value = p.alergias || '';
+            document.getElementById('antecedentes').value = p.antecedentes_medicos || '';
+            document.getElementById('estatus').value = p.estatus || '';
+            document.getElementById('idPaciente').value = id;
+            
+            const modal = new bootstrap.Modal(document.getElementById('modalPacientes'));
+            modal.show();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al cargar datos del paciente');
+    });
+}
 
-window.editarPaciente = editarPaciente;
-window.eliminarPaciente = eliminarPaciente;
+function eliminarPaciente(id) {
+    if (confirm('Estas seguro de que deseas eliminar este paciente?')) {
+        fetch('eliminar_pacientes.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: id })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Paciente eliminado correctamente');
+                cargarPacientes();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al eliminar paciente');
+        });
+    }
+}
+
+function recargarTabla() {
+    setTimeout(() => {
+        cargarPacientes();
+    }, 1500);
+}
+
+function guardarActualizacion() {
+    const id = document.getElementById('idPaciente').value;
+    
+    const datos = {
+        nombre: document.getElementById('nombre').value,
+        apellido_paterno: document.getElementById('apellido_paterno').value,
+        apellido_materno: document.getElementById('apellido_materno').value,
+        curp: document.getElementById('curp').value,
+        fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
+        sexo: document.getElementById('sexo').value,
+        telefono: document.getElementById('telefono').value,
+        correo: document.getElementById('correo').value,
+        direccion: document.getElementById('direccion').value,
+        contacto_emergencia: document.getElementById('contacto_emergencia').value,
+        telefono_emergencia: document.getElementById('telefono_emergencia').value,
+        alergias: document.getElementById('alergias').value,
+        antecedentes_medicos: document.getElementById('antecedentes').value,
+        estatus: document.getElementById('estatus').value
+    };
+
+    if (id) {
+        datos.id = parseInt(id);
+        fetch('Pacientes/actualizar_pacientes.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Paciente actualizado correctamente');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalPacientes'));
+                modal.hide();
+                cargarPacientes();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al guardar cambios');
+        });
+    } else {
+        fetch('proceso_paciente.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Paciente agregado correctamente');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalPacientes'));
+                modal.hide();
+                cargarPacientes();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al agregar paciente');
+        });
+    }
+}
+
+function limpiarFormulario() {
+    document.getElementById('nombre').value = '';
+    document.getElementById('apellido_paterno').value = '';
+    document.getElementById('apellido_materno').value = '';
+    document.getElementById('curp').value = '';
+    document.getElementById('fecha_nacimiento').value = '';
+    document.getElementById('sexo').value = 'M';
+    document.getElementById('telefono').value = '';
+    document.getElementById('correo').value = '';
+    document.getElementById('direccion').value = '';
+    document.getElementById('contacto_emergencia').value = '';
+    document.getElementById('telefono_emergencia').value = '';
+    document.getElementById('alergias').value = '';
+    document.getElementById('antecedentes').value = '';
+    document.getElementById('estatus').value = 'Activo';
+}

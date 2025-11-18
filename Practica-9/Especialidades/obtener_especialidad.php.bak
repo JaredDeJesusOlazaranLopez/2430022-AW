@@ -1,0 +1,4 @@
+<?php
+// Alias para compatibilidad, redirige a editar_especialidad.php
+require_once __DIR__ . '/editar_especialidad.php';
+?>

@@ -100,7 +100,6 @@ function convertirCitasAEventos() {
     }));
 }
 
-// Función para actualizar el calendario
 function actualizarCalendario() {
     calendario.removeAllEvents();
     calendario.addEventSource(convertirCitasAEventos());
@@ -108,7 +107,6 @@ function actualizarCalendario() {
     actualizarEstadisticas();
 }
 
-// Función para actualizar próximas citas
 function actualizarProximasCitas() {
     const contenedor = document.getElementById('upcomingAppointments');
     const ahora = new Date();
@@ -332,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        if (confirm('¿Está seguro de que desea eliminar esta cita?')) {
+        if (confirm('Estas seguro de que desea eliminar esta cita?')) {
             citas = citas.filter(c => c.id !== citaActual.id);
             guardarDatos();
             actualizarCalendario();

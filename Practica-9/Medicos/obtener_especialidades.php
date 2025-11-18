@@ -1,0 +1,23 @@
+<?php
+header('Content-Type: application/json; charset=utf-8');
+
+$host = "localhost";
+$port = "3307";
+$dbname = "clinica_db";
+$user = "root";
+$pass = "";
+
+try {
+    $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8";
+    $pdo = new PDO($dsn, $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $sql = "SELECT idEspecialidad, nombreEspecialidad FROM especialidades";
+    $stmt = $pdo->query($sql);
+    $especialidades = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    echo json_encode(['success' => true, 'data' => $especialidades]);
+} catch (PDOException $e) {
+    echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()]);
+}
+?>

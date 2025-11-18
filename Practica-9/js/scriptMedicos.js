@@ -3,45 +3,47 @@ let tablaMedicos = document.getElementById('tabla-medicos');
 let botoncillo = document.getElementById('agregarMedicos');
 let agregarMedicos = document.getElementById('formMedicos');
 let modalDoctores;
-let medicoEditando = null;
 
 function cargarMedicos() {
-    const medicosGuardados = localStorage.getItem('medicos');
-    if (medicosGuardados) {
-        medicos = JSON.parse(medicosGuardados);
-        mostrarTabla();
-    }
+    fetch('./obtener_medicos.php')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                medicos = result.data;
+                mostrarMedicos(medicos);
+            } else {
+                console.error('Error:', result.error);
+                Swal.fire('Error', 'No se pudieron cargar los médicos', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Error de conexión', 'error');
+        });
 }
 
 function cargarEspecialidades() {
-    const especialidades = JSON.parse(localStorage.getItem('especialidades')) || [];
-    const select = document.getElementById('especialidadM');
-    select.innerHTML = '<option value="">Seleccione una especialidad</option>';
-    
-    for (let i = 0; i < especialidades.length; i++) {
-        if (especialidades[i].estado === 'Activa') {
-            const option = document.createElement('option');
-            option.value = especialidades[i].id;
-            option.textContent = especialidades[i].nombre;
-            select.appendChild(option);
-        }
-    }
-}
-
-function obtenerNombreEspecialidad(id) {
-    const especialidades = JSON.parse(localStorage.getItem('especialidades')) || [];
-    for (let i = 0; i < especialidades.length; i++) {
-        if (especialidades[i].id == id) {
-            return especialidades[i].nombre;
-        }
-    }
-    return 'Sin especialidad';
+    fetch('./obtener_especialidades.php')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const select = document.getElementById('especialidadM');
+                select.innerHTML = '<option value="">Seleccione una especialidad</option>';
+                
+                result.data.forEach(esp => {
+                    const option = document.createElement('option');
+                    option.value = esp.idEspecialidad;
+                    option.textContent = esp.nombreEspecialidad;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => console.error('Error cargando especialidades:', error));
 }
 
 botoncillo.addEventListener('click', e => {
     e.preventDefault();
-    medicoEditando = null;
-    document.getElementById('tituloModal').textContent = 'Agregar medico';
+    document.getElementById('tituloModal').textContent = 'Agregar médico';
     document.getElementById('idMedico').value = '';
     agregarMedicos.reset();
     cargarEspecialidades();
@@ -50,176 +52,178 @@ botoncillo.addEventListener('click', e => {
 
 agregarMedicos.addEventListener('submit', e => {
     e.preventDefault();
+    guardarActualizacion();
+});
+
+function guardarActualizacion() {
     const id = document.getElementById('idMedico').value;
-    const nombreM = document.getElementById('nombreM').value.trim();
-    const apellidoPaterno = document.getElementById('apellidoPaterno').value.trim();
-    const apellidoMaterno = document.getElementById('apellidoMaterno').value.trim();
-    const cedulaM = document.getElementById('cedulaM').value.trim();
-    const especialidadM = document.getElementById('especialidadM').value;
-    const telefonoM = document.getElementById('telefonoM').value.trim();
-    const correoM = document.getElementById('correoM').value.trim();
-    const horarioDM = document.getElementById('horarioDM').value;
-    const horarioAM = document.getElementById('horarioAM').value;
-    const fechaM = document.getElementById('fechaM').value;
+    const nombre = document.getElementById('nombreM').value.trim();
+    const apellido_paterno = document.getElementById('apellidoPaterno').value.trim();
+    const apellido_materno = document.getElementById('apellidoMaterno').value.trim();
+    const cedula = document.getElementById('cedulaM').value.trim();
+    const especialidad = document.getElementById('especialidadM').value;
+    const telefono = document.getElementById('telefonoM').value.trim();
+    const correo = document.getElementById('correoM').value.trim();
+    const horario_desde = document.getElementById('horarioDM').value;
+    const horario_hasta = document.getElementById('horarioAM').value;
+    const fecha_ingreso = document.getElementById('fechaM').value;
     const estatus = document.getElementById('estatusM').value;
 
-    if (!nombreM || !apellidoPaterno || !apellidoMaterno || !cedulaM || !especialidadM || !telefonoM || !correoM || !horarioDM || !horarioAM || !fechaM || !estatus) {
-        Swal.fire({
-            title: "Error",
-            text: "Porfavor introduzca todos los campos",
-            icon: "error",
-            confirmButtonText: "Reintentar"
-        });
+    if (!nombre || !apellido_paterno || !apellido_materno || !cedula || !especialidad || !telefono || !correo || !horario_desde || !horario_hasta || !fecha_ingreso || !estatus) {
+        Swal.fire('Error', 'Por favor complete todos los campos', 'error');
         return;
     }
 
-    const fechaMdos = new Date(fechaM);
-    const fechaActual = new Date();
-
-    fechaMdos.setHours(0, 0, 0, 0);
-    fechaActual.setHours(0, 0, 0, 0);
-
-    if (fechaMdos > fechaActual) {
-        Swal.fire({
-            title: "Error",
-            text: "Porfavor seleccione una fecha valida",
-            icon: "error",
-            confirmButtonText: "Reintentar"
-        });
-        return;
-    }
-
-    let cedulaDuplicada = false;
-    for (let i = 0; i < medicos.length; i++) {
-        if (medicos[i].cedula === cedulaM && medicos[i].id != id) {
-            cedulaDuplicada = true;
-            break;
-        }
-    }
-
-    if (cedulaDuplicada) {
-        Swal.fire('Error', 'Ya existe un medico con esta cedula', 'error');
-        return;
-    }
-
-    const medico = {
-        id: id || Date.now().toString(),
-        nombre: nombreM,
-        apellidoPaterno: apellidoPaterno,
-        apellidoMaterno: apellidoMaterno,
-        cedula: cedulaM,
-        especialidad: especialidadM,
-        telefono: telefonoM,
-        correo: correoM,
-        horarioD: horarioDM,
-        horarioA: horarioAM,
-        fecha: fechaM,
+    const data = {
+        id: id,
+        nombre: nombre,
+        apellido_paterno: apellido_paterno,
+        apellido_materno: apellido_materno,
+        cedula: cedula,
+        especialidad: especialidad,
+        telefono: telefono,
+        correo: correo,
+        horario_desde: horario_desde,
+        horario_hasta: horario_hasta,
+        fecha_ingreso: fecha_ingreso,
         estatus: estatus
     };
 
-    if (id) {
-        for (let i = 0; i < medicos.length; i++) {
-            if (medicos[i].id === id) {
-                medicos[i] = medico;
-                break;
-            }
+    const url = id ? './actualizar_medicos.php' : './proceso_medicos.php';
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            Swal.fire('Éxito', result.message || 'Médico guardado correctamente', 'success');
+            modalDoctores.hide();
+            limpiarFormulario();
+            cargarMedicos();
+        } else {
+            Swal.fire('Error', result.error || 'Error al guardar', 'error');
         }
-    } else {
-        medicos.push(medico);
-    }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Error de conexión', 'error');
+    });
+}
 
-    localStorage.setItem('medicos', JSON.stringify(medicos));
-    mostrarTabla();
-    modalDoctores.hide();
-    Swal.fire('Éxito', 'Medico guardado correctamente', 'success');
-});
-
-function mostrarTabla(lista) {
+function mostrarMedicos(lista) {
     tablaMedicos.innerHTML = '';
-    const medicosAMostrar = lista || medicos;
 
-    for (let i = 0; i < medicosAMostrar.length; i++) {
-        const medico = medicosAMostrar[i];
+    for (let i = 0; i < lista.length; i++) {
+        const medico = lista[i];
         const fila = tablaMedicos.insertRow();
-        const nombreCompleto = medico.nombre + ' ' + medico.apellidoPaterno + ' ' + medico.apellidoMaterno;
-        const especialidad = obtenerNombreEspecialidad(medico.especialidad);
+        const estatus = medico.estatus == 1 ? 'Activo' : 'Inactivo';
         
         fila.innerHTML = `
             <td>${medico.id}</td>
-            <td>${nombreCompleto}</td>
+            <td>${medico.nombre_completo}</td>
             <td>${medico.cedula}</td>
-            <td>${especialidad}</td>
+            <td>${medico.especialidad}</td>
             <td>${medico.telefono}</td>
             <td>${medico.correo}</td>
-            <td>${medico.horarioD} - ${medico.horarioA}</td>
-            <td>${medico.fecha}</td>
-            <td>${medico.estatus}</td>
+            <td>${medico.horario}</td>
+            <td>${medico.fecha_ingreso}</td>
+            <td>${estatus}</td>
             <td>
-                <button class="btn btn-warning btn-sm" onclick="editarMedico('${medico.id}')">Editar</button>
-                <button class="btn btn-danger btn-sm" onclick="eliminarMedico('${medico.id}')">Eliminar</button>
+                <button class="btn btn-warning btn-sm" onclick="editarMedico(${medico.id})">Editar</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarMedico(${medico.id})">Eliminar</button>
             </td>`;
     }
 }
 
 function editarMedico(id) {
-    let medico = null;
-    for (let i = 0; i < medicos.length; i++) {
-        if (medicos[i].id === id) {
-            medico = medicos[i];
-            break;
+    fetch('./editar_medico.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: id })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            const medico = result.data;
+            document.getElementById('tituloModal').textContent = 'Editar médico';
+            document.getElementById('idMedico').value = medico.id;
+            document.getElementById('nombreM').value = medico.nombre;
+            document.getElementById('apellidoPaterno').value = medico.apellido_paterno;
+            document.getElementById('apellidoMaterno').value = medico.apellido_materno;
+            document.getElementById('cedulaM').value = medico.cedula;
+            document.getElementById('telefonoM').value = medico.telefono;
+            document.getElementById('correoM').value = medico.correo;
+            document.getElementById('horarioDM').value = medico.horario_desde;
+            document.getElementById('horarioAM').value = medico.horario_hasta;
+            document.getElementById('fechaM').value = medico.fecha_ingreso;
+            document.getElementById('estatusM').value = medico.estatus == 1 ? 'Activo' : 'Inactivo';
+            cargarEspecialidades();
+            document.getElementById('especialidadM').value = medico.especialidad;
+            modalDoctores.show();
+        } else {
+            Swal.fire('Error', result.error || 'No se pudo cargar el médico', 'error');
         }
-    }
-    
-    if (!medico) return;
-
-    medicoEditando = medico;
-    document.getElementById('tituloModal').textContent = 'Editar medico';
-    document.getElementById('idMedico').value = medico.id;
-    document.getElementById('nombreM').value = medico.nombre;
-    document.getElementById('apellidoPaterno').value = medico.apellidoPaterno;
-    document.getElementById('apellidoMaterno').value = medico.apellidoMaterno;
-    document.getElementById('cedulaM').value = medico.cedula;
-    document.getElementById('telefonoM').value = medico.telefono;
-    document.getElementById('correoM').value = medico.correo;
-    document.getElementById('horarioDM').value = medico.horarioD;
-    document.getElementById('horarioAM').value = medico.horarioA;
-    document.getElementById('fechaM').value = medico.fecha;
-    document.getElementById('estatusM').value = medico.estatus;
-    
-    cargarEspecialidades();
-    document.getElementById('especialidadM').value = medico.especialidad;
-    
-    modalDoctores.show();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Error de conexión', 'error');
+    });
 }
 
 function eliminarMedico(id) {
     Swal.fire({
-        title: 'Estás seguro?',
-        text: 'No podras recuperar este medico',
+        title: '¿Estás seguro?',
+        text: 'No podrás recuperar este médico',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Si, eliminar',
+        confirmButtonText: 'Sí, eliminar',
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            let nuevaLista = [];
-            for (let i = 0; i < medicos.length; i++) {
-                if (medicos[i].id !== id) {
-                    nuevaLista.push(medicos[i]);
+            fetch('./eliminar_medicos.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: id })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    Swal.fire('Eliminado', 'El médico ha sido eliminado correctamente', 'success');
+                    cargarMedicos();
+                } else {
+                    Swal.fire('Error', result.error || 'Error al eliminar', 'error');
                 }
-            }
-            medicos = nuevaLista;
-            
-            localStorage.setItem('medicos', JSON.stringify(medicos));
-            mostrarTabla();
-            Swal.fire({
-                title: 'Eliminado',
-                text: 'El medico ha sido eliminado correctamente',
-                icon: 'success',
-                confirmButtonText: 'Ok'
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Error de conexión', 'error');
             });
         }
     });
+}
+
+function limpiarFormulario() {
+    document.getElementById('idMedico').value = '';
+    document.getElementById('nombreM').value = '';
+    document.getElementById('apellidoPaterno').value = '';
+    document.getElementById('apellidoMaterno').value = '';
+    document.getElementById('cedulaM').value = '';
+    document.getElementById('especialidadM').value = '';
+    document.getElementById('telefonoM').value = '';
+    document.getElementById('correoM').value = '';
+    document.getElementById('horarioDM').value = '';
+    document.getElementById('horarioAM').value = '';
+    document.getElementById('fechaM').value = '';
+    document.getElementById('estatusM').value = 'Activo';
 }
 
 function buscarMedico() {
@@ -227,21 +231,20 @@ function buscarMedico() {
     let resultado = [];
     
     for (let i = 0; i < medicos.length; i++) {
-        const nombreCompleto = (medicos[i].nombre + ' ' + medicos[i].apellidoPaterno + ' ' + medicos[i].apellidoMaterno).toLowerCase();
+        const nombre = medicos[i].nombre_completo.toLowerCase();
         const cedula = medicos[i].cedula.toLowerCase();
         
-        if (nombreCompleto.includes(texto) || cedula.includes(texto)) {
+        if (nombre.includes(texto) || cedula.includes(texto)) {
             resultado.push(medicos[i]);
         }
     }
     
-    mostrarTabla(resultado);
+    mostrarMedicos(resultado);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     modalDoctores = new bootstrap.Modal(document.getElementById('modalDoctores'));
     cargarMedicos();
-    cargarEspecialidades();
     
     document.getElementById('buscar').addEventListener('input', buscarMedico);
 });
