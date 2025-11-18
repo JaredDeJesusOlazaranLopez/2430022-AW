@@ -32,12 +32,12 @@ function mostrarEspecialidades(lista) {
     let html = '';
     for (let i = 0; i < especialidadesMostrar.length; i++) {
         const esp = especialidadesMostrar[i];
-        const badge = esp.estado === 'Activa' ? 
-            '<span class="badge bg-success">Activa</span>' : 
+        const badge = esp.estado === 'Activa' ?
+            '<span class="badge bg-success">Activa</span>' :
             '<span class="badge bg-secondary">Inactiva</span>';
-        
+
         const descripcion = esp.descripcion ? esp.descripcion.substring(0, 80) + '...' : 'Sin descripción';
-        
+
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card especialidad-card h-100">
@@ -76,19 +76,19 @@ function editarEspecialidad(id) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: id })
     })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            const esp = result.data;
-            document.getElementById('nombreEspecialidad').value = esp.nombre;
-            document.getElementById('descripcionEspecialidad').value = esp.descripcion;
-            document.getElementById('estadoEspecialidad').value = esp.estado;
-            document.getElementById('idEspecialidad').value = esp.id;
-            document.getElementById('modalEspecialidadLabel').textContent = 'Editar Especialidad';
-            modalEspecialidad.show();
-        }
-    })
-    .catch(error => console.error('Error:', error));
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const esp = result.data;
+                document.getElementById('nombreEspecialidad').value = esp.nombre;
+                document.getElementById('descripcionEspecialidad').value = esp.descripcion;
+                document.getElementById('estadoEspecialidad').value = esp.estado;
+                document.getElementById('idEspecialidad').value = esp.id;
+                document.getElementById('modalEspecialidadLabel').textContent = 'Editar Especialidad';
+                modalEspecialidad.show();
+            }
+        })
+        .catch(error => console.error('Error:', error));
 }
 
 function eliminarEspecialidad(id) {
@@ -106,15 +106,15 @@ function eliminarEspecialidad(id) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id })
             })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    Swal.fire('Eliminada', 'Especialidad eliminada correctamente', 'success');
-                    cargarEspecialidades();
-                } else {
-                    Swal.fire('Error', result.error || 'Error al eliminar', 'error');
-                }
-            });
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        Swal.fire('Eliminada', 'Especialidad eliminada correctamente', 'success');
+                        cargarEspecialidades();
+                    } else {
+                        Swal.fire('Error', result.error || 'Error al eliminar', 'error');
+                    }
+                });
         }
     });
 }
@@ -139,17 +139,17 @@ function guardarEspecialidad() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            Swal.fire('Éxito', result.message, 'success');
-            modalEspecialidad.hide();
-            limpiarFormulario();
-            cargarEspecialidades();
-        } else {
-            Swal.fire('Error', result.error, 'error');
-        }
-    });
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                Swal.fire('Éxito', result.message, 'success');
+                modalEspecialidad.hide();
+                limpiarFormulario();
+                cargarEspecialidades();
+            } else {
+                Swal.fire('Error', result.error, 'error');
+            }
+        });
 }
 
 function limpiarFormulario() {
@@ -165,8 +165,8 @@ function buscarEspecialidad() {
     const estado = document.getElementById('filtroEstado').value;
 
     let resultado = especialidades.filter(esp => {
-        const cumpleTexto = esp.nombre.toLowerCase().includes(texto) || 
-                           (esp.descripcion && esp.descripcion.toLowerCase().includes(texto));
+        const cumpleTexto = esp.nombre.toLowerCase().includes(texto) ||
+            (esp.descripcion && esp.descripcion.toLowerCase().includes(texto));
         const cumpleEstado = !estado || esp.estado === estado;
         return cumpleTexto && cumpleEstado;
     });
@@ -174,7 +174,7 @@ function buscarEspecialidad() {
     mostrarEspecialidades(resultado);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     modalEspecialidad = new bootstrap.Modal(document.getElementById('modalEspecialidad'));
     modalDetalleEspecialidad = new bootstrap.Modal(document.getElementById('modalDetalleEspecialidad'));
 

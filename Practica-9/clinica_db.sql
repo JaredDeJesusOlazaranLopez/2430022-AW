@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 18-11-2025 a las 03:19:40
+-- Tiempo de generación: 08-11-2025 a las 18:43:00
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -77,22 +77,20 @@ CREATE TABLE `controlMedico` (
 --
 
 CREATE TABLE `controlPacientes` (
-  `id_paciente` int(11) NOT NULL,
-  `nombre` varchar(100) DEFAULT NULL,
-  `apellido_paterno` varchar(100) DEFAULT NULL,
-  `apellido_materno` varchar(100) DEFAULT NULL,
+  `idPaciente` int(11) NOT NULL,
+  `nombreCompleto` varchar(150) DEFAULT NULL,
   `curp` varchar(18) DEFAULT NULL,
-  `fecha_nacimiento` date DEFAULT NULL,
+  `fechaNacimiento` date DEFAULT NULL,
   `sexo` char(1) DEFAULT NULL,
   `telefono` varchar(20) DEFAULT NULL,
-  `correo` varchar(100) DEFAULT NULL,
+  `correoElectronico` varchar(100) DEFAULT NULL,
   `direccion` varchar(250) DEFAULT NULL,
-  `contacto_emergencia` varchar(150) DEFAULT NULL,
-  `telefono_emergencia` varchar(20) DEFAULT NULL,
+  `contactoEmergencia` varchar(150) DEFAULT NULL,
+  `telefonoEmergencia` varchar(20) DEFAULT NULL,
   `alergias` varchar(250) DEFAULT NULL,
-  `antecedentes_medicos` text DEFAULT NULL,
-  `fecha_registro` datetime DEFAULT NULL,
-  `estatus` varchar(20) DEFAULT NULL
+  `antecedentesMedicos` text DEFAULT NULL,
+  `fechaRegistro` datetime DEFAULT NULL,
+  `estatus` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -215,7 +213,7 @@ ALTER TABLE `controlMedico`
 -- Indices de la tabla `controlPacientes`
 --
 ALTER TABLE `controlPacientes`
-  ADD PRIMARY KEY (`id_paciente`);
+  ADD PRIMARY KEY (`idPaciente`);
 
 --
 -- Indices de la tabla `especialidades`
@@ -279,19 +277,19 @@ ALTER TABLE `controlAgenda`
 -- AUTO_INCREMENT de la tabla `controlMedico`
 --
 ALTER TABLE `controlMedico`
-  MODIFY `idMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idMedico` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `controlPacientes`
 --
 ALTER TABLE `controlPacientes`
-  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `idPaciente` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `especialidades`
 --
 ALTER TABLE `especialidades`
-  MODIFY `idEspecialidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `idEspecialidad` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `expedienteClinico`
@@ -338,7 +336,7 @@ ALTER TABLE `bitacoraAcceso`
 --
 ALTER TABLE `controlAgenda`
   ADD CONSTRAINT `fk_agenda_medico` FOREIGN KEY (`idMedico`) REFERENCES `controlMedico` (`idMedico`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_agenda_paciente` FOREIGN KEY (`idPaciente`) REFERENCES `controlPacientes` (`id_paciente`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_agenda_paciente` FOREIGN KEY (`idPaciente`) REFERENCES `controlPacientes` (`idPaciente`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `controlMedico`
@@ -351,14 +349,14 @@ ALTER TABLE `controlMedico`
 --
 ALTER TABLE `expedienteClinico`
   ADD CONSTRAINT `fk_expediente_medico` FOREIGN KEY (`idMedico`) REFERENCES `controlMedico` (`idMedico`) ON DELETE SET NULL,
-  ADD CONSTRAINT `fk_expediente_paciente` FOREIGN KEY (`idPaciente`) REFERENCES `controlPacientes` (`id_paciente`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_expediente_paciente` FOREIGN KEY (`idPaciente`) REFERENCES `controlPacientes` (`idPaciente`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `gestorPagos`
 --
 ALTER TABLE `gestorPagos`
   ADD CONSTRAINT `fk_pago_cita` FOREIGN KEY (`idCita`) REFERENCES `controlAgenda` (`idCita`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_pago_paciente` FOREIGN KEY (`idPaciente`) REFERENCES `controlPacientes` (`id_paciente`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_pago_paciente` FOREIGN KEY (`idPaciente`) REFERENCES `controlPacientes` (`idPaciente`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_pago_tarifa` FOREIGN KEY (`idTarifa`) REFERENCES `gestorTarifas` (`idTarifa`) ON DELETE SET NULL;
 
 --
