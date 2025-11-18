@@ -1,3 +1,4 @@
+// Al inicializar la pagina, se cargan los pacientes y se configuran los eventos
 document.addEventListener('DOMContentLoaded', function () {
     cargarPacientes();
     
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+//Funcion para cargar los pacientes desde el servidor
 function cargarPacientes() {
     fetch('obtener_pacientes.php')
         .then(response => {
@@ -38,6 +40,7 @@ function cargarPacientes() {
         });
 }
 
+//Funcion para mostrar los pacientes en la tabla
 function mostrarPacientes(pacientes) {
     const tabla = document.getElementById('tabla-pacientes');
     tabla.innerHTML = '';
@@ -83,17 +86,20 @@ function mostrarPacientes(pacientes) {
     });
 }
 
+//Funcion para formatear fechas en formato local
 function formatearFecha(fecha) {
     if (!fecha) return '';
     const date = new Date(fecha);
     return date.toLocaleDateString('es-MX');
 }
 
+//Funcion para mostrar mensajes de error en la tabla
 function mostrarError(mensaje) {
     const tabla = document.getElementById('tabla-pacientes');
     tabla.innerHTML = `<tr><td colspan="16" class="text-center text-danger py-4"><strong>${mensaje}</strong></td></tr>`;
 }
 
+//Funcion para buscar pacientes en la tabla
 function buscarPaciente() {
     const texto = document.getElementById('buscar').value.toLowerCase();
     
@@ -113,6 +119,7 @@ function buscarPaciente() {
     });
 }
 
+//Funcion para editar paciente, llena el formulario con los datos de el paciente seleccionado
 function editarPaciente(id) {
     fetch('actualizar_pacientes.php?id=' + id)
     .then(response => response.json())
@@ -148,6 +155,7 @@ function editarPaciente(id) {
     });
 }
 
+//Funcion para eliminar paciente con confirmacion
 function eliminarPaciente(id) {
     if (confirm('¿Estás seguro de que deseas eliminar este paciente?')) {
         fetch('eliminar_pacientes.php', {
@@ -173,6 +181,7 @@ function eliminarPaciente(id) {
     }
 }
 
+//Funcion para guardar la actualizacion o nuevo paciente
 function guardarActualizacion() {
     const id = document.getElementById('idPaciente').value;
     
@@ -193,6 +202,7 @@ function guardarActualizacion() {
         estatus: document.getElementById('estatus').value
     };
 
+    // Si hay un id, es una actualizacion
     if (id) {
         datos.id = parseInt(id);
         fetch('actualizar_pacientes.php', {
@@ -204,7 +214,8 @@ function guardarActualizacion() {
         })
         .then(response => response.text())  
         .then(texto => {
-            console.log('Respuesta del servidor:', texto); 
+            //console.log('el servidor dice:', texto);
+            // Si el servidor responde con un JSON valido
             try {
                 const data = JSON.parse(texto);
                 if (data.success) {
@@ -217,8 +228,6 @@ function guardarActualizacion() {
                     alert('Error: ' + data.error);
                 }
             } catch (e) {
-                console.error('Error al parsear JSON:', e);
-                console.error('Texto recibido:', texto);
                 alert('Error del servidor. Revisa la consola para más detalles.');
             }
         })
@@ -226,6 +235,7 @@ function guardarActualizacion() {
             console.error('Error de red:', error);
             alert('Error al guardar cambios: ' + error.message);
         });
+        // Si no hay id, es un nuevo paciente
     } else {
         fetch('proceso_paciente.php', {
             method: 'POST',
@@ -261,6 +271,7 @@ function guardarActualizacion() {
     }
 }
 
+//Solo limpia el formulario
 function limpiarFormulario() {
     document.getElementById('nombre').value = '';
     document.getElementById('apellido_paterno').value = '';

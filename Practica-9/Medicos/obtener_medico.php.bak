@@ -1,4 +1,0 @@
-<?php
-// Alias para compatibilidad, redirige a editar_medico.php
-require_once __DIR__ . '/editar_medico.php';
-?>

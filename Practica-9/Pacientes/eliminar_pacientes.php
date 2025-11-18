@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+// Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -12,6 +13,7 @@ try {
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Verificar el metodo HTTP
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         echo json_encode([
             'success' => false, 
@@ -22,6 +24,7 @@ try {
 
     $data = json_decode(file_get_contents('php://input'), true);
     
+    // Verificar que se haya proporcionado un id
     if (!isset($data['id'])) {
         echo json_encode([
             'success' => false, 
@@ -32,6 +35,7 @@ try {
 
     $id = $data['id'];
 
+    // Eliminacion del paciente
     $sql = "DELETE FROM controlPacientes WHERE id_paciente = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);

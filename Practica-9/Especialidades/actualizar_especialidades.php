@@ -24,10 +24,7 @@ try {
         exit;
     }
 
-    $sql = "UPDATE especialidades SET 
-            nombreEspecialidad = :nombre,
-            descripcion = :descripcion,
-            WHERE idEspecialidad = :id";
+    $sql = "UPDATE especialidades SET nombreEspecialidad = :nombre, descripcion = :descripcion WHERE idEspecialidad = :id";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
@@ -39,7 +36,7 @@ try {
     if ($stmt->rowCount() > 0) {
         echo json_encode(['success' => true, 'message' => 'Especialidad actualizada correctamente']);
     } else {
-        echo json_encode(['success' => false, 'error' => 'No se encontró la especialidad o no hubo cambios']);
+        echo json_encode(['success' => false, 'error' => 'No se encontro la especialidad o no hubo cambios']);
     }
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()]);

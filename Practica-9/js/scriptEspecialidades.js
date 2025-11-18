@@ -1,7 +1,9 @@
+//variables globales y tablas y botones
 let especialidades = [];
 let modalEspecialidad;
 let modalDetalleEspecialidad;
 
+//Funcion para cargar las especialidades desde el servidor
 function cargarEspecialidades() {
     especialidades = [];
     fetch('obtener_especialidades.php')
@@ -20,6 +22,7 @@ function cargarEspecialidades() {
         });
 }
 
+//Funcion para mostrar las especialidades en el contenedor
 function mostrarEspecialidades(lista) {
     const contenedor = document.getElementById('contenedorEspecialidades');
     const especialidadesMostrar = lista || especialidades;
@@ -59,6 +62,7 @@ function mostrarEspecialidades(lista) {
     contenedor.innerHTML = html;
 }
 
+//Funciones para ver detalles, editar, eliminar y guardar especialidades
 function verDetalles(id) {
     const esp = especialidades.find(e => e.id === id);
     if (esp) {
@@ -70,6 +74,7 @@ function verDetalles(id) {
     }
 }
 
+//Funcion para editar especialidad, llena el formulario con los datos de la especialidad seleccionada
 function editarEspecialidad(id) {
     const esp = especialidades.find(e => e.id === id);
     
@@ -85,6 +90,7 @@ function editarEspecialidad(id) {
     }
 }
 
+//Funcion para eliminar especialidad con confirmacion
 function eliminarEspecialidad(id) {
     Swal.fire({
         title: '¿Estás seguro?',
@@ -117,6 +123,7 @@ function eliminarEspecialidad(id) {
     });
 }
 
+//Funcion para guardar especialidad, tanto nueva como editada
 function guardarEspecialidad() {
     const id = document.getElementById('idEspecialidad').value;
     const nombre = document.getElementById('nombreEspecialidad').value.trim();
@@ -159,6 +166,7 @@ function guardarEspecialidad() {
         });
 }
 
+//Solo limpia el formulario
 function limpiarFormulario() {
     document.getElementById('idEspecialidad').value = '';
     document.getElementById('nombreEspecialidad').value = '';
@@ -185,6 +193,7 @@ function buscarEspecialidad() {
     mostrarEspecialidades(resultado);
 }
 
+//Inicializacion del modal y carga de especialidades al cargar la pagina
 document.addEventListener('DOMContentLoaded', function () {
     modalEspecialidad = new bootstrap.Modal(document.getElementById('modalEspecialidad'));
     modalDetalleEspecialidad = new bootstrap.Modal(document.getElementById('modalDetalleEspecialidad'));
@@ -206,6 +215,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+//Hacer funciones globales para poder llamarlas desde el HTML
 window.verDetalles = verDetalles;
 window.editarEspecialidad = editarEspecialidad;
 window.eliminarEspecialidad = eliminarEspecialidad;
+window.guardarEspecialidad = guardarEspecialidad;
+window.limpiarFormulario = limpiarFormulario;

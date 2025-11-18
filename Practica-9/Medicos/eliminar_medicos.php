@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+// Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -20,15 +21,17 @@ try {
         exit;
     }
 
+    // Eliminación del medico
     $sql = "DELETE FROM controlMedico WHERE idMedico = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
 
+    // Verificar si se eliminó algun registro
     if ($stmt->rowCount() > 0) {
-        echo json_encode(['success' => true, 'message' => 'Médico eliminado correctamente']);
+        echo json_encode(['success' => true, 'message' => 'MMedico eliminado correctamente']);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Médico no encontrado']);
+        echo json_encode(['success' => false, 'error' => 'Medico no encontrado']);
     }
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()]);

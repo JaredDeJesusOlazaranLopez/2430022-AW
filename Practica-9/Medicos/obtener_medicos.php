@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+// Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -12,10 +13,12 @@ try {
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Obtener todos los medicos
     $sql = "SELECT * FROM controlMedico ORDER BY idMedico DESC";
     $stmt = $pdo->query($sql);
     $medicos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Formatear los datos para la respuesta
     $data = [];
     foreach ($medicos as $medico) {
         $data[] = [
