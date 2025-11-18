@@ -27,7 +27,6 @@ try {
     $sql = "UPDATE especialidades SET 
             nombreEspecialidad = :nombre,
             descripcion = :descripcion,
-            estado = :estado
             WHERE idEspecialidad = :id";
 
     $stmt = $pdo->prepare($sql);
@@ -35,7 +34,6 @@ try {
         ':id' => $id,
         ':nombre' => $nombre,
         ':descripcion' => $descripcion,
-        ':estado' => $estado
     ]);
 
     if ($stmt->rowCount() > 0) {
