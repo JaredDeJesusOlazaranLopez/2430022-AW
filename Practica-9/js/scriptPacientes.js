@@ -83,6 +83,7 @@ function mostrarPacientes(pacientes) {
             </tr>
         `;
         tabla.innerHTML += fila;
+        
     });
 }
 

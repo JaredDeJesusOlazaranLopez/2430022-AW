@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Configuración de la base de datos
+// configuracion de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -39,3 +39,4 @@ try {
     echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()]);
 }
 ?>
+
