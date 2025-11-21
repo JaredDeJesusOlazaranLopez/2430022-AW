@@ -27,17 +27,16 @@ try {
 
     // Inserción de nueva cita
     $sql = "INSERT INTO controlAgenda 
-            (idPaciente, idMedico, idEspecialidad, fechaCita, horaCita, 
+            (idPaciente, idMedico, fechaCita, horaCita, 
              motivoConsulta, estadoCita, observaciones, fechaRegistro) 
             VALUES 
-            (:idPaciente, :idMedico, :idEspecialidad, :fechaCita, :horaCita,
+            (:idPaciente, :idMedico, :fechaCita, :horaCita,
              :motivoConsulta, :estadoCita, :observaciones, NOW())";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         ':idPaciente' => $data['idPaciente'],
         ':idMedico' => $data['idMedico'],
-        ':idEspecialidad' => $data['idEspecialidad'] ?? null,
         ':fechaCita' => $data['fecha'],
         ':horaCita' => $data['hora'],
         ':motivoConsulta' => $data['motivo'] ?? '',
