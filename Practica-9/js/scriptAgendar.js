@@ -1,400 +1,451 @@
-let calendario;
-let citas = [];
+// scriptAgendar.js - Sistema de gestión de citas médicas
+let calendar;
 let citaActual = null;
-let modalCita;
-let modalDetalleCita;
+let todasLasCitas = [];
 
-// Cargar citas desde el servidor
-function cargarDatos() {
-    fetch('obtener_cita.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                citas = data.data;
-                actualizarCalendario();
-            } else {
-                console.error('Error:', data.error);
-                alert('Error al cargar citas: ' + data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error de red:', error);
-            alert('Error de conexión al servidor');
-        });
-}
-
-// Cargar pacientes desde el servidor
-function cargarPacientes() {
-    fetch('../Pacientes/obtener_pacientes.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const selectPaciente = document.getElementById('nombrePaciente');
-                selectPaciente.innerHTML = '<option value="">Seleccione un paciente</option>';
-                
-                data.data.forEach(paciente => {
-                    const option = document.createElement('option');
-                    option.value = paciente.id;
-                    option.textContent = `${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`;
-                    selectPaciente.appendChild(option);
-                });
-            }
-        })
-        .catch(error => console.error('Error al cargar pacientes:', error));
-}
-
-// Cargar médicos desde el servidor
-function cargarMedicos() {
-    fetch('../Medicos/obtener_medicos.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const selectMedico = document.getElementById('nombreMedico');
-                selectMedico.innerHTML = '<option value="">Seleccione un médico</option>';
-                
-                data.data.forEach(medico => {
-                    const option = document.createElement('option');
-                    option.value = medico.id;
-                    option.textContent = `Dr. ${medico.nombre} ${medico.apellido_paterno}`;
-                    selectMedico.appendChild(option);
-                });
-            }
-        })
-        .catch(error => console.error('Error al cargar médicos:', error));
-}
-
-// Cargar especialidades desde el servidor
-function cargarEspecialidades() {
-    fetch('../Especialidades/obtener_especialidades.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const selectEspecialidad = document.getElementById('especialidadCita');
-                selectEspecialidad.innerHTML = '<option value="">Seleccione una especialidad</option>';
-                
-                data.data.forEach(especialidad => {
-                    const option = document.createElement('option');
-                    option.value = especialidad.id;
-                    option.textContent = especialidad.nombre;
-                    selectEspecialidad.appendChild(option);
-                });
-            }
-        })
-        .catch(error => console.error('Error al cargar especialidades:', error));
-}
-
-function obtenerNombrePaciente(idPaciente) {
-    const cita = citas.find(c => c.idPaciente == idPaciente);
-    return cita ? cita.nombrePaciente : 'Paciente no encontrado';
-}
-
-function obtenerNombreMedico(idMedico) {
-    const cita = citas.find(c => c.idMedico == idMedico);
-    return cita ? cita.nombreMedico : 'Médico no encontrado';
-}
-
-function obtenerNombreEspecialidad(idEspecialidad) {
-    const cita = citas.find(c => c.idEspecialidad == idEspecialidad);
-    return cita ? cita.nombreEspecialidad : 'Especialidad no encontrada';
-}
-
-function obtenerColorEstado(estado) {
-    const colores = {
-        'Programada': '#6c757d',
-        'Confirmada': '#0d6efd',
-        'En Proceso': '#ffc107',
-        'Completada': '#198754',
-        'Cancelada': '#dc3545'
-    };
-    return colores[estado] || '#6c757d';
-}
-
-function convertirCitasAEventos() {
-    return citas.map(cita => ({
-        id: cita.id,
-        title: cita.nombrePaciente,
-        start: `${cita.fecha}T${cita.hora}`,
-        backgroundColor: obtenerColorEstado(cita.estado),
-        borderColor: obtenerColorEstado(cita.estado),
-        extendedProps: {
-            idPaciente: cita.idPaciente,
-            idMedico: cita.idMedico,
-            idEspecialidad: cita.idEspecialidad,
-            estado: cita.estado,
-            motivo: cita.motivo,
-            observaciones: cita.observaciones,
-            nombreMedico: cita.nombreMedico,
-            nombreEspecialidad: cita.nombreEspecialidad
-        }
-    }));
-}
-
-function actualizarCalendario() {
-    calendario.removeAllEvents();
-    calendario.addEventSource(convertirCitasAEventos());
-    actualizarProximasCitas();
-    actualizarEstadisticas();
-}
-
-function actualizarProximasCitas() {
-    const contenedor = document.getElementById('upcomingAppointments');
-    const ahora = new Date();
-
-    const proximasCitas = citas
-        .filter(cita => {
-            const fechaCita = new Date(`${cita.fecha}T${cita.hora}`);
-            return fechaCita > ahora && cita.estado !== 'Cancelada';
-        })
-        .sort((a, b) => {
-            const fechaA = new Date(`${a.fecha}T${a.hora}`);
-            const fechaB = new Date(`${b.fecha}T${b.hora}`);
-            return fechaA - fechaB;
-        })
-        .slice(0, 5);
-
-    if (proximasCitas.length === 0) {
-        contenedor.innerHTML = '<p class="text-muted">No hay citas próximas</p>';
-        return;
-    }
-
-    contenedor.innerHTML = proximasCitas.map(cita => `
-        <div class="border-bottom pb-2 mb-2">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <strong>${cita.nombrePaciente}</strong>
-                    <br>
-                    <small class="text-muted">
-                        <i class="fa-solid fa-user-doctor"></i> ${cita.nombreMedico}
-                    </small>
-                    <br>
-                    <small class="text-muted">
-                        <i class="fa-solid fa-calendar"></i> ${formatearFecha(cita.fecha)}
-                    </small>
-                    <br>
-                    <span class="badge badge-time">
-                        <i class="fa-solid fa-clock"></i> ${cita.hora}
-                    </span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function actualizarEstadisticas() {
-    const totalCitas = citas.filter(c => c.estado !== 'Cancelada').length;
-    const mesActual = new Date().getMonth();
-    const anioActual = new Date().getFullYear();
-
-    const citasMes = citas.filter(cita => {
-        const fechaCita = new Date(cita.fecha);
-        return fechaCita.getMonth() === mesActual &&
-            fechaCita.getFullYear() === anioActual &&
-            cita.estado !== 'Cancelada';
-    }).length;
-
-    document.getElementById('totalAppointments').textContent = totalCitas;
-    document.getElementById('monthAppointments').textContent = citasMes;
-}
-
-function formatearFecha(fecha) {
-    const date = new Date(fecha + 'T00:00:00');
-    const opciones = { day: '2-digit', month: 'short', year: 'numeric' };
-    return date.toLocaleDateString('es-MX', opciones);
-}
-
-function limpiarFormulario() {
-    document.getElementById('idCita').value = '';
-    document.getElementById('nombrePaciente').value = '';
-    document.getElementById('nombreMedico').value = '';
-    document.getElementById('fechaCita').value = '';
-    document.getElementById('horaCita').value = '';
-    document.getElementById('especialidadCita').value = '';
-    document.getElementById('estadoCita').value = 'Programada';
-    document.getElementById('motivoCita').value = '';
-    document.getElementById('observacionesCita').value = '';
-    document.getElementById('modalCitaLabel').innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Nueva Cita';
-}
-
-function mostrarDetallesCita(cita) {
-    citaActual = cita;
-    document.getElementById('detallePaciente').textContent = cita.nombrePaciente;
-    document.getElementById('detalleMedico').textContent = cita.nombreMedico;
-    document.getElementById('detalleFecha').textContent = formatearFecha(cita.fecha);
-    document.getElementById('detalleHora').textContent = cita.hora;
-    document.getElementById('detalleEspecialidad').textContent = cita.nombreEspecialidad;
-
-    const estadoElement = document.getElementById('detalleEstado');
-    estadoElement.innerHTML = `<span class="badge" style="background-color: ${obtenerColorEstado(cita.estado)}">${cita.estado}</span>`;
-
-    document.getElementById('detalleMotivo').textContent = cita.motivo || 'Sin especificar';
-    document.getElementById('detalleObservaciones').textContent = cita.observaciones || 'Sin observaciones';
-
-    modalDetalleCita.show();
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    modalCita = new bootstrap.Modal(document.getElementById('modalCita'));
-    modalDetalleCita = new bootstrap.Modal(document.getElementById('modalDetalleCita'));
-
-    cargarDatos();
+// Inicialización cuando carga el documento
+document.addEventListener('DOMContentLoaded', function() {
+    inicializarCalendario();
     cargarPacientes();
     cargarMedicos();
     cargarEspecialidades();
+    cargarCitas();
+    configurarEventos();
+});
 
-    const elementoCalendario = document.getElementById('calendar');
-    calendario = new FullCalendar.Calendar(elementoCalendario, {
+// Configurar todos los event listeners
+function configurarEventos() {
+    document.getElementById('agregarCita').addEventListener('click', abrirModalNuevaCita);
+    document.getElementById('guardarCita').addEventListener('click', guardarCita);
+    document.getElementById('editarCita').addEventListener('click', editarCitaDesdeDetalle);
+    document.getElementById('eliminarCita').addEventListener('click', confirmarEliminarCita);
+}
+
+// Inicializar FullCalendar
+function inicializarCalendario() {
+    const calendarEl = document.getElementById('calendar');
+    
+    calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'es',
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         buttonText: {
             today: 'Hoy',
             month: 'Mes',
             week: 'Semana',
-            day: 'Día',
-            list: 'Lista'
+            day: 'Día'
         },
-        height: 'auto',
-        navLinks: true,
-        editable: true,
-        selectable: true,
-        selectMirror: true,
-        dayMaxEvents: true,
-        weekends: true,
-        events: convertirCitasAEventos(),
-
-        eventClick: function (info) {
-            const cita = citas.find(c => c.id == info.event.id);
-            if (cita) {
-                mostrarDetallesCita(cita);
-            }
+        events: [],
+        eventClick: function(info) {
+            mostrarDetalleCita(info.event.id);
         },
-        select: function (info) {
-            const fechaSeleccionada = info.startStr;
-            document.getElementById('fechaCita').value = fechaSeleccionada;
-            limpiarFormulario();
-            document.getElementById('fechaCita').value = fechaSeleccionada;
-            modalCita.show();
-        }
+        dateClick: function(info) {
+            abrirModalNuevaCita(info.dateStr);
+        },
+        eventColor: '#0d6efd',
+        timeZone: 'local'
     });
+    
+    calendar.render();
+}
 
-    calendario.render();
-
-    document.getElementById('agregarCita').addEventListener('click', function () {
-        limpiarFormulario();
-        const hoy = new Date().toISOString().split('T')[0];
-        document.getElementById('fechaCita').value = hoy;
-        modalCita.show();
-    });
-
-    document.getElementById('guardarCita').addEventListener('click', function () {
-        const idCita = document.getElementById('idCita').value;
-        const idPaciente = document.getElementById('nombrePaciente').value;
-        const idMedico = document.getElementById('nombreMedico').value;
-        const fecha = document.getElementById('fechaCita').value;
-        const hora = document.getElementById('horaCita').value;
-        const idEspecialidad = document.getElementById('especialidadCita').value;
-        const estado = document.getElementById('estadoCita').value;
-        const motivo = document.getElementById('motivoCita').value;
-        const observaciones = document.getElementById('observacionesCita').value;
-
-        if (!idPaciente || !idMedico || !fecha || !hora || !idEspecialidad) {
-            alert('Por favor complete todos los campos obligatorios');
-            return;
+// Cargar pacientes en el select
+async function cargarPacientes() {
+    try {
+        const response = await fetch('../Pacientes/obtener_pacientes.php');
+        const data = await response.json();
+        
+        const select = document.getElementById('nombrePaciente');
+        select.innerHTML = '<option value="">Seleccione un paciente</option>';
+        
+        if (data.success && data.data) {
+            data.data.forEach(paciente => {
+                const option = document.createElement('option');
+                option.value = paciente.idPaciente;
+                // Usar nombreCompleto si existe, si no construirlo
+                const nombreCompleto = paciente.nombreCompleto || 
+                    `${paciente.nombre || ''} ${paciente.apellido_paterno || ''} ${paciente.apellido_materno || ''}`.trim();
+                option.textContent = nombreCompleto;
+                select.appendChild(option);
+            });
         }
+    } catch (error) {
+        console.error('Error al cargar pacientes:', error);
+        mostrarAlerta('Error al cargar la lista de pacientes', 'danger');
+    }
+}
 
-        const datos = {
-            idPaciente,
-            idMedico,
-            fecha,
-            hora,
-            idEspecialidad,
-            estado,
-            motivo,
-            observaciones
-        };
+// Cargar médicos en el select
+async function cargarMedicos() {
+    try {
+        const response = await fetch('../Medicos/obtener_medicos.php');
+        const data = await response.json();
+        
+        const select = document.getElementById('nombreMedico');
+        select.innerHTML = '<option value="">Seleccione un médico</option>';
+        
+        if (data.success && data.data) {
+            data.data.forEach(medico => {
+                const option = document.createElement('option');
+                option.value = medico.idMedico;
+                option.textContent = medico.nombreCompleto;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Error al cargar médicos:', error);
+        mostrarAlerta('Error al cargar la lista de médicos', 'danger');
+    }
+}
 
-        // Actualizar o crear nueva cita
-        const url = idCita ? 'actualizar_cita.php' : 'proceso_cita.php';
+// Cargar especialidades en el select
+async function cargarEspecialidades() {
+    try {
+        const response = await fetch('../Especialidades/obtener_especialidades.php');
+        const data = await response.json();
+        
+        const select = document.getElementById('especialidadCita');
+        select.innerHTML = '<option value="">Seleccione una especialidad</option>';
+        
+        if (data.success && data.data) {
+            data.data.forEach(especialidad => {
+                const option = document.createElement('option');
+                option.value = especialidad.idEspecialidad;
+                option.textContent = especialidad.nombreEspecialidad;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Error al cargar especialidades:', error);
+        mostrarAlerta('Error al cargar la lista de especialidades', 'danger');
+    }
+}
+
+// Cargar todas las citas
+async function cargarCitas() {
+    try {
+        const response = await fetch('obtener_cita.php');
+        const data = await response.json();
+        
+        if (data.success && data.data) {
+            todasLasCitas = data.data;
+            
+            // Convertir citas al formato de FullCalendar
+            const eventos = data.data.map(cita => {
+                // Extraer solo la hora (HH:MM) si viene en formato completo
+                let horaFormateada = cita.hora;
+                if (cita.hora && cita.hora.length > 5) {
+                    horaFormateada = cita.hora.substring(0, 5);
+                }
+                
+                return {
+                    id: cita.id,
+                    title: `${cita.nombrePaciente || 'Sin paciente'} - ${cita.nombreMedico || 'Sin médico'}`,
+                    start: cita.hora ? `${cita.fecha}T${horaFormateada}` : cita.fecha,
+                    backgroundColor: obtenerColorPorEstado(cita.estado),
+                    borderColor: obtenerColorPorEstado(cita.estado),
+                    extendedProps: {
+                        ...cita
+                    }
+                };
+            });
+            
+            // Actualizar eventos en el calendario
+            calendar.removeAllEvents();
+            calendar.addEventSource(eventos);
+            
+            // Actualizar estadísticas
+            actualizarEstadisticas(data.data);
+            
+            // Actualizar próximas citas
+            actualizarProximasCitas(data.data);
+        }
+    } catch (error) {
+        console.error('Error al cargar citas:', error);
+        mostrarAlerta('Error al cargar las citas', 'danger');
+    }
+}
+
+// Obtener color según el estado de la cita
+function obtenerColorPorEstado(estado) {
+    const colores = {
+        'Programada': '#0d6efd',
+        'Confirmada': '#198754',
+        'En Proceso': '#ffc107',
+        'Completada': '#6c757d',
+        'Cancelada': '#dc3545'
+    };
+    return colores[estado] || '#0d6efd';
+}
+
+// Abrir modal para nueva cita
+function abrirModalNuevaCita(fecha = null) {
+    citaActual = null;
+    document.getElementById('modalCitaLabel').innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Nueva Cita';
+    
+    // Limpiar formulario
+    document.getElementById('idCita').value = '';
+    document.getElementById('nombrePaciente').value = '';
+    document.getElementById('nombreMedico').value = '';
+    document.getElementById('especialidadCita').value = '';
+    document.getElementById('fechaCita').value = fecha || '';
+    document.getElementById('horaCita').value = '';
+    document.getElementById('motivoCita').value = '';
+    document.getElementById('estadoCita').value = 'Programada';
+    document.getElementById('observacionesCita').value = '';
+    
+    // Mostrar modal
+    const modal = new bootstrap.Modal(document.getElementById('modalCita'));
+    modal.show();
+}
+
+// Guardar cita (nueva o editar)
+async function guardarCita() {
+    const idCita = document.getElementById('idCita').value;
+    const idPaciente = document.getElementById('nombrePaciente').value;
+    const idMedico = document.getElementById('nombreMedico').value;
+    const idEspecialidad = document.getElementById('especialidadCita').value;
+    const fecha = document.getElementById('fechaCita').value;
+    const hora = document.getElementById('horaCita').value;
+    const motivo = document.getElementById('motivoCita').value;
+    const estado = document.getElementById('estadoCita').value;
+    const observaciones = document.getElementById('observacionesCita').value;
+    
+    // Validar campos requeridos
+    if (!idPaciente || !idMedico || !fecha || !hora) {
+        mostrarAlerta('Por favor complete todos los campos obligatorios', 'warning');
+        return;
+    }
+    
+    const datos = {
+        idPaciente,
+        idMedico,
+        idEspecialidad: idEspecialidad || null,
+        fecha,
+        hora,
+        motivo,
+        estado,
+        observaciones
+    };
+    
+    try {
+        let url, metodo;
+        
         if (idCita) {
-            datos.id = parseInt(idCita);
+            // Editar cita existente
+            url = 'actualizar_cita.php';
+            metodo = 'POST';
+            datos.id = idCita;
+        } else {
+            // Nueva cita
+            url = 'proceso_cita.php';
+            metodo = 'POST';
         }
-
-        fetch(url, {
-            method: 'POST',
+        
+        const response = await fetch(url, {
+            method: metodo,
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(datos)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(idCita ? 'Cita actualizada correctamente' : 'Cita guardada correctamente');
-                modalCita.hide();
-                limpiarFormulario();
-                cargarDatos();
-            } else {
-                alert('Error: ' + data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error al guardar la cita');
         });
-    });
-
-    document.getElementById('editarCita').addEventListener('click', function () {
-        if (!citaActual) { 
-            return; 
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            mostrarAlerta(result.message || 'Cita guardada correctamente', 'success');
+            
+            // Cerrar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalCita'));
+            modal.hide();
+            
+            // Recargar citas
+            await cargarCitas();
+        } else {
+            mostrarAlerta(result.error || 'Error al guardar la cita', 'danger');
         }
+    } catch (error) {
+        console.error('Error al guardar cita:', error);
+        mostrarAlerta('Error al procesar la solicitud', 'danger');
+    }
+}
 
-        document.getElementById('idCita').value = citaActual.id;
-        document.getElementById('nombrePaciente').value = citaActual.idPaciente;
-        document.getElementById('nombreMedico').value = citaActual.idMedico;
-        document.getElementById('fechaCita').value = citaActual.fecha;
-        document.getElementById('horaCita').value = citaActual.hora;
-        document.getElementById('especialidadCita').value = citaActual.idEspecialidad;
-        document.getElementById('estadoCita').value = citaActual.estado;
-        document.getElementById('motivoCita').value = citaActual.motivo;
-        document.getElementById('observacionesCita').value = citaActual.observaciones;
-        document.getElementById('modalCitaLabel').innerHTML = '<i class="fa-solid fa-edit"></i> Editar Cita';
-
-        modalDetalleCita.hide();
-        modalCita.show();
-    });
-
-    document.getElementById('eliminarCita').addEventListener('click', function () {
-        if (!citaActual) {
-            return;
+// Mostrar detalle de una cita
+async function mostrarDetalleCita(idCita) {
+    try {
+        const response = await fetch(`actualizar_cita.php?id=${idCita}`);
+        const data = await response.json();
+        
+        if (data.success && data.data) {
+            citaActual = data.data;
+            
+            // Obtener nombres completos de las citas cargadas
+            const citaCompleta = todasLasCitas.find(c => c.id == idCita);
+            
+            const paciente = citaCompleta?.nombrePaciente || 'N/A';
+            const medico = citaCompleta?.nombreMedico || 'N/A';
+            const especialidad = citaCompleta?.nombreEspecialidad || 'N/A';
+            
+            // Llenar modal de detalle
+            document.getElementById('detallePaciente').textContent = paciente;
+            document.getElementById('detalleMedico').textContent = medico;
+            document.getElementById('detalleEspecialidad').textContent = especialidad;
+            document.getElementById('detalleFecha').textContent = formatearFecha(data.data.fecha);
+            document.getElementById('detalleHora').textContent = data.data.hora;
+            document.getElementById('detalleEstado').textContent = data.data.estado;
+            document.getElementById('detalleMotivo').textContent = data.data.motivo || 'Sin especificar';
+            document.getElementById('detalleObservaciones').textContent = data.data.observaciones || 'Sin observaciones';
+            
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('modalDetalleCita'));
+            modal.show();
         }
+    } catch (error) {
+        console.error('Error al cargar detalle:', error);
+        mostrarAlerta('Error al cargar los detalles de la cita', 'danger');
+    }
+}
 
-        if (confirm('¿Está seguro de que desea eliminar esta cita?')) {
-            fetch('eliminar_cita.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id: citaActual.id })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Cita eliminada correctamente');
-                    modalDetalleCita.hide();
-                    citaActual = null;
-                    cargarDatos();
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al eliminar la cita');
-            });
+// Editar cita desde el modal de detalle
+async function editarCitaDesdeDetalle() {
+    if (!citaActual) return;
+    
+    // Cerrar modal de detalle
+    const modalDetalle = bootstrap.Modal.getInstance(document.getElementById('modalDetalleCita'));
+    modalDetalle.hide();
+    
+    // Llenar formulario de edición
+    document.getElementById('modalCitaLabel').innerHTML = '<i class="fa-solid fa-calendar-edit"></i> Editar Cita';
+    document.getElementById('idCita').value = citaActual.id;
+    document.getElementById('nombrePaciente').value = citaActual.idPaciente;
+    document.getElementById('nombreMedico').value = citaActual.idMedico;
+    document.getElementById('especialidadCita').value = citaActual.idEspecialidad || '';
+    document.getElementById('fechaCita').value = citaActual.fecha;
+    document.getElementById('horaCita').value = citaActual.hora;
+    document.getElementById('motivoCita').value = citaActual.motivo || '';
+    document.getElementById('estadoCita').value = citaActual.estado;
+    document.getElementById('observacionesCita').value = citaActual.observaciones || '';
+    
+    // Abrir modal de edición
+    const modal = new bootstrap.Modal(document.getElementById('modalCita'));
+    modal.show();
+}
+
+// Confirmar eliminación de cita
+function confirmarEliminarCita() {
+    if (!citaActual) return;
+    
+    if (confirm('¿Está seguro de que desea eliminar esta cita?')) {
+        eliminarCita(citaActual.id);
+    }
+}
+
+// Eliminar cita
+async function eliminarCita(idCita) {
+    try {
+        const response = await fetch('eliminar_cita.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: idCita })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            mostrarAlerta('Cita eliminada correctamente', 'success');
+            
+            // Cerrar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalDetalleCita'));
+            modal.hide();
+            
+            // Recargar citas
+            await cargarCitas();
+        } else {
+            mostrarAlerta(result.error || 'Error al eliminar la cita', 'danger');
         }
-    });
-});
+    } catch (error) {
+        console.error('Error al eliminar cita:', error);
+        mostrarAlerta('Error al procesar la solicitud', 'danger');
+    }
+}
+
+// Actualizar estadísticas
+function actualizarEstadisticas(citas) {
+    const total = citas.length;
+    
+    // Citas del mes actual
+    const hoy = new Date();
+    const mesActual = hoy.getMonth();
+    const añoActual = hoy.getFullYear();
+    
+    const citasMes = citas.filter(cita => {
+        const fechaCita = new Date(cita.fecha + 'T00:00:00');
+        return fechaCita.getMonth() === mesActual && fechaCita.getFullYear() === añoActual;
+    }).length;
+    
+    document.getElementById('totalAppointments').textContent = total;
+    document.getElementById('monthAppointments').textContent = citasMes;
+}
+
+// Actualizar próximas citas
+function actualizarProximasCitas(citas) {
+    const container = document.getElementById('upcomingAppointments');
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    
+    // Filtrar y ordenar próximas citas
+    const proximasCitas = citas
+        .filter(cita => {
+            const fechaCita = new Date(cita.fecha + 'T00:00:00');
+            return fechaCita >= hoy && cita.estado !== 'Cancelada' && cita.estado !== 'Completada';
+        })
+        .sort((a, b) => {
+            const fechaHoraA = new Date(`${a.fecha}T${a.hora || '00:00:00'}`);
+            const fechaHoraB = new Date(`${b.fecha}T${b.hora || '00:00:00'}`);
+            return fechaHoraA - fechaHoraB;
+        })
+        .slice(0, 5);
+    
+    if (proximasCitas.length === 0) {
+        container.innerHTML = '<p class="text-muted">No hay citas próximas</p>';
+        return;
+    }
+    
+    container.innerHTML = proximasCitas.map(cita => `
+        <div class="border-bottom pb-2 mb-2">
+            <small class="text-muted">${formatearFecha(cita.fecha)} ${cita.hora ? '- ' + cita.hora.substring(0, 5) : ''}</small>
+            <p class="mb-0"><strong>${cita.nombrePaciente || 'Sin paciente'}</strong></p>
+            <small>${cita.nombreMedico || 'Sin médico'}</small>
+        </div>
+    `).join('');
+}
+
+// Formatear fecha
+function formatearFecha(fecha) {
+    const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(fecha + 'T00:00:00').toLocaleDateString('es-MX', opciones);
+}
+
+// Mostrar alertas
+function mostrarAlerta(mensaje, tipo) {
+    const alertContainer = document.createElement('div');
+    alertContainer.className = `alert alert-${tipo} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+    alertContainer.style.zIndex = '9999';
+    alertContainer.style.minWidth = '300px';
+    alertContainer.innerHTML = `
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertContainer);
+    
+    setTimeout(() => {
+        alertContainer.remove();
+    }, 4000);
+}
