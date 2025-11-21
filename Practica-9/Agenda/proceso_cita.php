@@ -30,12 +30,12 @@ try {
             (idPaciente, idMedico, fechaCita, horaCita, 
              motivoConsulta, estadoCita, observaciones, fechaRegistro) 
             VALUES 
-            (:idPaciente, :idMedico, :fechaCita, :horaCita,
+            (:id_paciente, :idMedico, :fechaCita, :horaCita,
              :motivoConsulta, :estadoCita, :observaciones, NOW())";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
-        ':idPaciente' => $data['idPaciente'],
+        ':id_paciente' => $data['idPaciente'],
         ':idMedico' => $data['idMedico'],
         ':fechaCita' => $data['fecha'],
         ':horaCita' => $data['hora'],

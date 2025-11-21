@@ -65,7 +65,7 @@ async function cargarPacientes() {
         if (data.success && data.data) {
             data.data.forEach(paciente => {
                 const option = document.createElement('option');
-                option.value = paciente.idPaciente;
+                option.value = paciente.id_paciente;
                 // Usar nombreCompleto si existe, si no construirlo
                 const nombreCompleto = paciente.nombreCompleto || 
                     `${paciente.nombre || ''} ${paciente.apellido_paterno || ''} ${paciente.apellido_materno || ''}`.trim();
