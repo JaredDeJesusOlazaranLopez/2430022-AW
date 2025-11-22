@@ -1,12 +1,14 @@
-const form = document.getElementById("inicioSesion");
+// Formulario de inicio de sesión
+const formLogin = document.getElementById("inicioSesion");
+const formRegistro = document.getElementById("registro");
 
-form.addEventListener("submit", e => {
+formLogin.addEventListener("submit", e => {
     e.preventDefault();
-    const correo = document.getElementById("correoI").value;
-    const contrasena = document.getElementById("contraI").value;
+    const correo = document.getElementById("correoI").value.trim();
+    const contrasena = document.getElementById("contraI").value.trim();
 
     if (correo === "" || contrasena === "") {
-        swal.fire({
+        Swal.fire({
             title: "Campos incompletos",
             text: "Por favor, complete todos los campos",
             icon: "warning",
@@ -15,24 +17,116 @@ form.addEventListener("submit", e => {
         return;
     }
 
-    if (correo === "admin@gmail.com" && contrasena === "12345") {
-        swal.fire({
-            title: "Inicio de sesion exitoso",
-            text: "¡Bienvenido de nuevo!",
-            icon: "success",
-            confirmButtonText: "Continuar"
+    // Enviar datos al servidor
+    fetch('login.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            correo: correo,
+            contrasena: contrasena
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                title: "Inicio de sesión exitoso",
+                text: "¡Bienvenido de nuevo!",
+                icon: "success",
+                confirmButtonText: "Continuar"
+            }).then(() => {
+                window.location.href = "dashboard.html";
+            });
+        } else {
+            Swal.fire({
+                title: "Error de inicio de sesión",
+                text: data.error || "Correo o contraseña incorrectos",
+                icon: "error",
+                confirmButtonText: "Reintentar"
+            });
         }
-        ).then(() => {
-            window.location.href = "dashboard.html";
-        });
-    } else {
-        swal.fire({
-            title: "Error de inicio de sesion",
-            text: "Correo o contraseña incorrectos",
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            title: "Error",
+            text: "Error al conectar con el servidor",
             icon: "error",
-            confirmButtonText: "Reintentar"
+            confirmButtonText: "Aceptar"
+        });
+    });
+});
+
+// Formulario de registro
+formRegistro.addEventListener("submit", e => {
+    e.preventDefault();
+    const nombre = document.getElementById("nombreR").value.trim();
+    const correo = document.getElementById("correoR").value.trim();
+    const contrasena = document.getElementById("contraR").value.trim();
+
+    if (nombre === "" || correo === "" || contrasena === "") {
+        Swal.fire({
+            title: "Campos incompletos",
+            text: "Por favor, complete todos los campos",
+            icon: "warning",
+            confirmButtonText: "Aceptar"
         });
         return;
     }
-});
 
+    if (contrasena.length < 6) {
+        Swal.fire({
+            title: "Contraseña débil",
+            text: "La contraseña debe tener al menos 6 caracteres",
+            icon: "warning",
+            confirmButtonText: "Aceptar"
+        });
+        return;
+    }
+
+    // Enviar datos al servidor
+    fetch('registro.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            nombre: nombre,
+            correo: correo,
+            contrasena: contrasena
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                title: "Registro exitoso",
+                text: "Usuario creado correctamente. Ahora puedes iniciar sesión",
+                icon: "success",
+                confirmButtonText: "Continuar"
+            }).then(() => {
+                // Limpiar formulario y cambiar a login
+                formRegistro.reset();
+                // Aquí puedes agregar lógica para mostrar el formulario de login
+            });
+        } else {
+            Swal.fire({
+                title: "Error al registrar",
+                text: data.error || "No se pudo crear el usuario",
+                icon: "error",
+                confirmButtonText: "Reintentar"
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            title: "Error",
+            text: "Error al conectar con el servidor",
+            icon: "error",
+            confirmButtonText: "Aceptar"
+        });
+    });
+});
