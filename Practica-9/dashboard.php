@@ -114,13 +114,8 @@
             </nav>
 
             <main class="col-md-9 ms-sm-auto col-lg-10 mt-4 px-md-4">
-                <div class="alert alert-info mb-4">
-                    <i class="fa-solid fa-info-circle me-2"></i>
-                    Bienvenido, <strong><?php echo htmlspecialchars($nombreUsuario); ?></strong>. 
-                    Rol: <strong><?php echo ucfirst($rolUsuario); ?></strong>
-                </div>
-
-                <h1 class="mb-4 pb-3 text-center border-bottom">Dashboard — Estadísticas</h1>
+                
+                <h1 class="mb-4 pb-3 text-center border-bottom">Dashboard</h1>
 
                 <?php if (tienePermiso('reportes')): ?>
                 <div class="row g-4">
@@ -149,7 +144,7 @@
                 <?php else: ?>
                 <div class="alert alert-warning">
                     <i class="fa-solid fa-exclamation-triangle me-2"></i>
-                    No tienes permisos para ver las estadísticas completas.
+                    No tienes permisos para ver las estadisticas completas.
                 </div>
                 <?php endif; ?>
 
