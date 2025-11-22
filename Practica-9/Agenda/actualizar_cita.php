@@ -22,9 +22,9 @@ try {
 
         $id = $_GET['id'];
 
-        // Consulta para obtener los datos de la cita
-        $sql = "SELECT idCita, idPaciente, idMedico, idEspecialidad, 
-                fechaCita, horaCita, motivoConsulta, estadoCita, observaciones 
+        // Consulta para obtener los datos de la cita (adaptada a tu estructura)
+        $sql = "SELECT idCita, idPaciente, idMedico, 
+                fechaCita, motivoConsulta, estadoCita, observaciones 
                 FROM controlAgenda 
                 WHERE idCita = :id";
         
@@ -34,14 +34,19 @@ try {
         $cita = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($cita) {
+            // Separar fecha y hora si fechaCita es datetime
+            $fechaCita = $cita['fechaCita'];
+            $fecha = date('Y-m-d', strtotime($fechaCita));
+            $hora = date('H:i', strtotime($fechaCita));
+            
             // Formatear la respuesta
             $citaFormateada = [
                 'id' => $cita['idCita'],
                 'idPaciente' => $cita['idPaciente'],
                 'idMedico' => $cita['idMedico'],
-                'idEspecialidad' => $cita['idEspecialidad'],
-                'fecha' => $cita['fechaCita'],
-                'hora' => substr($cita['horaCita'], 0, 5),
+                'idEspecialidad' => null, // Si no existe en tu BD
+                'fecha' => $fecha,
+                'hora' => $hora,
                 'motivo' => $cita['motivoConsulta'],
                 'estado' => $cita['estadoCita'],
                 'observaciones' => $cita['observaciones']
@@ -57,18 +62,52 @@ try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = json_decode(file_get_contents('php://input'), true);
         
+        // Validar que el JSON se haya parseado correctamente
+        if (!$data) {
+            echo json_encode(['success' => false, 'error' => 'Datos JSON inválidos']);
+            exit;
+        }
+        
         if (!isset($data['id'])) {
             echo json_encode(['success' => false, 'error' => 'ID no proporcionado']);
             exit;
         }
 
-        // Actualización de la cita
+        // Validar y limpiar campos
+        $idCita = filter_var($data['id'], FILTER_VALIDATE_INT);
+        $idPaciente = filter_var($data['idPaciente'] ?? null, FILTER_VALIDATE_INT);
+        $idMedico = filter_var($data['idMedico'] ?? null, FILTER_VALIDATE_INT);
+        $fecha = $data['fecha'] ?? null;
+        $hora = $data['hora'] ?? null;
+
+        if (!$idCita || $idCita === false) {
+            echo json_encode(['success' => false, 'error' => 'ID de cita inválido']);
+            exit;
+        }
+
+        if (!$idPaciente || $idPaciente === false) {
+            echo json_encode(['success' => false, 'error' => 'ID de paciente inválido']);
+            exit;
+        }
+
+        if (!$idMedico || $idMedico === false) {
+            echo json_encode(['success' => false, 'error' => 'ID de médico inválido']);
+            exit;
+        }
+
+        if (empty($fecha) || empty($hora)) {
+            echo json_encode(['success' => false, 'error' => 'Fecha y hora son requeridos']);
+            exit;
+        }
+
+        // Combinar fecha y hora en datetime
+        $fechaHora = $fecha . ' ' . $hora . ':00';
+
+        // Actualización de la cita (adaptada a tu estructura)
         $sql = "UPDATE controlAgenda SET 
                 idPaciente = :idPaciente,
                 idMedico = :idMedico,
-                idEspecialidad = :idEspecialidad,
                 fechaCita = :fechaCita,
-                horaCita = :horaCita,
                 motivoConsulta = :motivoConsulta,
                 estadoCita = :estadoCita,
                 observaciones = :observaciones
@@ -76,12 +115,10 @@ try {
         
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            ':id' => $data['id'],
-            ':idPaciente' => $data['idPaciente'],
-            ':idMedico' => $data['idMedico'],
-            ':idEspecialidad' => $data['idEspecialidad'] ?? null,
-            ':fechaCita' => $data['fecha'],
-            ':horaCita' => $data['hora'],
+            ':id' => $idCita,
+            ':idPaciente' => $idPaciente,
+            ':idMedico' => $idMedico,
+            ':fechaCita' => $fechaHora,
             ':motivoConsulta' => $data['motivo'] ?? '',
             ':estadoCita' => $data['estado'] ?? 'Programada',
             ':observaciones' => $data['observaciones'] ?? ''

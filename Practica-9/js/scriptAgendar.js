@@ -65,7 +65,7 @@ async function cargarPacientes() {
         if (data.success && data.data) {
             data.data.forEach(paciente => {
                 const option = document.createElement('option');
-                option.value = paciente.id_paciente;
+                option.value = paciente.idPaciente;
                 // Usar nombreCompleto si existe, si no construirlo
                 const nombreCompleto = paciente.nombreCompleto || 
                     `${paciente.nombre || ''} ${paciente.apellido_paterno || ''} ${paciente.apellido_materno || ''}`.trim();
@@ -216,20 +216,35 @@ async function guardarCita() {
     const observaciones = document.getElementById('observacionesCita').value;
     
     // Validar campos requeridos
-    if (!idPaciente || !idMedico || !fecha || !hora) {
-        mostrarAlerta('Por favor complete todos los campos obligatorios', 'warning');
+    if (!idPaciente || idPaciente === '' || idPaciente === 'undefined') {
+        mostrarAlerta('Por favor seleccione un paciente', 'warning');
+        return;
+    }
+    
+    if (!idMedico || idMedico === '' || idMedico === 'undefined') {
+        mostrarAlerta('Por favor seleccione un médico', 'warning');
+        return;
+    }
+    
+    if (!fecha || fecha === '') {
+        mostrarAlerta('Por favor seleccione una fecha', 'warning');
+        return;
+    }
+    
+    if (!hora || hora === '') {
+        mostrarAlerta('Por favor seleccione una hora', 'warning');
         return;
     }
     
     const datos = {
-        idPaciente,
-        idMedico,
-        idEspecialidad: idEspecialidad || null,
+        idPaciente: parseInt(idPaciente),
+        idMedico: parseInt(idMedico),
+        idEspecialidad: idEspecialidad && idEspecialidad !== '' ? parseInt(idEspecialidad) : null,
         fecha,
         hora,
-        motivo,
-        estado,
-        observaciones
+        motivo: motivo || '',
+        estado: estado || 'Programada',
+        observaciones: observaciones || ''
     };
     
     try {
