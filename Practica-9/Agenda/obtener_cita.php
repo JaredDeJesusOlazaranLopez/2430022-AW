@@ -13,95 +13,62 @@ try {
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Manejo de solicitudes GET y POST
-    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        if (!isset($_GET['id'])) {
-            echo json_encode(['success' => false, 'error' => 'ID no proporcionado']);
-            exit;
-        }
+    // Consulta adaptada a la estructura real de tu BD
+    $sql = "SELECT 
+                ca.idCita,
+                ca.idPaciente,
+                ca.idMedico,
+                ca.fechaCita,
+                ca.motivoConsulta,
+                ca.estadoCita,
+                ca.observaciones,
+                ca.fechaRegistro,
+                CONCAT_WS(' ', cp.nombre, cp.apellido_paterno, cp.apellido_materno) as nombrePaciente,
+                cm.nombreCompleto as nombreMedico,
+                e.nombreEspecialidad as nombreEspecialidad
+            FROM controlAgenda ca
+            LEFT JOIN controlPacientes cp ON ca.idPaciente = cp.id_paciente
+            LEFT JOIN controlMedico cm ON ca.idMedico = cm.idMedico
+            LEFT JOIN especialidades e ON cm.idEspecialidad = e.idEspecialidad
+            ORDER BY ca.fechaCita DESC";
+    
+    $stmt = $pdo->query($sql);
+    $citas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $id = $_GET['id'];
-
-        // Consulta para obtener los datos de la cita (adaptada a tu estructura)
-        $sql = "SELECT idCita, idPaciente, idMedico, 
-                fechaCita, motivoConsulta, estadoCita, observaciones 
-                FROM controlAgenda 
-                WHERE idCita = :id";
+    // Formatear las citas para el calendario
+    $citasFormateadas = [];
+    foreach ($citas as $cita) {
+        // Separar fecha y hora si fechaCita es datetime
+        $fechaCita = $cita['fechaCita'];
+        $fecha = date('Y-m-d', strtotime($fechaCita));
+        $hora = date('H:i', strtotime($fechaCita));
         
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([':id' => $id]);
-        
-        $cita = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($cita) {
-            // Separar fecha y hora si fechaCita es datetime
-            $fechaCita = $cita['fechaCita'];
-            $fecha = date('Y-m-d', strtotime($fechaCita));
-            $hora = date('H:i', strtotime($fechaCita));
-            
-            // Formatear la respuesta
-            $citaFormateada = [
-                'id' => $cita['idCita'],
-                'idPaciente' => $cita['idPaciente'],
-                'idMedico' => $cita['idMedico'],
-                'idEspecialidad' => null, // Si no existe en tu BD
-                'fecha' => $fecha,
-                'hora' => $hora,
-                'motivo' => $cita['motivoConsulta'],
-                'estado' => $cita['estadoCita'],
-                'observaciones' => $cita['observaciones']
-            ];
-            echo json_encode(['success' => true, 'data' => $citaFormateada]);
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Cita no encontrada']);
-        }
-        exit;
+        $citasFormateadas[] = [
+            'id' => (int)$cita['idCita'],
+            'idPaciente' => (int)$cita['idPaciente'],
+            'idMedico' => (int)$cita['idMedico'],
+            'idEspecialidad' => null,
+            'fecha' => $fecha,
+            'hora' => $hora,
+            'motivo' => $cita['motivoConsulta'] ?? '',
+            'estado' => $cita['estadoCita'] ?? 'Programada',
+            'observaciones' => $cita['observaciones'] ?? '',
+            'nombrePaciente' => trim($cita['nombrePaciente']) ?: 'Sin asignar',
+            'nombreMedico' => $cita['nombreMedico'] ?? 'Sin asignar',
+            'nombreEspecialidad' => $cita['nombreEspecialidad'] ?? 'N/A',
+            'fechaCreacion' => $cita['fechaRegistro']
+        ];
     }
 
-    // Manejo de solicitud POST para actualizar
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $data = json_decode(file_get_contents('php://input'), true);
-        
-        if (!isset($data['id'])) {
-            echo json_encode(['success' => false, 'error' => 'ID no proporcionado']);
-            exit;
-        }
-
-        // Combinar fecha y hora en datetime
-        $fechaHora = $data['fecha'] . ' ' . $data['hora'] . ':00';
-
-        // Actualización de la cita (adaptada a tu estructura)
-        $sql = "UPDATE controlAgenda SET 
-                idPaciente = :idPaciente,
-                idMedico = :idMedico,
-                fechaCita = :fechaCita,
-                motivoConsulta = :motivoConsulta,
-                estadoCita = :estadoCita,
-                observaciones = :observaciones
-                WHERE idCita = :id";
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ':id' => $data['id'],
-            ':idPaciente' => $data['idPaciente'],
-            ':idMedico' => $data['idMedico'],
-            ':fechaCita' => $fechaHora,
-            ':motivoConsulta' => $data['motivo'] ?? '',
-            ':estadoCita' => $data['estado'] ?? 'Programada',
-            ':observaciones' => $data['observaciones'] ?? ''
-        ]);
-
-        if ($stmt->rowCount() > 0) {
-            echo json_encode(['success' => true, 'message' => 'Cita actualizada correctamente']);
-        } else {
-            echo json_encode(['success' => false, 'error' => 'No se realizaron cambios']);
-        }
-        exit;
-    }
-
-    echo json_encode(['success' => false, 'error' => 'Método no permitido']);
-
+    echo json_encode([
+        'success' => true, 
+        'data' => $citasFormateadas,
+        'total' => count($citasFormateadas)
+    ]);
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()]);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Error: ' . $e->getMessage()
+    ]);
 }
 ?>

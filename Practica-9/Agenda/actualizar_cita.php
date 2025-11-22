@@ -20,9 +20,14 @@ try {
             exit;
         }
 
-        $id = $_GET['id'];
+        $id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
+        
+        if (!$id) {
+            echo json_encode(['success' => false, 'error' => 'ID inválido']);
+            exit;
+        }
 
-        // Consulta para obtener los datos de la cita (adaptada a tu estructura)
+        // Consulta para obtener los datos de la cita
         $sql = "SELECT idCita, idPaciente, idMedico, 
                 fechaCita, motivoConsulta, estadoCita, observaciones 
                 FROM controlAgenda 
@@ -41,15 +46,15 @@ try {
             
             // Formatear la respuesta
             $citaFormateada = [
-                'id' => $cita['idCita'],
-                'idPaciente' => $cita['idPaciente'],
-                'idMedico' => $cita['idMedico'],
-                'idEspecialidad' => null, // Si no existe en tu BD
+                'id' => (int)$cita['idCita'],
+                'idPaciente' => (int)$cita['idPaciente'],
+                'idMedico' => (int)$cita['idMedico'],
+                'idEspecialidad' => null,
                 'fecha' => $fecha,
                 'hora' => $hora,
-                'motivo' => $cita['motivoConsulta'],
-                'estado' => $cita['estadoCita'],
-                'observaciones' => $cita['observaciones']
+                'motivo' => $cita['motivoConsulta'] ?? '',
+                'estado' => $cita['estadoCita'] ?? 'Programada',
+                'observaciones' => $cita['observaciones'] ?? ''
             ];
             echo json_encode(['success' => true, 'data' => $citaFormateada]);
         } else {
@@ -103,7 +108,7 @@ try {
         // Combinar fecha y hora en datetime
         $fechaHora = $fecha . ' ' . $hora . ':00';
 
-        // Actualización de la cita (adaptada a tu estructura)
+        // Actualización de la cita
         $sql = "UPDATE controlAgenda SET 
                 idPaciente = :idPaciente,
                 idMedico = :idMedico,
@@ -127,7 +132,7 @@ try {
         if ($stmt->rowCount() > 0) {
             echo json_encode(['success' => true, 'message' => 'Cita actualizada correctamente']);
         } else {
-            echo json_encode(['success' => false, 'error' => 'No se realizaron cambios']);
+            echo json_encode(['success' => false, 'error' => 'No se realizaron cambios o la cita no existe']);
         }
         exit;
     }
