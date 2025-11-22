@@ -155,7 +155,7 @@ async function cargarEspecialidades() {
         const rutasPosibles = [
             '../Especialidades/obtener_especialidades.php',
             'Especialidades/obtener_especialidades.php',
-            '/Practica-9/Especialidades/obtener_especialidades.php'
+            '/2430022-AW/Practica-9/Especialidades/obtener_especialidades.php'
         ];
         
         let response = null;
@@ -181,7 +181,7 @@ async function cargarEspecialidades() {
         console.log('Ruta exitosa para especialidades:', rutaExitosa);
         
         const data = await response.json();
-        console.log('Especialidades cargadas:', data); // DEBUG
+        console.log('Especialidades cargadas:', data);
         
         const select = document.getElementById('especialidadCita');
         select.innerHTML = '<option value="">Seleccione una especialidad</option>';
@@ -189,13 +189,18 @@ async function cargarEspecialidades() {
         if (data.success && data.data && data.data.length > 0) {
             data.data.forEach(especialidad => {
                 const option = document.createElement('option');
-                option.value = especialidad.idEspecialidad;
-                option.textContent = especialidad.nombreEspecialidad || 'Sin nombre';
+                // Soportar múltiples formatos de respuesta
+                option.value = especialidad.idEspecialidad || especialidad.id;
+                option.textContent = especialidad.nombreEspecialidad || 
+                                   especialidad.nombre || 
+                                   especialidad.nombre_especialidad || 
+                                   'Sin nombre';
                 select.appendChild(option);
+                console.log('Especialidad agregada:', option.value, option.textContent);
             });
             console.log(`${data.data.length} especialidades cargadas correctamente`);
         } else {
-            console.warn('No hay especialidades disponibles');
+            console.warn('No hay especialidades disponibles o data está vacío');
             select.innerHTML += '<option disabled>No hay especialidades registradas</option>';
             if (data.error) {
                 console.error('Error del servidor:', data.error);
@@ -203,7 +208,8 @@ async function cargarEspecialidades() {
         }
     } catch (error) {
         console.error('Error al cargar especialidades:', error);
-        mostrarAlerta('Error al cargar la lista de especialidades: ' + error.message, 'danger');
+        // No mostrar alerta ya que especialidad es opcional
+        console.warn('Continuando sin especialidades');
     }
 }
 
