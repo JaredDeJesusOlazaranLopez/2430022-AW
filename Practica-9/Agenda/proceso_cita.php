@@ -1,10 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// MODO DEBUG - Comentar estas líneas después de probar
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 // Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
@@ -21,16 +17,13 @@ try {
     $rawData = file_get_contents('php://input');
     $data = json_decode($rawData, true);
 
-    // DEBUG: Log de datos recibidos (eliminar después)
-    file_put_contents('debug_cita.log', date('Y-m-d H:i:s') . " - Raw data: " . $rawData . "\n", FILE_APPEND);
-    file_put_contents('debug_cita.log', date('Y-m-d H:i:s') . " - Parsed data: " . print_r($data, true) . "\n", FILE_APPEND);
-
     // Validar que el JSON se haya parseado correctamente
     if (!$data) {
         echo json_encode([
             'success' => false, 
             'error' => 'Datos JSON inválidos',
-            'raw' => $rawData
+            'raw' => $rawData,
+            'tip' => 'Verifica que estés enviando datos en formato JSON'
         ]);
         exit;
     }
@@ -40,10 +33,6 @@ try {
     $idMedico = filter_var($data['idMedico'] ?? null, FILTER_VALIDATE_INT);
     $fecha = $data['fecha'] ?? null;
     $hora = $data['hora'] ?? null;
-
-    // DEBUG: Log de validación
-    file_put_contents('debug_cita.log', date('Y-m-d H:i:s') . " - idPaciente: " . var_export($idPaciente, true) . "\n", FILE_APPEND);
-    file_put_contents('debug_cita.log', date('Y-m-d H:i:s') . " - idMedico: " . var_export($idMedico, true) . "\n", FILE_APPEND);
 
     if (!$idPaciente || $idPaciente === false) {
         echo json_encode([
@@ -104,12 +93,14 @@ try {
         'idCita' => $idCita
     ]);
 } catch (PDOException $e) {
-    // Log del error
-    file_put_contents('debug_cita.log', date('Y-m-d H:i:s') . " - Error: " . $e->getMessage() . "\n", FILE_APPEND);
-    
     echo json_encode([
         'success' => false, 
-        'error' => 'Error: ' . $e->getMessage()
+        'error' => 'Error de base de datos: ' . $e->getMessage()
+    ]);
+} catch (Exception $e) {
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Error general: ' . $e->getMessage()
     ]);
 }
 ?>

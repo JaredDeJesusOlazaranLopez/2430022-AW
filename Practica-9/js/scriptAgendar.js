@@ -297,6 +297,11 @@ async function guardarCita() {
     const estado = document.getElementById('estadoCita').value;
     const observaciones = document.getElementById('observacionesCita').value;
     
+    // Log de valores antes de validar
+    console.log('Valores del formulario:', {
+        idPaciente, idMedico, fecha, hora, motivo, estado, observaciones
+    });
+    
     // Validar campos requeridos
     if (!idPaciente || idPaciente === '' || idPaciente === 'undefined') {
         mostrarAlerta('Por favor seleccione un paciente', 'warning');
@@ -330,28 +335,43 @@ async function guardarCita() {
     };
     
     try {
-        let url, metodo;
+        let url;
         
         if (idCita) {
             // Editar cita existente
             url = 'actualizar_cita.php';
-            metodo = 'POST';
-            datos.id = idCita;
+            datos.id = parseInt(idCita);
         } else {
             // Nueva cita
             url = 'proceso_cita.php';
-            metodo = 'POST';
         }
         
+        console.log('Enviando a:', url);
+        console.log('Datos a enviar:', datos);
+        console.log('JSON:', JSON.stringify(datos));
+        
         const response = await fetch(url, {
-            method: metodo,
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
             body: JSON.stringify(datos)
         });
         
+        console.log('Status de respuesta:', response.status);
+        
+        const contentType = response.headers.get('content-type');
+        console.log('Content-Type:', contentType);
+        
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            console.error('Respuesta no es JSON:', text);
+            throw new Error('El servidor no devolvió JSON válido');
+        }
+        
         const result = await response.json();
+        console.log('Respuesta del servidor:', result);
         
         if (result.success) {
             mostrarAlerta(result.message || 'Cita guardada correctamente', 'success');
@@ -366,8 +386,8 @@ async function guardarCita() {
             mostrarAlerta(result.error || 'Error al guardar la cita', 'danger');
         }
     } catch (error) {
-        console.error('Error al guardar cita:', error);
-        mostrarAlerta('Error al procesar la solicitud', 'danger');
+        console.error('Error completo:', error);
+        mostrarAlerta('Error al procesar la solicitud: ' + error.message, 'danger');
     }
 }
 
