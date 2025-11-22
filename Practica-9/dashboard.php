@@ -1,3 +1,4 @@
+<?php require_once 'verificar_sesion.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,66 +19,92 @@
                     <img src="images/pokeball.png" id="pokeball" alt="pokeball" class="p-2"
                         style="width: 80px; height: 80px;">
                     <h5 class="text-white mt-3 fw-bold">Clinica</h5>
+                    <p class="text-white-50 small mb-0"><?php echo htmlspecialchars($nombreUsuario); ?></p>
+                    <span class="badge bg-info text-dark"><?php echo ucfirst($rolUsuario); ?></span>
                 </div>
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column px-2">
                         <li class="nav-item my-1">
-                            <a class="nav-link active text-white bg-white bg-opacity-25 rounded-3 py-3 px-3" href="#">
+                            <a class="nav-link active text-white bg-white bg-opacity-25 rounded-3 py-3 px-3" href="dashboard.php">
                                 <i class="fa-solid fa-house fs-5 mb-2"></i>
                                 <span class="fw-semibold">Inicio</span>
                             </a>
                         </li>
+                        
+                        <?php if (tienePermiso('pacientes')): ?>
                         <li class="nav-item my-1">
                             <a class="nav-link text-white rounded-3 py-3 px-3" href="Pacientes/Pacientes.html">
                                 <i class="fa-solid fa-person fs-5 mb-2"></i>
                                 <span class="fw-semibold">Pacientes</span>
                             </a>
                         </li>
+                        <?php endif; ?>
+                        
+                        <?php if (tienePermiso('agenda')): ?>
                         <li class="nav-item my-1">
                             <a class="nav-link text-white rounded-3 py-3 px-3" href="Agenda/Agenda.html">
                                 <i class="fa-solid fa-calendar fs-5 mb-2"></i>
                                 <span class="fw-semibold">Agenda</span>
                             </a>
                         </li>
+                        <?php endif; ?>
+                        
+                        <?php if (tienePermiso('medicos')): ?>
                         <li class="nav-item my-1">
                             <a class="nav-link text-white rounded-3 py-3 px-3" href="Medicos/Medicos.html">
                                 <i class="fa-solid fa-stethoscope fs-5 mb-2"></i>
                                 <span class="fw-semibold">Medicos</span>
                             </a>
                         </li>
+                        <?php endif; ?>
+                        
+                        <?php if (tienePermiso('reportes')): ?>
                         <li class="nav-item my-1">
                             <a class="nav-link text-white rounded-3 py-3 px-3" href="Reportes.html">
                                 <i class="fa-solid fa-clipboard fs-5 mb-2"></i>
                                 <span class="fw-semibold">Reportes</span>
                             </a>
                         </li>
+                        <?php endif; ?>
+                        
+                        <?php if (tienePermiso('pagos')): ?>
                         <li class="nav-item my-1">
                             <a class="nav-link text-white rounded-3 py-3 px-3" href="Pagos.html">
                                 <i class="fa-solid fa-money-bills fs-5 mb-2"></i>
                                 <span class="fw-semibold">Pagos</span>
                             </a>
                         </li>
+                        <?php endif; ?>
+                        
+                        <?php if (tienePermiso('tarifas')): ?>
                         <li class="nav-item my-1">
                             <a class="nav-link text-white rounded-3 py-3 px-3" href="Tarifas.html">
                                 <i class="fa-solid fa-receipt fs-5 mb-2"></i>
                                 <span class="fw-semibold">Tarifas</span>
                             </a>
                         </li>
+                        <?php endif; ?>
+                        
+                        <?php if (tienePermiso('bitacoras')): ?>
                         <li class="nav-item my-1">
                             <a class="nav-link text-white rounded-3 py-3 px-3" href="Bitacoras.html">
                                 <i class="fa-solid fa-file-signature fs-5 mb-2"></i>
                                 <span class="fw-semibold">Bitacoras</span>
                             </a>
                         </li>
+                        <?php endif; ?>
+                        
+                        <?php if (tienePermiso('especialidades')): ?>
                         <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3"
-                                href="Especialidades/Especialidades.html">
+                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Especialidades/Especialidades.html">
                                 <i class="fa-solid fa-flask fs-5 mb-2"></i>
                                 <span class="fw-semibold">Especialidades</span>
                             </a>
                         </li>
+                        <?php endif; ?>
+                        
                         <li class="nav-item mt-5">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="index.html" id="cerrarSesion">
+                            <a class="nav-link text-white rounded-3 py-3 px-3" href="logout.php">
                                 <i class="fa-solid fa-right-from-bracket fs-5 mb-2"></i>
                                 <span class="fw-semibold">Cerrar Sesión</span>
                             </a>
@@ -87,8 +114,15 @@
             </nav>
 
             <main class="col-md-9 ms-sm-auto col-lg-10 mt-4 px-md-4">
+                <div class="alert alert-info mb-4">
+                    <i class="fa-solid fa-info-circle me-2"></i>
+                    Bienvenido, <strong><?php echo htmlspecialchars($nombreUsuario); ?></strong>. 
+                    Rol: <strong><?php echo ucfirst($rolUsuario); ?></strong>
+                </div>
+
                 <h1 class="mb-4 pb-3 text-center border-bottom">Dashboard — Estadísticas</h1>
 
+                <?php if (tienePermiso('reportes')): ?>
                 <div class="row g-4">
                     <div class="col-lg-6">
                         <div class="card shadow-sm">
@@ -110,6 +144,75 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <?php else: ?>
+                <div class="alert alert-warning">
+                    <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                    No tienes permisos para ver las estadísticas completas.
+                </div>
+                <?php endif; ?>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4>Tus permisos actuales:</h4>
+                        <ul class="list-group">
+                            <?php if (tienePermiso('pacientes')): ?>
+                            <li class="list-group-item">
+                                <i class="fa-solid fa-check text-success me-2"></i> 
+                                Gestión de Pacientes
+                            </li>
+                            <?php endif; ?>
+                            
+                            <?php if (tienePermiso('agenda')): ?>
+                            <li class="list-group-item">
+                                <i class="fa-solid fa-check text-success me-2"></i> 
+                                Gestión de Agenda
+                            </li>
+                            <?php endif; ?>
+                            
+                            <?php if (tienePermiso('medicos')): ?>
+                            <li class="list-group-item">
+                                <i class="fa-solid fa-check text-success me-2"></i> 
+                                Gestión de Médicos
+                            </li>
+                            <?php endif; ?>
+                            
+                            <?php if (tienePermiso('especialidades')): ?>
+                            <li class="list-group-item">
+                                <i class="fa-solid fa-check text-success me-2"></i> 
+                                Gestión de Especialidades
+                            </li>
+                            <?php endif; ?>
+                            
+                            <?php if (tienePermiso('reportes')): ?>
+                            <li class="list-group-item">
+                                <i class="fa-solid fa-check text-success me-2"></i> 
+                                Visualización de Reportes
+                            </li>
+                            <?php endif; ?>
+                            
+                            <?php if (tienePermiso('pagos')): ?>
+                            <li class="list-group-item">
+                                <i class="fa-solid fa-check text-success me-2"></i> 
+                                Gestión de Pagos
+                            </li>
+                            <?php endif; ?>
+                            
+                            <?php if (tienePermiso('tarifas')): ?>
+                            <li class="list-group-item">
+                                <i class="fa-solid fa-check text-success me-2"></i> 
+                                Gestión de Tarifas
+                            </li>
+                            <?php endif; ?>
+                            
+                            <?php if (tienePermiso('bitacoras')): ?>
+                            <li class="list-group-item">
+                                <i class="fa-solid fa-check text-success me-2"></i> 
+                                Visualización de Bitácoras
+                            </li>
+                            <?php endif; ?>
+                        </ul>
                     </div>
                 </div>
 

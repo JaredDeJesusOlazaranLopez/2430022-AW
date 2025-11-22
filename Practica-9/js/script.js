@@ -1,4 +1,3 @@
-// Formulario de inicio de sesión
 const formLogin = document.getElementById("inicioSesion");
 const formRegistro = document.getElementById("registro");
 
@@ -17,7 +16,6 @@ formLogin.addEventListener("submit", e => {
         return;
     }
 
-    // Enviar datos al servidor
     fetch('login.php', {
         method: 'POST',
         headers: {
@@ -37,7 +35,7 @@ formLogin.addEventListener("submit", e => {
                 icon: "success",
                 confirmButtonText: "Continuar"
             }).then(() => {
-                window.location.href = "dashboard.html";
+                window.location.href = "dashboard.php";
             });
         } else {
             Swal.fire({
@@ -59,7 +57,6 @@ formLogin.addEventListener("submit", e => {
     });
 });
 
-// Formulario de registro
 formRegistro.addEventListener("submit", e => {
     e.preventDefault();
     const nombre = document.getElementById("nombreR").value.trim();
@@ -86,7 +83,6 @@ formRegistro.addEventListener("submit", e => {
         return;
     }
 
-    // Enviar datos al servidor
     fetch('registro.php', {
         method: 'POST',
         headers: {
@@ -107,9 +103,7 @@ formRegistro.addEventListener("submit", e => {
                 icon: "success",
                 confirmButtonText: "Continuar"
             }).then(() => {
-                // Limpiar formulario y cambiar a login
                 formRegistro.reset();
-                // Aquí puedes agregar lógica para mostrar el formulario de login
             });
         } else {
             Swal.fire({
