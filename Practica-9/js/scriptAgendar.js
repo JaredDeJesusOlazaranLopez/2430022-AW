@@ -57,71 +57,153 @@ function inicializarCalendario() {
 async function cargarPacientes() {
     try {
         const response = await fetch('../Pacientes/obtener_pacientes.php');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
+        console.log('Pacientes cargados:', data); // DEBUG
         
         const select = document.getElementById('nombrePaciente');
         select.innerHTML = '<option value="">Seleccione un paciente</option>';
         
-        if (data.success && data.data) {
+        if (data.success && data.data && data.data.length > 0) {
             data.data.forEach(paciente => {
                 const option = document.createElement('option');
                 option.value = paciente.idPaciente;
-                // Usar nombreCompleto si existe, si no construirlo
-                const nombreCompleto = paciente.nombreCompleto || 
-                    `${paciente.nombre || ''} ${paciente.apellido_paterno || ''} ${paciente.apellido_materno || ''}`.trim();
-                option.textContent = nombreCompleto;
+                option.textContent = paciente.nombreCompleto || 'Sin nombre';
                 select.appendChild(option);
             });
+            console.log(`${data.data.length} pacientes cargados correctamente`);
+        } else {
+            console.warn('No hay pacientes disponibles');
+            select.innerHTML += '<option disabled>No hay pacientes registrados</option>';
+            if (data.error) {
+                console.error('Error del servidor:', data.error);
+                mostrarAlerta(data.error, 'warning');
+            }
         }
     } catch (error) {
         console.error('Error al cargar pacientes:', error);
-        mostrarAlerta('Error al cargar la lista de pacientes', 'danger');
+        mostrarAlerta('Error al cargar la lista de pacientes: ' + error.message, 'danger');
     }
 }
 
 // Cargar médicos en el select
 async function cargarMedicos() {
     try {
-        const response = await fetch('../Medicos/obtener_medicos.php');
+        // Probar diferentes rutas posibles
+        const rutasPosibles = [
+            '../Medicos/obtener_medicos.php',
+            'Medicos/obtener_medicos.php',
+            '/Practica-9/Medicos/obtener_medicos.php'
+        ];
+        
+        let response = null;
+        let rutaExitosa = '';
+        
+        for (const ruta of rutasPosibles) {
+            try {
+                response = await fetch(ruta);
+                if (response.ok) {
+                    rutaExitosa = ruta;
+                    break;
+                }
+            } catch (e) {
+                console.log(`Ruta ${ruta} no funciona, probando siguiente...`);
+            }
+        }
+        
+        if (!response || !response.ok) {
+            throw new Error('No se pudo encontrar el archivo obtener_medicos.php en ninguna ruta');
+        }
+        
+        console.log('Ruta exitosa para médicos:', rutaExitosa);
+        
         const data = await response.json();
+        console.log('Médicos cargados:', data); // DEBUG
         
         const select = document.getElementById('nombreMedico');
         select.innerHTML = '<option value="">Seleccione un médico</option>';
         
-        if (data.success && data.data) {
+        if (data.success && data.data && data.data.length > 0) {
             data.data.forEach(medico => {
                 const option = document.createElement('option');
                 option.value = medico.idMedico;
-                option.textContent = medico.nombreCompleto;
+                option.textContent = medico.nombreCompleto || 'Sin nombre';
                 select.appendChild(option);
             });
+            console.log(`${data.data.length} médicos cargados correctamente`);
+        } else {
+            console.warn('No hay médicos disponibles');
+            select.innerHTML += '<option disabled>No hay médicos registrados</option>';
+            if (data.error) {
+                console.error('Error del servidor:', data.error);
+                mostrarAlerta(data.error, 'warning');
+            }
         }
     } catch (error) {
         console.error('Error al cargar médicos:', error);
-        mostrarAlerta('Error al cargar la lista de médicos', 'danger');
+        mostrarAlerta('Error al cargar la lista de médicos: ' + error.message, 'danger');
     }
 }
 
 // Cargar especialidades en el select
 async function cargarEspecialidades() {
     try {
-        const response = await fetch('../Especialidades/obtener_especialidades.php');
+        const rutasPosibles = [
+            '../Especialidades/obtener_especialidades.php',
+            'Especialidades/obtener_especialidades.php',
+            '/Practica-9/Especialidades/obtener_especialidades.php'
+        ];
+        
+        let response = null;
+        let rutaExitosa = '';
+        
+        for (const ruta of rutasPosibles) {
+            try {
+                response = await fetch(ruta);
+                if (response.ok) {
+                    rutaExitosa = ruta;
+                    break;
+                }
+            } catch (e) {
+                console.log(`Ruta ${ruta} no funciona, probando siguiente...`);
+            }
+        }
+        
+        if (!response || !response.ok) {
+            console.warn('No se pudo cargar especialidades');
+            return;
+        }
+        
+        console.log('Ruta exitosa para especialidades:', rutaExitosa);
+        
         const data = await response.json();
+        console.log('Especialidades cargadas:', data); // DEBUG
         
         const select = document.getElementById('especialidadCita');
         select.innerHTML = '<option value="">Seleccione una especialidad</option>';
         
-        if (data.success && data.data) {
+        if (data.success && data.data && data.data.length > 0) {
             data.data.forEach(especialidad => {
                 const option = document.createElement('option');
                 option.value = especialidad.idEspecialidad;
-                option.textContent = especialidad.nombreEspecialidad;
+                option.textContent = especialidad.nombreEspecialidad || 'Sin nombre';
                 select.appendChild(option);
             });
+            console.log(`${data.data.length} especialidades cargadas correctamente`);
+        } else {
+            console.warn('No hay especialidades disponibles');
+            select.innerHTML += '<option disabled>No hay especialidades registradas</option>';
+            if (data.error) {
+                console.error('Error del servidor:', data.error);
+            }
         }
     } catch (error) {
         console.error('Error al cargar especialidades:', error);
-        mostrarAlerta('Error al cargar la lista de especialidades', 'danger');
+        mostrarAlerta('Error al cargar la lista de especialidades: ' + error.message, 'danger');
     }
 }
 
