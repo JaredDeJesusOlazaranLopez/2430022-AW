@@ -1,11 +1,9 @@
-//Variables globales y tablas y botones
 let medicos = [];
 let tablaMedicos = document.getElementById('tabla-medicos');
 let botoncillo = document.getElementById('agregarMedicos');
 let agregarMedicos = document.getElementById('formMedicos');
 let modalDoctores;
 
-//Esta funcion sirve para poder cargar los medicos desde la base de datos
 function cargarMedicos() {
     fetch('./obtener_medicos.php')
         .then(response => response.json())
@@ -24,7 +22,6 @@ function cargarMedicos() {
         });
 }
 
-//Esta funcion sirve para cargar las especialidades en el select del modal
 function cargarEspecialidades() {
     fetch('./obtener_especialidades.php')
         .then(response => response.json())
@@ -43,8 +40,6 @@ function cargarEspecialidades() {
         })
         .catch(error => console.error('Error cargando especialidades:', error));
 }
-
-//Evento para el boton de agregar medico donde abre el modal
 botoncillo.addEventListener('click', e => {
     e.preventDefault();
     document.getElementById('tituloModal').textContent = 'Agregar médico';
@@ -54,13 +49,11 @@ botoncillo.addEventListener('click', e => {
     modalDoctores.show();
 });
 
-//Evento para el formulario del modal de agregar medico
 agregarMedicos.addEventListener('submit', e => {
     e.preventDefault();
     guardarActualizacion();
 });
 
-//Funcion para guardar o actualizar el medico dependiendo si tiene id o no
 function guardarActualizacion() {
     const id = document.getElementById('idMedico').value;
     const nombre = document.getElementById('nombreM').value.trim();
@@ -121,7 +114,6 @@ function guardarActualizacion() {
     });
 }
 
-//Funcion para mostrar los medicos en la tabla 
 function mostrarMedicos(lista) {
     tablaMedicos.innerHTML = '';
 
@@ -131,23 +123,22 @@ function mostrarMedicos(lista) {
         const estatus = medico.estatus == 1 ? 'Activo' : 'Inactivo';
         
         fila.innerHTML = `
-            <td>${medico.id}</td>
-            <td>${medico.nombre_completo}</td>
-            <td>${medico.cedula}</td>
-            <td>${medico.especialidad}</td>
+            <td>${medico.idMedico}</td>
+            <td>${medico.nombreCompleto}</td>
+            <td>${medico.cedulaProfesional}</td>
+            <td>${medico.nombreEspecialidad}</td>
             <td>${medico.telefono}</td>
-            <td>${medico.correo}</td>
-            <td>${medico.horario}</td>
-            <td>${medico.fecha_ingreso}</td>
-            <td>${estatus}</td>
+            <td>${medico.correoElectronico}</td>
+            <td>${medico.horarioAtencion}</td>
+            <td>${medico.fechaIngreso || 'N/A'}</td>
+            <td>${medico.estatus == 1 ? 'Activo' : 'Inactivo'}</td>
             <td>
-                <button class="btn btn-warning btn-sm" onclick="editarMedico(${medico.id})">Editar</button>
-                <button class="btn btn-danger btn-sm" onclick="eliminarMedico(${medico.id})">Eliminar</button>
+                <button class="btn btn-warning btn-sm" onclick="editarMedico(${medico.idMedico})">Editar</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarMedico(${medico.idMedico})">Eliminar</button>
             </td>`;
     }
 }
 
-//Funcion para editar medico, aqui uso como parametro el id del medico lo cual hace que la funcion de guardarActualizacion sepa si es para guardar o actualizar
 function editarMedico(id) {
     fetch('actualizar_medicos.php', {
         method: 'POST',
@@ -185,14 +176,13 @@ function editarMedico(id) {
     });
 }
 
-//Funcion para eliminar medico por medio de su id
 function eliminarMedico(id) {
     Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'No podrás recuperar este médico',
+        title: 'Estas seguro?',
+        text: 'No podras recuperar este medico',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonText: 'Si, eliminar',
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
@@ -220,7 +210,6 @@ function eliminarMedico(id) {
     });
 }
 
-//Funcion para limpiar el formulario del modal
 function limpiarFormulario() {
     document.getElementById('idMedico').value = '';
     document.getElementById('nombreM').value = '';
@@ -236,7 +225,6 @@ function limpiarFormulario() {
     document.getElementById('estatusM').value = 'Activo';
 }
 
-//Funcion para buscar medico en la tabla por nombre o cedula
 function buscarMedico() {
     const texto = document.getElementById('buscar').value.toLowerCase();
     let resultado = [];
@@ -253,7 +241,6 @@ function buscarMedico() {
     mostrarMedicos(resultado);
 }
 
-//Inicializacion del modal y carga de medicos al cargar la pagina
 document.addEventListener('DOMContentLoaded', function() {
     modalDoctores = new bootstrap.Modal(document.getElementById('modalDoctores'));
     cargarMedicos();
@@ -261,7 +248,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('buscar').addEventListener('input', buscarMedico);
 });
 
-//Hacer funciones globales para poder llamarlas desde el HTML
 window.editarMedico = editarMedico;
 window.eliminarMedico = eliminarMedico;
 window.limpiarFormulario = limpiarFormulario;

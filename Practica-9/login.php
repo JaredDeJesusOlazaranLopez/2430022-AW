@@ -23,7 +23,6 @@ try {
         exit;
     }
 
-    // Buscar usuario por correo (usando nombreUsuario como correo)
     $sql = "SELECT * FROM usuarios WHERE nombreUsuario = :correo AND estatus = 1";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':correo' => $correo]);
@@ -31,7 +30,6 @@ try {
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($usuario && password_verify($contrasena, $usuario['contrasena'])) {
-        // Login exitoso
         $_SESSION['usuario_id'] = $usuario['idUsuario'];
         $_SESSION['usuario_nombre'] = $usuario['nombreUsuario'];
         $_SESSION['usuario_rol'] = $usuario['rol'];

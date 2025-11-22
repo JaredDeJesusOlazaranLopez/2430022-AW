@@ -23,7 +23,6 @@ try {
         exit;
     }
 
-    // Verificar si el correo ya existe
     $sqlCheck = "SELECT idUsuario FROM usuarios WHERE nombreUsuario = :correo";
     $stmtCheck = $pdo->prepare($sqlCheck);
     $stmtCheck->execute([':correo' => $correo]);
@@ -33,12 +32,9 @@ try {
         exit;
     }
 
-    // Encriptar contraseña
     $contrasenaHash = password_hash($contrasena, PASSWORD_DEFAULT);
 
-    // Insertar nuevo usuario
-    $sql = "INSERT INTO usuarios (nombreUsuario, contrasena, rol, fechaRegistro, estatus) 
-            VALUES (:nombre, :contrasena, 'usuario', NOW(), 1)";
+    $sql = "INSERT INTO usuarios (nombreUsuario, contrasena, rol, fechaRegistro, estatus) VALUES (:nombre, :contrasena, 'usuario', NOW(), 1)";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
