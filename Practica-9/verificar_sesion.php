@@ -1,11 +1,13 @@
 <?php
 session_start();
 
+// Verificar si hay sesión activa
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: index.html');
     exit;
 }
 
+// Función para verificar permisos
 function tienePermiso($permisoRequerido) {
     $rol = $_SESSION['usuario_rol'] ?? '';
     
@@ -22,6 +24,9 @@ function tienePermiso($permisoRequerido) {
     
     return in_array($permisoRequerido, $permisos[$rol]);
 }
+
+// Obtener nombre y rol del usuario
 $nombreUsuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
 $rolUsuario = $_SESSION['usuario_rol'] ?? 'usuario';
 ?>
+¿¿

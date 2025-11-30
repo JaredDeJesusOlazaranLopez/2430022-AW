@@ -1,4 +1,5 @@
-<?php
+<?php 
+require_once '../verificar_sesion.php'; 
 $paginaActual = 'pacientes';
 $nivelCarpeta = '../';
 ?>
