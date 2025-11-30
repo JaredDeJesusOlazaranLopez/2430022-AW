@@ -34,7 +34,6 @@ async function cargarPagos() {
         if (data.success) {
             pagosData = data.data;
             mostrarPagos(pagosData);
-            actualizarEstadisticas(pagosData);
         } else {
             mostrarError('Error al cargar pagos: ' + data.error);
         }
@@ -101,7 +100,6 @@ function filtrarPagos() {
 // Cargar citas
 async function cargarCitas() {
     try {
-        // Cargar desde el archivo correcto
         const response = await fetch('../Agenda/obtener_cita.php');
         const data = await response.json();
         
@@ -271,7 +269,6 @@ async function guardarPago() {
     };
     
     try {
-        // CORREGIDO: Cambié proceso_pago.php por proceso_pagos.php
         const response = await fetch('proceso_pagos.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -346,42 +343,6 @@ async function eliminarPago(id) {
             Swal.fire('Error', 'Error de conexión: ' + error.message, 'error');
         }
     }
-}
-
-// Actualizar estadísticas
-function actualizarEstadisticas(pagos) {
-    const ahora = new Date();
-    const mesActual = ahora.getMonth();
-    const anioActual = ahora.getFullYear();
-    const hoy = ahora.toISOString().split('T')[0];
-    
-    // Total recaudado este mes
-    const totalMes = pagos
-        .filter(p => {
-            const fecha = new Date(p.fechaPago);
-            return p.estatus == 1 && 
-                   fecha.getMonth() === mesActual && 
-                   fecha.getFullYear() === anioActual;
-        })
-        .reduce((sum, p) => sum + parseFloat(p.monto), 0);
-    
-    // Pagos pendientes
-    const pendientes = pagos.filter(p => p.estatus == 0).length;
-    
-    // Pagos hoy
-    const pagosHoyCount = pagos.filter(p => {
-        const fechaPago = new Date(p.fechaPago).toISOString().split('T')[0];
-        return fechaPago === hoy;
-    }).length;
-    
-    // Total de pagos
-    const totalPagosCount = pagos.length;
-    
-    // Actualizar UI
-    document.getElementById('totalRecaudado').textContent = '$' + totalMes.toFixed(2);
-    document.getElementById('pagosPendientes').textContent = pendientes;
-    document.getElementById('pagosHoy').textContent = pagosHoyCount;
-    document.getElementById('totalPagos').textContent = totalPagosCount;
 }
 
 // Limpiar formulario

@@ -28,46 +28,6 @@ $nivelCarpeta = '../';
                     </button>
                 </div>
 
-                <!-- Tarjetas de estadísticas -->
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <div class="card text-white bg-success">
-                            <div class="card-body">
-                                <h5 class="card-title">Total Recaudado</h5>
-                                <h3 id="totalRecaudado">$0.00</h3>
-                                <small>Este mes</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-white bg-warning">
-                            <div class="card-body">
-                                <h5 class="card-title">Pagos Pendientes</h5>
-                                <h3 id="pagosPendientes">0</h3>
-                                <small>Por confirmar</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-white bg-info">
-                            <div class="card-body">
-                                <h5 class="card-title">Pagos Hoy</h5>
-                                <h3 id="pagosHoy">0</h3>
-                                <small>Registrados hoy</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-white bg-primary">
-                            <div class="card-body">
-                                <h5 class="card-title">Total Pagos</h5>
-                                <h3 id="totalPagos">0</h3>
-                                <small>Histórico</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Tabla de pagos -->
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
