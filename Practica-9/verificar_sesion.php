@@ -29,4 +29,3 @@ function tienePermiso($permisoRequerido) {
 $nombreUsuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
 $rolUsuario = $_SESSION['usuario_rol'] ?? 'usuario';
 ?>
-¿¿
