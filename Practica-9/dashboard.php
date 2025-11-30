@@ -154,6 +154,12 @@ $nivelCarpeta = '';
                         </div>
                     </div>
                 </div>
+                <?php else: ?>
+                <div class="alert alert-warning">
+                    <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                    No tienes permisos para ver las estadísticas completas.
+                </div>
+                <?php endif; ?>
 
                 <footer class="mt-5 pt-4 border-top">
                     <p class="text-center text-muted small mb-0">&copy; Mi clinica :D</p>
