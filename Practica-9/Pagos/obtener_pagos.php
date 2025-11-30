@@ -24,10 +24,10 @@ try {
                 gp.metodoPago,
                 gp.fechaPago,
                 gp.estatus,
-                cp.nombreCompleto as nombrePaciente,
+                CONCAT_WS(' ', cp.nombre, cp.apellido_paterno, cp.apellido_materno) as nombrePaciente,
                 cm.nombreCompleto as nombreMedico
             FROM gestorPagos gp
-            INNER JOIN controlPacientes cp ON gp.idPaciente = cp.idPaciente
+            INNER JOIN controlPacientes cp ON gp.idPaciente = cp.id_paciente
             LEFT JOIN controlMedico cm ON gp.idMedico = cm.idMedico
             ORDER BY gp.fechaPago DESC";
     
