@@ -2,7 +2,6 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
-// Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -14,7 +13,6 @@ try {
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Consulta para obtener todos los médicos activos con su especialidad
     $sql = "SELECT 
                 cm.idMedico,
                 cm.nombreCompleto,
@@ -33,7 +31,6 @@ try {
     $stmt = $pdo->query($sql);
     $medicos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Formatear los médicos con los nombres de campo correctos
     $medicosFormateados = [];
     foreach ($medicos as $medico) {
         $medicosFormateados[] = [

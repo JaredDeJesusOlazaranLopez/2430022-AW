@@ -1,7 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -19,7 +18,6 @@ try {
     $horarioAtencion = $data['horario_desde'] . ' - ' . $data['horario_hasta'];
     $estatus = ($data['estatus'] === 'Activo') ? 1 : 0;
 
-    // Inserción del nuevo medico
     $sql = "INSERT INTO controlMedico 
             (nombreCompleto, cedulaProfesional, idEspecialidad, telefono, correoElectronico, 
              horarioAtencion, fechaIngreso, estatus) 
@@ -27,7 +25,6 @@ try {
             (:nombreCompleto, :cedulaProfesional, :idEspecialidad, :telefono, :correoElectronico, 
              :horarioAtencion, :fechaIngreso, :estatus)";
 
-// Preparación y ejecución de la consulta
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':nombreCompleto', $nombreCompleto);
     $stmt->bindParam(':cedulaProfesional', $data['cedula']);

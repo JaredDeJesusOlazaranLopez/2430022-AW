@@ -1,7 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -19,12 +18,10 @@ try {
     $horarioAtencion = $data['horario_desde'] . ' - ' . $data['horario_hasta'];
     $estatus = ($data['estatus'] === 'Activo') ? 1 : 0;
 
-    // Actualización del medico
     $sql = "UPDATE controlMedico SET nombreCompleto = :nombreCompleto, cedulaProfesional = :cedulaProfesional, idEspecialidad = :idEspecialidad,
             telefono = :telefono, correoElectronico = :correoElectronico, horarioAtencion = :horarioAtencion, fechaIngreso = :fechaIngreso,
             estatus = :estatus WHERE idMedico = :id";
 
-// Preparación y ejecucion de la consulta
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $data['id'], PDO::PARAM_INT);
     $stmt->bindParam(':nombreCompleto', $nombreCompleto);

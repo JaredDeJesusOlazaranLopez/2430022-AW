@@ -30,7 +30,14 @@
                                 <span class="fw-semibold">Inicio</span>
                             </a>
                         </li>
-                        
+                        <?php if ($rolUsuario === 'administrador'): ?>
+<li class="nav-item my-1">
+    <a class="nav-link text-white rounded-3 py-3 px-3" href="Usuarios/Usuarios.html">
+        <i class="fa-solid fa-users fs-5 mb-2"></i>
+        <span class="fw-semibold">Usuarios</span>
+    </a>
+</li>
+<?php endif; ?>
                         <?php if (tienePermiso('pacientes')): ?>
                         <li class="nav-item my-1">
                             <a class="nav-link text-white rounded-3 py-3 px-3" href="Pacientes/Pacientes.html">

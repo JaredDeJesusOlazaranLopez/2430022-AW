@@ -13,6 +13,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $data = json_decode(file_get_contents('php://input'), true);
+    
     $id = $data['id'] ?? null;
 
     if (!$id) {
@@ -20,16 +21,16 @@ try {
         exit;
     }
 
-    $sql = "DELETE FROM controlMedico WHERE idMedico = :id";
+    $sql = "DELETE FROM usuarios WHERE idUsuario = :id";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
+    $stmt->execute([':id' => $id]);
 
     if ($stmt->rowCount() > 0) {
-        echo json_encode(['success' => true, 'message' => 'MMedico eliminado correctamente']);
+        echo json_encode(['success' => true, 'message' => 'Usuario eliminado correctamente']);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Medico no encontrado']);
+        echo json_encode(['success' => false, 'error' => 'Usuario no encontrado']);
     }
+
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()]);
 }

@@ -12,12 +12,21 @@ try {
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $sql = "SELECT idEspecialidad, nombreEspecialidad FROM especialidades";
+    $sql = "SELECT idUsuario, nombreUsuario, rol, fechaRegistro, estatus 
+            FROM usuarios 
+            ORDER BY fechaRegistro DESC";
+    
     $stmt = $pdo->query($sql);
-    $especialidades = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode(['success' => true, 'data' => $especialidades]);
+    echo json_encode([
+        'success' => true, 
+        'data' => $usuarios
+    ]);
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()]);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Error: ' . $e->getMessage()
+    ]);
 }
 ?>
