@@ -40,6 +40,7 @@ async function cargarPagos() {
         }
     } catch (error) {
         mostrarError('Error de conexión: ' + error.message);
+        console.error('Error completo:', error);
     }
 }
 
@@ -100,6 +101,7 @@ function filtrarPagos() {
 // Cargar citas
 async function cargarCitas() {
     try {
+        // Cargar desde el archivo correcto
         const response = await fetch('../Agenda/obtener_cita.php');
         const data = await response.json();
         
@@ -269,7 +271,8 @@ async function guardarPago() {
     };
     
     try {
-        const response = await fetch('proceso_pago.php', {
+        // CORREGIDO: Cambié proceso_pago.php por proceso_pagos.php
+        const response = await fetch('proceso_pagos.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datos)
@@ -286,6 +289,7 @@ async function guardarPago() {
         }
     } catch (error) {
         Swal.fire('Error', 'Error de conexión: ' + error.message, 'error');
+        console.error('Error completo:', error);
     }
 }
 
