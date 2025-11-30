@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
+ob_start();
 
 $host = "localhost";
 $port = "3306";
@@ -15,7 +16,8 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
     
     if (!$data) {
-        echo json_encode(['success' => false, 'error' => 'Datos JSON inválidos']);
+        ob_end_clean();
+        echo json_encode(['success' => false, 'error' => 'Datos JSON inválidos'], JSON_UNESCAPED_UNICODE);
         exit;
     }
     
@@ -30,7 +32,8 @@ try {
     $estatus = filter_var($data['estatus'] ?? 1, FILTER_VALIDATE_INT);
 
     if (!$idPaciente || !$idCita || !$tipoServicio || $monto <= 0 || empty($metodoPago)) {
-        echo json_encode(['success' => false, 'error' => 'Datos incompletos o inválidos']);
+        ob_end_clean();
+        echo json_encode(['success' => false, 'error' => 'Datos incompletos o inválidos'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
@@ -55,15 +58,20 @@ try {
 
     $idPago = $pdo->lastInsertId();
 
+    ob_end_clean();
+
     echo json_encode([
         'success' => true, 
         'message' => 'Pago registrado correctamente',
         'idPago' => $idPago
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
+    
 } catch (PDOException $e) {
+    ob_end_clean();
+    
     echo json_encode([
         'success' => false, 
         'error' => 'Error: ' . $e->getMessage()
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 ?>

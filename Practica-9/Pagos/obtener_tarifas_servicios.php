@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
+ob_start();
 
 $host = "localhost";
 $port = "3306";
@@ -26,8 +27,13 @@ try {
     $stmt = $pdo->query($sql);
     $tarifas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode(['success' => true, 'data' => $tarifas]);
+    ob_end_clean();
+
+    echo json_encode(['success' => true, 'data' => $tarifas], JSON_UNESCAPED_UNICODE);
+    
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()]);
+    ob_end_clean();
+    
+    echo json_encode(['success' => false, 'error' => 'Error: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }
 ?>

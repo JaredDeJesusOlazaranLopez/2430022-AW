@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
+ob_start();
 
 $host = "localhost";
 $port = "3306";
@@ -34,15 +35,20 @@ try {
     $stmt = $pdo->query($sql);
     $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    ob_end_clean();
+
     echo json_encode([
         'success' => true, 
         'data' => $pagos,
         'total' => count($pagos)
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
+    
 } catch (PDOException $e) {
+    ob_end_clean();
+    
     echo json_encode([
         'success' => false, 
-        'error' => 'Error: ' . $e->getMessage()
-    ]);
+        'error' => 'Error de base de datos: ' . $e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
 }
 ?>
