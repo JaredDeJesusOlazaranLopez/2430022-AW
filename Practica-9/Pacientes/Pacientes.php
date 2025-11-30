@@ -29,31 +29,23 @@ $nivelCarpeta = '../';
                     <div class="row mt-3">
                         <input type="text" id="buscar" class="form-control" placeholder="Buscar por nombre o CURP">
                         <div class="table-responsive mt-2">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Nombre</th>
-                                        <th>Apellido Paterno</th>
-                                        <th>Apellido Materno</th>
-                                        <th>CURP</th>
-                                        <th>Fecha Nacimiento</th>
-                                        <th>Sexo</th>
-                                        <th>Telefono</th>
-                                        <th>Correo</th>
-                                        <th>Direccion</th>
-                                        <th>Tel. Emergencia</th>
-                                        <th>Alergias</th>
-                                        <th>Antecedentes</th>
-                                        <th>Fecha Registro</th>
-                                        <th>Estatus</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-pacientes" class="table-group-divider">
-                                </tbody>
-                            </table>
-                        </div>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nombre Completo</th>
+                <th>Sexo</th>
+                <th>CURP</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-pacientes" class="table-group-divider">
+        </tbody>
+    </table>
+</div>
                     </div>
                 </div>
             </main>
