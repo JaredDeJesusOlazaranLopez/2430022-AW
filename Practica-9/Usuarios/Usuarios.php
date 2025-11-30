@@ -1,3 +1,8 @@
+<?php 
+require_once '../verificar_sesion.php'; 
+$paginaActual = 'usuarios';
+$nivelCarpeta = '../';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,34 +18,7 @@
 <body class="overflow-x-hidden">
     <div class="container-fluid">
         <div class="row">
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block min-vh-100 shadow-lg px-0">
-                <div class="text-center p-4 border-bottom border-light border-opacity-25">
-                    <img src="../images/pokeball.png" alt="pokeball" class="p-2" style="width: 80px; height: 80px;">
-                    <h5 class="text-white mt-3 fw-bold">Clinica</h5>
-                </div>
-                <div class="position-sticky pt-3">
-                    <ul class="nav flex-column px-2">
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="../dashboard.php">
-                                <i class="fa-solid fa-house fs-5 mb-2"></i>
-                                <span class="fw-semibold">Inicio</span>
-                            </a>
-                        </li>
-                        <li class="nav-item my-1">
-                            <a class="nav-link active text-white bg-white bg-opacity-25 rounded-3 py-3 px-3" href="#">
-                                <i class="fa-solid fa-users fs-5 mb-2"></i>
-                                <span class="fw-semibold">Usuarios</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mt-5">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="../logout.php">
-                                <i class="fa-solid fa-right-from-bracket fs-5 mb-2"></i>
-                                <span class="fw-semibold">Cerrar Sesión</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+             <?php require_once '../sidebar.php'; ?>
 
             <main class="col-md-9 ms-sm-auto mt-5 col-lg-10 px-md-4">
                 <h1>Gestión de Usuarios</h1>

@@ -1,3 +1,8 @@
+<?php 
+require_once '../verificar_sesion.php'; 
+$paginaActual = 'bitacoras';
+$nivelCarpeta = '../';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,77 +18,7 @@
 <body class="overflow-x-hidden">
     <div class="container-fluid">
         <div class="row">
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block min-vh-100 shadow-lg px-0">
-                <div class="text-center p-4 border-bottom border-light border-opacity-25">
-                    <img src="images/pokeball.png" alt="pokeball" class="p-2" style="width: 80px; height: 80px;">
-                    <h5 class="text-white mt-3 fw-bold">Clinica</h5>
-                </div>
-                <div class="position-sticky pt-3">
-                    <ul class="nav flex-column px-2">
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="#">
-                                <i class="fa-solid fa-house fs-5 mb-2"></i>
-                                <span class="fw-semibold">Inicio</span>
-                            </a>
-                        </li>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Pacientes/Pacientes.html">
-                                <i class="fa-solid fa-person fs-5 mb-2"></i>
-                                <span class="fw-semibold">Pacientes</span>
-                            </a>
-                        </li>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Agenda/Agenda.html">
-                                <i class="fa-solid fa-calendar-days fs-5 mb-2"></i>
-                                <span class="fw-semibold">Agenda</span>
-                            </a>
-                        </li>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Medicos/Medicos.html">
-                                <i class="fa-solid fa-stethoscope fs-5 mb-2"></i>
-                                <span class="fw-semibold">Medicos</span>
-                            </a>
-                        </li>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Reportes.html">
-                                <i class="fa-solid fa-clipboard fs-5 mb-2"></i>
-                                <span class="fw-semibold">Reportes</span>
-                            </a>
-                        </li>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Pagos.html">
-                                <i class="fa-solid fa-money-bills fs-5 mb-2"></i>
-                                <span class="fw-semibold">Pagos</span>
-                            </a>
-                        </li>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Tarifas.html">
-                                <i class="fa-solid fa-receipt fs-5 mb-2"></i>
-                                <span class="fw-semibold">Tarifas</span>
-                            </a>
-                        </li>
-                        <li class="nav-item my-1">
-                            <a class="nav-link active text-white bg-white bg-opacity-25 rounded-3 py-3 px-3" href="#">
-                                <i class="fa-solid fa-file-signature fs-5 mb-2"></i>
-                                <span class="fw-semibold">Bitacoras</span>
-                            </a>
-                        </li>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3"
-                                href="Especialidades/Especialidades.html">
-                                <i class="fa-solid fa-user-doctor fs-5 mb-2"></i>
-                                <span class="fw-semibold">Especialidades medicas</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mt-5">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="index.html" id="cerrarSesion">
-                                <i class="fa-solid fa-right-from-bracket fs-5 mb-2"></i>
-                                <span class="fw-semibold">Cerrar Sesión</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            <?php require_once '../sidebar.php'; ?>
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <h1>Bitacoras</h1>
             </main>

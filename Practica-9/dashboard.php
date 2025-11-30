@@ -1,4 +1,8 @@
-<?php require_once 'verificar_sesion.php'; ?>
+<?php 
+require_once 'verificar_sesion.php'; 
+$paginaActual = 'dashboard';
+$nivelCarpeta = '';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,111 +18,7 @@
 <body class="overflow-x-hidden">
     <div class="container-fluid">
         <div class="row">
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block min-vh-100 shadow-lg px-0">
-                <div class="text-center p-4 border-bottom border-light border-opacity-25">
-                    <img src="images/pokeball.png" id="pokeball" alt="pokeball" class="p-2"
-                        style="width: 80px; height: 80px;">
-                    <h5 class="text-white mt-3 fw-bold">Clinica</h5>
-                    <p class="text-white-50 small mb-0"><?php echo htmlspecialchars($nombreUsuario); ?></p>
-                    <span class="badge bg-info text-dark"><?php echo ucfirst($rolUsuario); ?></span>
-                </div>
-                <div class="position-sticky pt-3">
-                    <ul class="nav flex-column px-2">
-                        <li class="nav-item my-1">
-                            <a class="nav-link active text-white bg-white bg-opacity-25 rounded-3 py-3 px-3" href="dashboard.php">
-                                <i class="fa-solid fa-house fs-5 mb-2"></i>
-                                <span class="fw-semibold">Inicio</span>
-                            </a>
-                        </li>
-                        <?php if ($rolUsuario === 'administrador'): ?>
-<li class="nav-item my-1">
-    <a class="nav-link text-white rounded-3 py-3 px-3" href="Usuarios/Usuarios.html">
-        <i class="fa-solid fa-users fs-5 mb-2"></i>
-        <span class="fw-semibold">Usuarios</span>
-    </a>
-</li>
-<?php endif; ?>
-                        <?php if (tienePermiso('pacientes')): ?>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Pacientes/Pacientes.html">
-                                <i class="fa-solid fa-person fs-5 mb-2"></i>
-                                <span class="fw-semibold">Pacientes</span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        
-                        <?php if (tienePermiso('agenda')): ?>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Agenda/Agenda.html">
-                                <i class="fa-solid fa-calendar fs-5 mb-2"></i>
-                                <span class="fw-semibold">Agenda</span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        
-                        <?php if (tienePermiso('medicos')): ?>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Medicos/Medicos.html">
-                                <i class="fa-solid fa-stethoscope fs-5 mb-2"></i>
-                                <span class="fw-semibold">Medicos</span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        
-                        <?php if (tienePermiso('reportes')): ?>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Reportes.html">
-                                <i class="fa-solid fa-clipboard fs-5 mb-2"></i>
-                                <span class="fw-semibold">Reportes</span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        
-                        <?php if (tienePermiso('pagos')): ?>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Pagos.html">
-                                <i class="fa-solid fa-money-bills fs-5 mb-2"></i>
-                                <span class="fw-semibold">Pagos</span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        
-                        <?php if (tienePermiso('tarifas')): ?>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Tarifas.html">
-                                <i class="fa-solid fa-receipt fs-5 mb-2"></i>
-                                <span class="fw-semibold">Tarifas</span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        
-                        <?php if (tienePermiso('bitacoras')): ?>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Bitacoras.html">
-                                <i class="fa-solid fa-file-signature fs-5 mb-2"></i>
-                                <span class="fw-semibold">Bitacoras</span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        
-                        <?php if (tienePermiso('especialidades')): ?>
-                        <li class="nav-item my-1">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="Especialidades/Especialidades.html">
-                                <i class="fa-solid fa-flask fs-5 mb-2"></i>
-                                <span class="fw-semibold">Especialidades</span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        
-                        <li class="nav-item mt-5">
-                            <a class="nav-link text-white rounded-3 py-3 px-3" href="logout.php">
-                                <i class="fa-solid fa-right-from-bracket fs-5 mb-2"></i>
-                                <span class="fw-semibold">Cerrar Sesión</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+             <?php require_once 'sidebar.php'; ?>
 
             <main class="col-md-9 ms-sm-auto col-lg-10 mt-4 px-md-4">
                 <h1 class="mb-4 pb-3 text-center border-bottom">Dashboard</h1>
