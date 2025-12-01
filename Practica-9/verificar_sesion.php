@@ -14,7 +14,7 @@ function tienePermiso($permisoRequerido) {
     $permisos = [
         'administrador' => ['pacientes', 'medicos', 'especialidades', 'agenda', 'pagos', 'tarifas', 'reportes', 'bitacoras'],
         'doctor' => ['pacientes', 'agenda', 'reportes'],
-        'secretaria' => ['pacientes', 'agenda', 'medicos', 'especialidades'],
+        'secretaria' => ['pacientes', 'agenda', 'medicos', 'especialidades', 'reportes'],
         'usuario' => ['agenda']
     ];
     
