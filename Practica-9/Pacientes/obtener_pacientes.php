@@ -17,6 +17,7 @@ try {
     // Consulta adaptada a tu estructura real
     $sql = "SELECT 
                 id_paciente as idPaciente,
+                idUsuario,
                 CONCAT_WS(' ', nombre, apellido_paterno, apellido_materno) as nombreCompleto,
                 nombre,
                 apellido_paterno,
@@ -55,7 +56,9 @@ try {
     $pacientesFormateados = [];
     foreach ($pacientes as $paciente) {
         $pacientesFormateados[] = [
+            'id' => (int)$paciente['idPaciente'],
             'idPaciente' => (int)$paciente['idPaciente'],
+            'idUsuario' => $paciente['idUsuario'] ? (int)$paciente['idUsuario'] : null,
             'nombreCompleto' => trim($paciente['nombreCompleto']) ?: 'Sin nombre',
             'nombre' => $paciente['nombre'],
             'apellido_paterno' => $paciente['apellido_paterno'],
@@ -88,4 +91,3 @@ try {
     ]);
 }
 ?>
-
