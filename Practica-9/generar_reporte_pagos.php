@@ -334,13 +334,5 @@ try {
         </table>
     <?php endif; ?>
 
-    <div class="footer">
-        <p>Este es un documento generado automáticamente por el Sistema de Gestión de Clínica</p>
-        <p>Generado el <?php echo date('d/m/Y H:i:s'); ?></p>
-    </div>
-
-    <script>
-        window.onload = function() { window.print(); }
-    </script>
 </body>
 </html>
