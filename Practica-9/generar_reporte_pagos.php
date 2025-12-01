@@ -87,6 +87,7 @@ try {
     die('Error de base de datos: ' . $e->getMessage());
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -249,15 +250,15 @@ try {
 <body>
     <div class="no-print">
         <button class="btn-print" onclick="window.print()">
-            🖨️ Imprimir / Guardar como PDF
+            Imprimir / Guardar como PDF
         </button>
         <button class="btn-print" onclick="window.close()" style="background: #666;">
-            ✖️ Cerrar
+            Cerrar
         </button>
     </div>
 
     <div class="header">
-        <h1>🏥 CLÍNICA - REPORTE DE PAGOS</h1>
+        <h1>CLÍNICA - REPORTE DE PAGOS</h1>
         <p>Sistema de Gestión Médica</p>
     </div>
 
