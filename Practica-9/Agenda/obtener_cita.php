@@ -1,4 +1,5 @@
 <?php
+session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 // Configuración de la base de datos
@@ -13,7 +14,11 @@ try {
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Consulta adaptada a la estructura real de tu BD
+    // Obtener rol e ID del usuario de la sesión
+    $rolUsuario = $_SESSION['rol'] ?? '';
+    $idUsuarioSesion = $_SESSION['idUsuario'] ?? null;
+
+    // Base de la consulta
     $sql = "SELECT 
                 ca.idCita,
                 ca.idPaciente,
@@ -29,10 +34,64 @@ try {
             FROM controlAgenda ca
             LEFT JOIN controlPacientes cp ON ca.idPaciente = cp.id_paciente
             LEFT JOIN controlMedico cm ON ca.idMedico = cm.idMedico
-            LEFT JOIN especialidades e ON cm.idEspecialidad = e.idEspecialidad
-            ORDER BY ca.fechaCita DESC";
+            LEFT JOIN especialidades e ON cm.idEspecialidad = e.idEspecialidad";
     
-    $stmt = $pdo->query($sql);
+    // Filtrar según el rol del usuario
+    if ($rolUsuario === 'usuario') {
+        // Los usuarios/pacientes solo ven sus propias citas
+        // Obtener el id_paciente asociado al usuario
+        $sqlPaciente = "SELECT id_paciente FROM controlPacientes WHERE idUsuario = :idUsuario";
+        $stmtPaciente = $pdo->prepare($sqlPaciente);
+        $stmtPaciente->execute([':idUsuario' => $idUsuarioSesion]);
+        $paciente = $stmtPaciente->fetch(PDO::FETCH_ASSOC);
+        
+        if ($paciente) {
+            $sql .= " WHERE ca.idPaciente = :idPaciente";
+        } else {
+            // Si no se encuentra el paciente, devolver array vacío
+            echo json_encode([
+                'success' => true, 
+                'data' => [],
+                'total' => 0,
+                'mensaje' => 'No se encontró información del paciente asociado a este usuario'
+            ]);
+            exit;
+        }
+    } elseif ($rolUsuario === 'doctor') {
+        // Los doctores solo ven las citas asignadas a ellos
+        // Obtener el idMedico asociado al usuario
+        $sqlMedico = "SELECT idMedico FROM controlMedico WHERE idUsuario = :idUsuario";
+        $stmtMedico = $pdo->prepare($sqlMedico);
+        $stmtMedico->execute([':idUsuario' => $idUsuarioSesion]);
+        $medico = $stmtMedico->fetch(PDO::FETCH_ASSOC);
+        
+        if ($medico) {
+            $sql .= " WHERE ca.idMedico = :idMedico";
+        } else {
+            echo json_encode([
+                'success' => true, 
+                'data' => [],
+                'total' => 0,
+                'mensaje' => 'No se encontró información del médico asociado a este usuario'
+            ]);
+            exit;
+        }
+    }
+    // Si es administrador o secretaria, no se filtra (ve todas las citas)
+    
+    $sql .= " ORDER BY ca.fechaCita DESC";
+    
+    $stmt = $pdo->prepare($sql);
+    
+    // Ejecutar con parámetros según el rol
+    if ($rolUsuario === 'usuario' && isset($paciente)) {
+        $stmt->execute([':idPaciente' => $paciente['id_paciente']]);
+    } elseif ($rolUsuario === 'doctor' && isset($medico)) {
+        $stmt->execute([':idMedico' => $medico['idMedico']]);
+    } else {
+        $stmt->execute();
+    }
+    
     $citas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Formatear las citas para el calendario
@@ -63,7 +122,8 @@ try {
     echo json_encode([
         'success' => true, 
         'data' => $citasFormateadas,
-        'total' => count($citasFormateadas)
+        'total' => count($citasFormateadas),
+        'rol' => $rolUsuario // Para debug
     ]);
 } catch (PDOException $e) {
     echo json_encode([
