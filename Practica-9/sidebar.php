@@ -8,12 +8,13 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
         <div class="text-center py-4 mb-3">
             <div class="mb-3">
                 <img src="<?php echo $nivel; ?>images/pokeball.png" alt="Logo Clínica" 
+                     id="pokeball"
                      class="rounded-circle border border-3 border-white shadow" 
                      style="width: 80px; height: 80px; object-fit: cover;">
             </div>
             <h5 class="text-white fw-bold mb-1">Clínica</h5>
             <p class="text-white-50 small mb-2"><?php echo htmlspecialchars($nombreUsuario); ?></p>
-            <span class="badge bg-light text-primary px-3 py-1"><?php echo ucfirst($rolUsuario); ?></span>
+            <span class="badge bg-info text-dark px-3 py-1"><?php echo ucfirst($rolUsuario); ?></span>
         </div>
 
         <hr class="text-white-50 mx-3">
@@ -135,9 +136,9 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
 </nav>
 
 <style>
-/* Estilos del sidebar - FIXED */
+/* Estilos del sidebar - CON TUS COLORES REALES */
 #sidebar {
-    background: linear-gradient(180deg, #6a11cb 0%, #2575fc 100%);
+    background: linear-gradient(180deg, #8a0674 0%, #690404 100%);
     position: fixed;
     top: 0;
     left: 0;
@@ -171,14 +172,14 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
 
 #sidebar .nav-link {
     color: rgba(255, 255, 255, 0.8);
-    transition: all 0.3s ease;
+    transition: all 0.3s;
     font-weight: 500;
 }
 
 #sidebar .nav-link:hover {
     color: #fff;
     background-color: rgba(255, 255, 255, 0.1);
-    transform: translateX(5px);
+    transform: translateX(10px);
 }
 
 #sidebar .nav-link.active {
@@ -195,6 +196,16 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
 
 #sidebar .text-danger:hover {
     background-color: rgba(220, 53, 69, 0.2) !important;
+}
+
+/* Animación de pokeball */
+#pokeball {
+    transition: transform 0.6s ease;
+}
+
+#pokeball:hover {
+    transform: rotate(360deg) scale(1.1);
+    cursor: pointer;
 }
 
 /* Ajustar el contenido principal para que no se superponga */
