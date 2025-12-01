@@ -77,47 +77,7 @@ if (!tienePermiso('reportes')) {
                     </div>
                 </div>
 
-                <!-- Otros reportes -->
-                <div class="row mt-4">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <i class="fa-solid fa-users fa-3x text-primary mb-3"></i>
-                                <h5>Reporte de Pacientes</h5>
-                                <p class="text-muted">Lista completa de pacientes registrados</p>
-                                <button class="btn btn-primary btn-sm" disabled>
-                                    <i class="fa-solid fa-file-excel"></i> Generar Excel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <i class="fa-solid fa-calendar-check fa-3x text-success mb-3"></i>
-                                <h5>Reporte de Citas</h5>
-                                <p class="text-muted">Historial de citas médicas</p>
-                                <button class="btn btn-success btn-sm" disabled>
-                                    <i class="fa-solid fa-file-pdf"></i> Generar PDF
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <i class="fa-solid fa-chart-bar fa-3x text-warning mb-3"></i>
-                                <h5>Estadísticas</h5>
-                                <p class="text-muted">Análisis y gráficas generales</p>
-                                <button class="btn btn-warning btn-sm" disabled>
-                                    <i class="fa-solid fa-chart-line"></i> Ver Dashboard
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            
             </main>
         </div>
     </div>
