@@ -3,7 +3,7 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
 ?>
 
 <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
-    <div class="position-sticky pt-3">
+    <div class="sidebar-sticky">
         <!-- Header del sidebar -->
         <div class="text-center py-4 mb-3">
             <div class="mb-3">
@@ -122,7 +122,7 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
         <hr class="text-white-50 mx-3 mt-4">
 
         <!-- Botón de cerrar sesión -->
-        <ul class="nav flex-column px-3 mb-4">
+        <ul class="nav flex-column px-3 pb-4">
             <li class="nav-item">
                 <a class="nav-link d-flex align-items-center py-2 px-3 rounded text-danger" 
                    href="<?php echo $nivel; ?>logout.php">
@@ -135,11 +135,38 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
 </nav>
 
 <style>
-/* Estilos del sidebar */
+/* Estilos del sidebar - FIXED */
 #sidebar {
     background: linear-gradient(180deg, #6a11cb 0%, #2575fc 100%);
-    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+#sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+#sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.sidebar-sticky {
+    padding-top: 0;
 }
 
 #sidebar .nav-link {
@@ -168,5 +195,18 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
 
 #sidebar .text-danger:hover {
     background-color: rgba(220, 53, 69, 0.2) !important;
+}
+
+/* Ajustar el contenido principal para que no se superponga */
+main.col-md-9,
+main.col-lg-10 {
+    margin-left: auto;
+}
+
+@media (max-width: 767.98px) {
+    #sidebar {
+        position: relative;
+        height: auto;
+    }
 }
 </style>
