@@ -28,7 +28,6 @@ $nivelCarpeta = '../';
                     </button>
                 </div>
 
-                <!-- Tabla de pagos -->
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">Historial de Pagos</h5>
@@ -85,7 +84,6 @@ $nivelCarpeta = '../';
         </div>
     </div>
 
-    <!-- Modal para registrar/editar pago -->
     <div class="modal fade" id="modalPago" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -132,7 +130,6 @@ $nivelCarpeta = '../';
                             </div>
                         </div>
 
-                        <!-- Sección para consulta médica -->
                         <div class="row" id="seccionConsulta" style="display: none;">
                             <div class="col-md-12 mb-3">
                                 <div class="alert alert-info">
@@ -143,7 +140,6 @@ $nivelCarpeta = '../';
                             </div>
                         </div>
 
-                        <!-- Sección para servicios adicionales -->
                         <div class="row" id="seccionServicio" style="display: none;">
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Servicio Adicional *</label>
@@ -196,7 +192,6 @@ $nivelCarpeta = '../';
         </div>
     </div>
 
-    <!-- Modal de detalles del pago -->
     <div class="modal fade" id="modalDetallePago" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">

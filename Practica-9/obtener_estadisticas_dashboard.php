@@ -13,27 +13,23 @@ try {
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Total de dinero recaudado (solo pagos completados)
     $sqlTotalDinero = "SELECT COALESCE(SUM(monto), 0) as totalRecaudado 
                        FROM gestorPagos 
                        WHERE estatus = 1";
     $stmtDinero = $pdo->query($sqlTotalDinero);
     $totalRecaudado = $stmtDinero->fetch(PDO::FETCH_ASSOC)['totalRecaudado'];
 
-    // Total de pagos recibidos
     $sqlTotalPagos = "SELECT COUNT(*) as totalPagos 
                       FROM gestorPagos";
     $stmtPagos = $pdo->query($sqlTotalPagos);
     $totalPagos = $stmtPagos->fetch(PDO::FETCH_ASSOC)['totalPagos'];
 
-    // Pagos pendientes
     $sqlPagosPendientes = "SELECT COUNT(*) as pagosPendientes 
                            FROM gestorPagos 
                            WHERE estatus = 0";
     $stmtPendientes = $pdo->query($sqlPagosPendientes);
     $pagosPendientes = $stmtPendientes->fetch(PDO::FETCH_ASSOC)['pagosPendientes'];
 
-    // Dinero recaudado este mes
     $sqlDineroMes = "SELECT COALESCE(SUM(monto), 0) as totalMes 
                      FROM gestorPagos 
                      WHERE estatus = 1 
@@ -42,7 +38,6 @@ try {
     $stmtDineroMes = $pdo->query($sqlDineroMes);
     $totalMes = $stmtDineroMes->fetch(PDO::FETCH_ASSOC)['totalMes'];
 
-    // Recaudación por mes (últimos 12 meses)
     $sqlRecaudacionMensual = "SELECT 
                                 MONTH(fechaPago) as mes,
                                 YEAR(fechaPago) as anio,
@@ -55,7 +50,6 @@ try {
     $stmtRecaudacion = $pdo->query($sqlRecaudacionMensual);
     $recaudacionMensual = $stmtRecaudacion->fetchAll(PDO::FETCH_ASSOC);
 
-    // Pagos por método de pago
     $sqlPorMetodo = "SELECT 
                         metodoPago,
                         COUNT(*) as cantidad,
@@ -66,12 +60,10 @@ try {
     $stmtMetodo = $pdo->query($sqlPorMetodo);
     $pagosPorMetodo = $stmtMetodo->fetchAll(PDO::FETCH_ASSOC);
 
-    // Total de pacientes
     $sqlTotalPacientes = "SELECT COUNT(*) as totalPacientes FROM controlPacientes WHERE estatus = 'Activo'";
     $stmtPacientes = $pdo->query($sqlTotalPacientes);
     $totalPacientes = $stmtPacientes->fetch(PDO::FETCH_ASSOC)['totalPacientes'];
 
-    // Total de citas
     $sqlTotalCitas = "SELECT COUNT(*) as totalCitas FROM controlAgenda";
     $stmtCitas = $pdo->query($sqlTotalCitas);
     $totalCitas = $stmtCitas->fetch(PDO::FETCH_ASSOC)['totalCitas'];

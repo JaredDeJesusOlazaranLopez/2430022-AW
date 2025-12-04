@@ -22,8 +22,6 @@ $nivelCarpeta = '';
 
             <main class="col-md-9 ms-sm-auto col-lg-10 mt-4 px-md-4">
                 <h1 class="mb-4 pb-3 text-center border-bottom">Dashboard</h1>
-                
-                <!-- Tarjetas de estadísticas principales -->
                 <?php if (tienePermiso('reportes') || tienePermiso('pagos')): ?>
                 <div class="row g-4 mb-4">
                     <div class="col-lg-3 col-md-6">
@@ -95,8 +93,6 @@ $nivelCarpeta = '';
                     </div>
                 </div>
                 <?php endif; ?>
-
-                <!-- Gráficas -->
                 <?php if (tienePermiso('reportes')): ?>
                 <div class="row g-4">
                     <div class="col-lg-8">

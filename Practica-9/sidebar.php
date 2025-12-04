@@ -4,7 +4,6 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
 
 <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
     <div class="sidebar-sticky">
-        <!-- Header del sidebar -->
         <div class="text-center py-4 mb-3">
             <div class="mb-3">
                 <img src="<?php echo $nivel; ?>images/pokeball.png" alt="Logo Clínica" 
@@ -18,8 +17,6 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
         </div>
 
         <hr class="text-white-50 mx-3">
-
-        <!-- Menu items -->
         <ul class="nav flex-column px-3">
             <li class="nav-item mb-2">
                 <a class="nav-link d-flex align-items-center py-2 px-3 rounded <?php echo ($paginaActual == 'dashboard') ? 'active' : ''; ?>" 
@@ -121,8 +118,6 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
         </ul>
 
         <hr class="text-white-50 mx-3 mt-4">
-
-        <!-- Botón de cerrar sesión -->
         <ul class="nav flex-column px-3 pb-4">
             <li class="nav-item">
                 <a class="nav-link d-flex align-items-center py-2 px-3 rounded text-danger" 
@@ -136,7 +131,6 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
 </nav>
 
 <style>
-/* Estilos del sidebar - CON TUS COLORES REALES */
 #sidebar {
     background: linear-gradient(180deg, #8a0674 0%, #690404 100%);
     position: fixed;
@@ -197,8 +191,6 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
 #sidebar .text-danger:hover {
     background-color: rgba(220, 53, 69, 0.2) !important;
 }
-
-/* Animación de pokeball */
 #pokeball {
     transition: transform 0.6s ease;
 }
@@ -207,8 +199,6 @@ $nivel = isset($nivelCarpeta) ? $nivelCarpeta : '../';
     transform: rotate(360deg) scale(1.1);
     cursor: pointer;
 }
-
-/* Ajustar el contenido principal para que no se superponga */
 main.col-md-9,
 main.col-lg-10 {
     margin-left: auto;

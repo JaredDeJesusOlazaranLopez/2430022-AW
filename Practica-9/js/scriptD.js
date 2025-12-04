@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	cargarEstadisticas();
 });
 
-// Cargar estadísticas desde el servidor
 async function cargarEstadisticas() {
 	try {
 		const response = await fetch('obtener_estadisticas_dashboard.php');
@@ -13,7 +12,6 @@ async function cargarEstadisticas() {
 		if (result.success) {
 			const data = result.data;
 			
-			// Actualizar tarjetas de estadísticas
 			document.getElementById('totalRecaudado').textContent = '$' + data.totalRecaudado.toFixed(2);
 			document.getElementById('totalPagos').textContent = data.totalPagos;
 			document.getElementById('pagosPendientes').textContent = data.pagosPendientes;
@@ -31,7 +29,6 @@ async function cargarEstadisticas() {
 				document.getElementById('promedioPago').textContent = '$' + promedio.toFixed(2);
 			}
 			
-			// Crear gráficas
 			crearGraficaRecaudacion(data.recaudacionMensual);
 			crearGraficaMetodos(data.pagosPorMetodo);
 			crearGraficaPacientes();
@@ -44,19 +41,16 @@ async function cargarEstadisticas() {
 	}
 }
 
-// Gráfica de recaudación mensual
 function crearGraficaRecaudacion(datosRecaudacion) {
 	const canvas = document.getElementById('chartRecaudacion');
 	if (!canvas) return;
 	
-	// Preparar datos para últimos 12 meses
 	const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
 	              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 	const ahora = new Date();
 	const labels = [];
 	const datos = [];
 	
-	// Crear array de 12 meses hacia atrás
 	for (let i = 11; i >= 0; i--) {
 		const fecha = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1);
 		const mes = fecha.getMonth() + 1;
@@ -64,7 +58,6 @@ function crearGraficaRecaudacion(datosRecaudacion) {
 		
 		labels.push(meses[fecha.getMonth()] + ' ' + anio);
 		
-		// Buscar si hay datos para este mes
 		const dato = datosRecaudacion.find(d => d.mes == mes && d.anio == anio);
 		datos.push(dato ? parseFloat(dato.total) : 0);
 	}
@@ -122,7 +115,6 @@ function crearGraficaRecaudacion(datosRecaudacion) {
 	});
 }
 
-// Gráfica de pagos por método
 function crearGraficaMetodos(datosPorMetodo) {
 	const canvas = document.getElementById('chartMetodos');
 	if (!canvas) return;
@@ -176,7 +168,6 @@ function crearGraficaMetodos(datosPorMetodo) {
 	});
 }
 
-// Gráfica de pacientes (ejemplo con datos estáticos, puedes hacerla dinámica)
 function crearGraficaPacientes() {
 	const canvas = document.getElementById('chartPacientes');
 	if (!canvas) return;

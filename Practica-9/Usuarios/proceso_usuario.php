@@ -24,7 +24,6 @@ try {
         exit;
     }
 
-    // Verificar si el usuario ya existe
     $sqlCheck = "SELECT idUsuario FROM usuarios WHERE nombreUsuario = :nombreUsuario";
     $stmtCheck = $pdo->prepare($sqlCheck);
     $stmtCheck->execute([':nombreUsuario' => $nombreUsuario]);
@@ -34,10 +33,7 @@ try {
         exit;
     }
 
-    // Encriptar contraseña
     $contrasenaHash = password_hash($contrasena, PASSWORD_DEFAULT);
-
-    // Insertar nuevo usuario
     $sql = "INSERT INTO usuarios (nombreUsuario, contrasena, rol, fechaRegistro, estatus) 
             VALUES (:nombreUsuario, :contrasena, :rol, NOW(), :estatus)";
     

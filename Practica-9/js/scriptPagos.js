@@ -1,10 +1,8 @@
-// Variables globales
 let pagosData = [];
 let citasData = [];
 let modalPago;
 let modalDetallePago;
 
-// Inicializar al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     modalPago = new bootstrap.Modal(document.getElementById('modalPago'));
     modalDetallePago = new bootstrap.Modal(document.getElementById('modalDetallePago'));
@@ -13,19 +11,15 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarCitas();
     cargarTarifas();
     
-    // Event listeners
     document.getElementById('buscarPago').addEventListener('input', filtrarPagos);
     document.getElementById('filtroEstado').addEventListener('change', filtrarPagos);
     document.getElementById('filtroMetodo').addEventListener('change', filtrarPagos);
     document.getElementById('idCitaPago').addEventListener('change', cargarDatosCita);
     document.getElementById('tipoServicio').addEventListener('change', mostrarSeccionServicio);
     document.getElementById('idTarifaPago').addEventListener('change', actualizarMontoServicio);
-    
-    // Limpiar formulario al cerrar modal
     document.getElementById('modalPago').addEventListener('hidden.bs.modal', limpiarFormulario);
 });
 
-// Cargar lista de pagos
 async function cargarPagos() {
     try {
         const response = await fetch('obtener_pagos.php');
@@ -43,7 +37,6 @@ async function cargarPagos() {
     }
 }
 
-// Mostrar pagos en la tabla
 function mostrarPagos(pagos) {
     const tbody = document.getElementById('listaPagos');
     
@@ -78,7 +71,6 @@ function mostrarPagos(pagos) {
     `).join('');
 }
 
-// Filtrar pagos
 function filtrarPagos() {
     const busqueda = document.getElementById('buscarPago').value.toLowerCase();
     const estado = document.getElementById('filtroEstado').value;
@@ -96,8 +88,6 @@ function filtrarPagos() {
     
     mostrarPagos(pagosFiltrados);
 }
-
-// Cargar citas
 async function cargarCitas() {
     try {
         const response = await fetch('../Agenda/obtener_cita.php');
@@ -121,8 +111,6 @@ async function cargarCitas() {
         console.error('Error al cargar citas:', error);
     }
 }
-
-// Cargar datos de la cita seleccionada
 async function cargarDatosCita() {
     const select = document.getElementById('idCitaPago');
     const selectedOption = select.options[select.selectedIndex];
@@ -148,7 +136,6 @@ async function cargarDatosCita() {
     document.getElementById('nombreMedicoInfo').value = nombreMedico;
     document.getElementById('idMedicoPago').value = idMedico;
     
-    // Obtener la tarifa del médico
     try {
         const response = await fetch(`obtener_tarifa_medico.php?idMedico=${idMedico}`);
         const data = await response.json();
@@ -166,7 +153,6 @@ async function cargarDatosCita() {
     document.getElementById('seccionTipo').style.display = 'block';
 }
 
-// Mostrar sección según tipo de servicio
 function mostrarSeccionServicio() {
     const tipoServicio = document.getElementById('tipoServicio').value;
     
@@ -177,7 +163,6 @@ function mostrarSeccionServicio() {
     document.getElementById('btnGuardarPago').style.display = 'none';
     
     if (tipoServicio === 'consulta') {
-        // Mostrar sección de consulta médica
         const tarifaConsulta = document.getElementById('tarifaConsultaHidden').value;
         document.getElementById('montoPago').value = parseFloat(tarifaConsulta).toFixed(2);
         document.getElementById('idTarifaPago').value = '';
@@ -188,7 +173,6 @@ function mostrarSeccionServicio() {
         document.getElementById('btnGuardarPago').style.display = 'block';
         
     } else if (tipoServicio === 'servicio') {
-        // Mostrar sección de servicios adicionales
         document.getElementById('seccionServicio').style.display = 'block';
         document.getElementById('seccionPago').style.display = 'flex';
         document.getElementById('seccionEstado').style.display = 'block';
@@ -196,7 +180,6 @@ function mostrarSeccionServicio() {
     }
 }
 
-// Cargar tarifas de servicios adicionales
 async function cargarTarifas() {
     try {
         const response = await fetch('obtener_tarifas_servicios.php');
@@ -214,7 +197,6 @@ async function cargarTarifas() {
     }
 }
 
-// Actualizar monto al seleccionar servicio adicional
 function actualizarMontoServicio() {
     const select = document.getElementById('idTarifaPago');
     const selectedOption = select.options[select.selectedIndex];
@@ -225,7 +207,6 @@ function actualizarMontoServicio() {
     }
 }
 
-// Guardar pago
 async function guardarPago() {
     const idCita = document.getElementById('idCitaPago').value;
     const idPaciente = document.getElementById('idPacientePago').value;
@@ -235,7 +216,6 @@ async function guardarPago() {
     const metodoPago = document.getElementById('metodoPago').value;
     const estatus = document.getElementById('estatusPago').value;
     
-    // Validaciones
     if (!idCita || !idPaciente || !tipoServicio || !monto || !metodoPago) {
         Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
         return;
@@ -290,7 +270,6 @@ async function guardarPago() {
     }
 }
 
-// Ver detalle del pago
 function verDetalle(id) {
     const pago = pagosData.find(p => p.idPago == id);
     
@@ -310,7 +289,6 @@ function verDetalle(id) {
     }
 }
 
-// Eliminar pago
 async function eliminarPago(id) {
     const result = await Swal.fire({
         title: '¿Está seguro?',
@@ -345,7 +323,6 @@ async function eliminarPago(id) {
     }
 }
 
-// Limpiar formulario
 function limpiarFormulario() {
     document.getElementById('formPago').reset();
     document.getElementById('idPago').value = '';
@@ -360,7 +337,6 @@ function limpiarFormulario() {
         '<i class="fa-solid fa-money-bill"></i> Registrar Pago';
 }
 
-// Formatear fecha
 function formatearFecha(fecha) {
     if (!fecha) return '-';
     const date = new Date(fecha);
@@ -373,7 +349,6 @@ function formatearFecha(fecha) {
     });
 }
 
-// Mostrar error
 function mostrarError(mensaje) {
     document.getElementById('listaPagos').innerHTML = 
         `<tr><td colspan="9" class="text-center text-danger py-4">${mensaje}</td></tr>`;

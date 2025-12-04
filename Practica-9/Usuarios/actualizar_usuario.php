@@ -25,7 +25,6 @@ try {
         exit;
     }
 
-    // Si hay contraseña nueva, actualizarla también
     if (!empty($contrasena)) {
         $contrasenaHash = password_hash($contrasena, PASSWORD_DEFAULT);
         
@@ -45,7 +44,6 @@ try {
             ':estatus' => $estatus
         ]);
     } else {
-        // Actualizar sin cambiar contraseña
         $sql = "UPDATE usuarios SET 
                 nombreUsuario = :nombreUsuario,
                 rol = :rol,

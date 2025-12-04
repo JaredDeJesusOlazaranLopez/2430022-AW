@@ -1,12 +1,10 @@
 <?php
 require_once 'verificar_sesion.php';
 
-// Verificar permisos
 if (!tienePermiso('reportes')) {
     die('No tienes permisos para generar reportes');
 }
 
-// Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -18,13 +16,11 @@ try {
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Obtener parámetros de filtro
     $fechaInicio = $_GET['fecha_inicio'] ?? date('Y-m-01');
     $fechaFin = $_GET['fecha_fin'] ?? date('Y-m-d');
     $metodoPago = $_GET['metodo_pago'] ?? '';
     $estatus = $_GET['estatus'] ?? '';
 
-    // Construir consulta SQL con filtros
     $sql = "SELECT 
                 gp.idPago,
                 gp.monto,
@@ -66,7 +62,6 @@ try {
     $stmt->execute($params);
     $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Calcular totales
     $totalGeneral = 0;
     $totalCompletados = 0;
     $totalPendientes = 0;

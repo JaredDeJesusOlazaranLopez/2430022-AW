@@ -36,8 +36,6 @@ try {
         echo json_encode(['success' => false, 'error' => 'Datos incompletos o inválidos'], JSON_UNESCAPED_UNICODE);
         exit;
     }
-
-    // Insertar pago
     $sql = "INSERT INTO gestorPagos 
             (idPaciente, idMedico, idCita, idTarifa, tipoServicio, descripcionServicio, monto, metodoPago, fechaPago, estatus) 
             VALUES 

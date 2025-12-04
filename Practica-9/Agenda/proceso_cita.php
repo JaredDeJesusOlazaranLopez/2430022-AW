@@ -1,7 +1,5 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-
-// Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -12,12 +10,8 @@ try {
     $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8";
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Obtener datos del request
     $rawData = file_get_contents('php://input');
     $data = json_decode($rawData, true);
-
-    // Validar que el JSON se haya parseado correctamente
     if (!$data) {
         echo json_encode([
             'success' => false, 
@@ -27,8 +21,6 @@ try {
         ]);
         exit;
     }
-
-    // Validar y limpiar campos requeridos
     $idPaciente = filter_var($data['idPaciente'] ?? null, FILTER_VALIDATE_INT);
     $idMedico = filter_var($data['idMedico'] ?? null, FILTER_VALIDATE_INT);
     $fecha = $data['fecha'] ?? null;
@@ -43,7 +35,6 @@ try {
         ]);
         exit;
     }
-
     if (!$idMedico || $idMedico === false) {
         echo json_encode([
             'success' => false, 
@@ -63,11 +54,7 @@ try {
         ]);
         exit;
     }
-
-    // Combinar fecha y hora en datetime
     $fechaHora = $fecha . ' ' . $hora . ':00';
-
-    // Inserción de nueva cita
     $sql = "INSERT INTO controlAgenda 
             (idPaciente, idMedico, fechaCita, 
              motivoConsulta, estadoCita, observaciones, fechaRegistro) 
@@ -84,7 +71,6 @@ try {
         ':estadoCita' => $data['estado'] ?? 'Programada',
         ':observaciones' => $data['observaciones'] ?? ''
     ]);
-
     $idCita = $pdo->lastInsertId();
 
     echo json_encode([

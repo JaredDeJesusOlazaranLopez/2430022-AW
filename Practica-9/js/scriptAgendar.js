@@ -1,4 +1,3 @@
-// Variables globales
 let calendar;
 let citasData = [];
 let pacientesData = [];
@@ -7,23 +6,14 @@ let especialidadesData = [];
 let modalCita;
 let modalDetalleCita;
 let citaSeleccionadaId = null;
-
-// Inicializar al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar modales
     modalCita = new bootstrap.Modal(document.getElementById('modalCita'));
     modalDetalleCita = new bootstrap.Modal(document.getElementById('modalDetalleCita'));
-    
-    // Inicializar calendario
     initCalendar();
-    
-    // Cargar datos iniciales
     cargarCitas();
     cargarPacientes();
     cargarMedicos();
     cargarEspecialidades();
-    
-    // Event listeners
     document.getElementById('agregarCita').addEventListener('click', () => {
         limpiarFormulario();
         document.getElementById('modalCitaLabel').innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Nueva Cita';
@@ -33,13 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('guardarCita').addEventListener('click', guardarCita);
     document.getElementById('editarCita').addEventListener('click', editarCitaDesdeDetalle);
     document.getElementById('eliminarCita').addEventListener('click', () => eliminarCita(citaSeleccionadaId));
-    
-    // Establecer fecha mínima a hoy
     const hoy = new Date().toISOString().split('T')[0];
     document.getElementById('fechaCita').setAttribute('min', hoy);
 });
-
-// Inicializar FullCalendar
 function initCalendar() {
     const calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
@@ -70,7 +56,6 @@ function initCalendar() {
     calendar.render();
 }
 
-// Cargar citas desde el servidor
 async function cargarCitas() {
     try {
         const response = await fetch('obtener_cita.php');
@@ -88,8 +73,6 @@ async function cargarCitas() {
         console.error('Error de conexión:', error);
     }
 }
-
-// Actualizar eventos del calendario
 function actualizarCalendario() {
     const eventos = citasData.map(cita => ({
         id: cita.id,
@@ -102,8 +85,6 @@ function actualizarCalendario() {
     calendar.removeAllEvents();
     calendar.addEventSource(eventos);
 }
-
-// Obtener color según estado
 function getColorByEstado(estado) {
     const colores = {
         'Programada': '#6c757d',
@@ -114,8 +95,6 @@ function getColorByEstado(estado) {
     };
     return colores[estado] || '#6c757d';
 }
-
-// Cargar lista de pacientes
 async function cargarPacientes() {
     try {
         const response = await fetch('../Pacientes/obtener_pacientes.php');
@@ -128,7 +107,6 @@ async function cargarPacientes() {
             const idUsuarioSesion = document.getElementById('idUsuarioSesion')?.value;
             
             if (rolUsuario === 'usuario') {
-                // Si es paciente, buscar su información y bloquear el select
                 const pacienteActual = data.data.find(p => p.idUsuario == idUsuarioSesion);
                 
                 if (pacienteActual) {
@@ -139,7 +117,6 @@ async function cargarPacientes() {
                     select.disabled = true;
                 }
             } else {
-                // Si es admin/secretaria/doctor, mostrar todos los pacientes
                 select.innerHTML = '<option value="">Seleccione un paciente</option>' +
                     data.data.map(p => `<option value="${p.id}">${p.nombreCompleto}</option>`).join('');
             }
@@ -148,8 +125,6 @@ async function cargarPacientes() {
         console.error('Error al cargar pacientes:', error);
     }
 }
-
-// Cargar lista de médicos
 async function cargarMedicos() {
     try {
         const response = await fetch('../Medicos/obtener_medicos.php');
@@ -165,8 +140,6 @@ async function cargarMedicos() {
         console.error('Error al cargar médicos:', error);
     }
 }
-
-// Cargar lista de especialidades
 async function cargarEspecialidades() {
     try {
         const response = await fetch('../Especialidades/obtener_especialidades.php');
@@ -183,7 +156,6 @@ async function cargarEspecialidades() {
     }
 }
 
-// Guardar cita (nueva o editar)
 async function guardarCita() {
     const idCita = document.getElementById('idCita').value;
     const rolUsuario = document.getElementById('rolUsuarioActual')?.value;
@@ -191,10 +163,8 @@ async function guardarCita() {
     let idPaciente;
     
     if (rolUsuario === 'usuario') {
-        // Si es paciente, obtener su ID del select (ya pre-cargado)
         idPaciente = document.getElementById('nombrePaciente').value;
     } else {
-        // Si es admin/secretaria, tomar el paciente seleccionado
         idPaciente = document.getElementById('nombrePaciente').value;
     }
     
@@ -204,8 +174,6 @@ async function guardarCita() {
     const motivo = document.getElementById('motivoCita').value;
     const estado = document.getElementById('estadoCita').value;
     const observaciones = document.getElementById('observacionesCita').value;
-    
-    // Validaciones
     if (!idPaciente || !idMedico || !fecha || !hora) {
         Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
         return;
@@ -249,8 +217,6 @@ async function guardarCita() {
         Swal.fire('Error', 'Error de conexión: ' + error.message, 'error');
     }
 }
-
-// Mostrar detalle de la cita
 function mostrarDetalleCita(citaId) {
     const cita = citasData.find(c => c.id == citaId);
     
@@ -269,8 +235,6 @@ function mostrarDetalleCita(citaId) {
         modalDetalleCita.show();
     }
 }
-
-// Editar cita desde el modal de detalle
 function editarCitaDesdeDetalle() {
     modalDetalleCita.hide();
     
@@ -291,7 +255,6 @@ function editarCitaDesdeDetalle() {
     }
 }
 
-// Eliminar cita
 async function eliminarCita(citaId) {
     const result = await Swal.fire({
         title: '¿Está seguro?',
@@ -328,8 +291,6 @@ async function eliminarCita(citaId) {
         }
     }
 }
-
-// Actualizar próximas citas
 function actualizarProximasCitas() {
     const ahora = new Date();
     const proximasCitas = citasData
@@ -359,8 +320,6 @@ function actualizarProximasCitas() {
         </div>
     `).join('');
 }
-
-// Actualizar estadísticas
 function actualizarEstadisticas() {
     const total = citasData.length;
     
@@ -376,13 +335,9 @@ function actualizarEstadisticas() {
     document.getElementById('totalAppointments').textContent = total;
     document.getElementById('monthAppointments').textContent = citasMes;
 }
-
-// Limpiar formulario
 function limpiarFormulario() {
     document.getElementById('idCita').value = '';
     const rolUsuario = document.getElementById('rolUsuarioActual')?.value;
-    
-    // Solo limpiar el select de paciente si NO es un usuario/paciente
     if (rolUsuario !== 'usuario') {
         document.getElementById('nombrePaciente').value = '';
     }
@@ -398,7 +353,6 @@ function limpiarFormulario() {
     document.getElementById('modalCitaLabel').innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Nueva Cita';
 }
 
-// Formatear fecha
 function formatearFecha(fecha) {
     if (!fecha) return '-';
     const date = new Date(fecha + 'T00:00:00');

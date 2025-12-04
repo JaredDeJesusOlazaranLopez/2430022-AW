@@ -1,14 +1,11 @@
-// Cargar pacientes al iniciar la página
 document.addEventListener('DOMContentLoaded', function() {
     cargarPacientes();
     
-    // Búsqueda en tiempo real
     document.getElementById('buscar').addEventListener('input', function(e) {
         const termino = e.target.value.toLowerCase();
         filtrarPacientes(termino);
     });
 
-    // Limpiar formulario al abrir modal para agregar
     document.getElementById('agregarPacientes').addEventListener('click', function() {
         limpiarFormulario();
         document.getElementById('tituloModal').textContent = 'Agregar Paciente';
@@ -16,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Función para cargar todos los pacientes
 function cargarPacientes() {
     fetch('obtener_pacientes.php')
         .then(response => response.json())
@@ -36,7 +32,6 @@ function cargarPacientes() {
         });
 }
 
-// Función para mostrar pacientes en la tabla
 function mostrarPacientes(pacientes) {
     const tbody = document.getElementById('tabla-pacientes');
     
@@ -47,13 +42,11 @@ function mostrarPacientes(pacientes) {
 
     let html = '';
     pacientes.forEach(paciente => {
-        // Construir nombre completo
         const nombre = paciente.nombre || '';
         const apellidoP = paciente.apellido_paterno || '';
         const apellidoM = paciente.apellido_materno || '';
         const nombreCompleto = `${nombre} ${apellidoP} ${apellidoM}`.trim() || 'Sin nombre';
         
-        // Formatear sexo
         let sexoTexto = 'N/A';
         if (paciente.sexo === 'M' || paciente.sexo === 'm') {
             sexoTexto = 'Masculino';
@@ -85,7 +78,6 @@ function mostrarPacientes(pacientes) {
     tbody.innerHTML = html;
 }
 
-// Función para filtrar pacientes
 function filtrarPacientes(termino) {
     const filas = document.querySelectorAll('#tabla-pacientes tr');
     
@@ -99,9 +91,7 @@ function filtrarPacientes(termino) {
     });
 }
 
-// Función para guardar o actualizar paciente
 function guardarActualizacion() {
-    // Validar campos requeridos
     const nombre = document.getElementById('nombre').value.trim();
     const apellidoP = document.getElementById('apellido_paterno').value.trim();
     const curp = document.getElementById('curp').value.trim();
@@ -145,15 +135,12 @@ function guardarActualizacion() {
     .then(data => {
         if (data.success) {
             alert(data.message || 'Paciente guardado correctamente');
-            // Cerrar modal
             const modalElement = document.getElementById('modalPacientes');
             const modal = bootstrap.Modal.getInstance(modalElement);
             if (modal) {
                 modal.hide();
             }
-            // Recargar tabla
             cargarPacientes();
-            // Limpiar formulario
             limpiarFormulario();
         } else {
             alert('Error: ' + (data.error || 'No se pudo guardar el paciente'));
@@ -165,7 +152,6 @@ function guardarActualizacion() {
     });
 }
 
-// Función para editar paciente
 function editarPaciente(id) {
     fetch(`actualizar_pacientes.php?id=${id}`)
         .then(response => response.json())
@@ -173,7 +159,6 @@ function editarPaciente(id) {
             if (data.success) {
                 const paciente = data.data;
                 
-                // Llenar formulario
                 document.getElementById('idPaciente').value = paciente.id || paciente.id_paciente;
                 document.getElementById('nombre').value = paciente.nombre || '';
                 document.getElementById('apellido_paterno').value = paciente.apellido_paterno || '';
@@ -190,10 +175,8 @@ function editarPaciente(id) {
                 document.getElementById('antecedentes').value = paciente.antecedentes_medicos || '';
                 document.getElementById('estatus').value = paciente.estatus || 'Activo';
                 
-                // Cambiar título del modal
                 document.getElementById('tituloModal').textContent = 'Editar Paciente';
                 
-                // Abrir modal
                 const modal = new bootstrap.Modal(document.getElementById('modalPacientes'));
                 modal.show();
             } else {
@@ -206,14 +189,12 @@ function editarPaciente(id) {
         });
 }
 
-// Función para confirmar eliminación
 function confirmarEliminacion(id, nombre) {
     if (confirm(`¿Está seguro de que desea eliminar al paciente "${nombre}"?\n\nEsta acción no se puede deshacer.`)) {
         eliminarPaciente(id);
     }
 }
 
-// Función para eliminar paciente
 function eliminarPaciente(id) {
     fetch('eliminar_pacientes.php', {
         method: 'POST',
@@ -237,7 +218,6 @@ function eliminarPaciente(id) {
     });
 }
 
-// Función para limpiar formulario
 function limpiarFormulario() {
     document.getElementById('idPaciente').value = '';
     document.getElementById('nombre').value = '';

@@ -2,7 +2,6 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
-// Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -14,7 +13,6 @@ try {
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Consulta adaptada a tu estructura real
     $sql = "SELECT 
                 id_paciente as idPaciente,
                 idUsuario,
@@ -41,7 +39,6 @@ try {
     $stmt = $pdo->query($sql);
     $pacientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Si no hay pacientes, enviar array vacío
     if (empty($pacientes)) {
         echo json_encode([
             'success' => true, 
@@ -52,7 +49,6 @@ try {
         exit;
     }
 
-    // Formatear los pacientes
     $pacientesFormateados = [];
     foreach ($pacientes as $paciente) {
         $pacientesFormateados[] = [

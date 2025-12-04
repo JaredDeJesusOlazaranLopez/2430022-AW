@@ -1,7 +1,5 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-
-// Configuración de la base de datos
 $host = "localhost";
 $port = "3306";
 $dbname = "clinica_db";
@@ -12,8 +10,6 @@ try {
     $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8";
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Manejo de solicitudes GET y POST
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!isset($_GET['id'])) {
             echo json_encode(['success' => false, 'error' => 'ID no proporcionado']);
@@ -26,8 +22,6 @@ try {
             echo json_encode(['success' => false, 'error' => 'ID inválido']);
             exit;
         }
-
-        // Consulta para obtener los datos de la cita
         $sql = "SELECT idCita, idPaciente, idMedico, 
                 fechaCita, motivoConsulta, estadoCita, observaciones 
                 FROM controlAgenda 
@@ -39,12 +33,9 @@ try {
         $cita = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($cita) {
-            // Separar fecha y hora si fechaCita es datetime
             $fechaCita = $cita['fechaCita'];
             $fecha = date('Y-m-d', strtotime($fechaCita));
             $hora = date('H:i', strtotime($fechaCita));
-            
-            // Formatear la respuesta
             $citaFormateada = [
                 'id' => (int)$cita['idCita'],
                 'idPaciente' => (int)$cita['idPaciente'],
@@ -62,12 +53,8 @@ try {
         }
         exit;
     }
-
-    // Manejo de solicitud POST para actualizar
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = json_decode(file_get_contents('php://input'), true);
-        
-        // Validar que el JSON se haya parseado correctamente
         if (!$data) {
             echo json_encode(['success' => false, 'error' => 'Datos JSON inválidos']);
             exit;
@@ -77,8 +64,6 @@ try {
             echo json_encode(['success' => false, 'error' => 'ID no proporcionado']);
             exit;
         }
-
-        // Validar y limpiar campos
         $idCita = filter_var($data['id'], FILTER_VALIDATE_INT);
         $idPaciente = filter_var($data['idPaciente'] ?? null, FILTER_VALIDATE_INT);
         $idMedico = filter_var($data['idMedico'] ?? null, FILTER_VALIDATE_INT);
@@ -94,21 +79,15 @@ try {
             echo json_encode(['success' => false, 'error' => 'ID de paciente inválido']);
             exit;
         }
-
         if (!$idMedico || $idMedico === false) {
             echo json_encode(['success' => false, 'error' => 'ID de médico inválido']);
             exit;
         }
-
         if (empty($fecha) || empty($hora)) {
             echo json_encode(['success' => false, 'error' => 'Fecha y hora son requeridos']);
             exit;
         }
-
-        // Combinar fecha y hora en datetime
         $fechaHora = $fecha . ' ' . $hora . ':00';
-
-        // Actualización de la cita
         $sql = "UPDATE controlAgenda SET 
                 idPaciente = :idPaciente,
                 idMedico = :idMedico,

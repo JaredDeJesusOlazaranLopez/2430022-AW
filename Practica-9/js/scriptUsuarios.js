@@ -100,8 +100,6 @@ function editarUsuario(id) {
     document.getElementById('nombreUsuario').value = usuario.nombreUsuario;
     document.getElementById('rol').value = usuario.rol;
     document.getElementById('estatus').value = usuario.estatus;
-    
-    // Ocultar campo de contraseña al editar
     document.getElementById('divContrasena').style.display = 'none';
     document.getElementById('contrasena').required = false;
     document.getElementById('contrasena').value = '';
@@ -121,7 +119,6 @@ function guardarUsuario() {
         return;
     }
     
-    // Validar contraseña solo si es nuevo usuario
     if (!id && contrasena.length < 6) {
         Swal.fire('Error', 'La contraseña debe tener al menos 6 caracteres', 'error');
         return;
@@ -133,7 +130,6 @@ function guardarUsuario() {
         estatus: estatus
     };
     
-    // Solo incluir contraseña si es nuevo usuario o si se está cambiando
     if (!id || contrasena) {
         datos.contrasena = contrasena;
     }
